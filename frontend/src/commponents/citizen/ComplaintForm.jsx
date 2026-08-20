@@ -21,7 +21,7 @@ const [errors, setErrors]= useState({});
                     <h2>Nuevo reclamo</h2>
 
                     <p className="desc">
-                        Complete los siguientes datos para registrar su reclamo. Los campos indicados con (*) son obligatorios.
+                        Complete los siguientes datos para registrar su reclamo. Los campos indicados con (<span className="span-required">*</span>) son obligatorios.
                     </p>
 
                 </section>
@@ -30,7 +30,7 @@ const [errors, setErrors]= useState({});
 
                     <label>
                         <span className="label-text">
-                        DNI
+                        DNI 
                         <span className="span-required">*</span>
                         <input className="inputt"
                         name="dni"
@@ -101,7 +101,18 @@ const [errors, setErrors]= useState({});
                 </section>
 
                 <div className="complaint-actions">
-
+                    <button
+                    className="cancelar"
+                    type="button"
+                    >
+                        cancelar
+                    </button>
+                    <button
+                    className="enviar"
+                    type="button"
+                    >
+                       Enviar reclamo
+                    </button>
                 </div>
             </form>
         </div>

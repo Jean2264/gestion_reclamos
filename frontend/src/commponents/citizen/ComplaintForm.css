@@ -19,6 +19,7 @@ label{
     flex-direction: column;
     font-size: 0.85rem;
     gap: .5rem;
+    font-weight: 600;
 }
 
 .label-text{
@@ -27,6 +28,7 @@ label{
 }
 .span-required{
      color: rgb(179, 3, 3);
+     margin-left: .1rem;
 }
 
 .inputt
@@ -50,4 +52,22 @@ textarea.inputt
 {
     min-height: 100px;
     resize: vertical;
+}
+
+.complaint-actions{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.complaint-actions button{
+    border-radius: var(--radius);
+    border: none;
+    color: var( --soft);
+    padding: .5rem;
+}
+
+.enviar{
+    background-color: var(--blue);
 }
