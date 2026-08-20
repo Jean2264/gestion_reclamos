@@ -1,0 +1,28 @@
+:root {
+    --blue: #11589f;
+    --blue-dark: #062a55;
+    --blue-mid: #0b77c5;
+    --cyan: #00a6d6;
+    --green: #058f61;
+    --green-dark: #056343;
+    --yellow: #f4c62f;
+    --orange: #f28a22;
+    --paper: #ffffff;
+    --soft: #eef7ff;
+    --ink: #17324d;
+    --muted: #617384;
+    --line: #dbe7ed;
+    --shadow: 0 2px 5px rgba(9, 40, 79, 0.14);
+    --radius: 30px;
+    --radius-soft: 42px;
+}
+
+
+
+body
+{
+    font-family: "Inter", sans-serif;
+    background-color: #f3f4f6;
+    margin: 0;
+    padding: 0;
+}

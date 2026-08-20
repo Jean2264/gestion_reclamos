@@ -1,13 +1,15 @@
+import ComplaintForm from "../../commponents/citizen/ComplaintForm";
+import Header from "../../commponents/common/Header";
+import "./Home.css";
+
 function Home(){
     return(
         <div className="home">
-            <h1>Gestion de reclamos    
-            </h1>
-
             {/**Aca va a ir el header */}
-
+            <Header/>
             <main className="home-container">
-
+            {/**Si es necesario vamos a usar section */}
+            <ComplaintForm/>
             </main>
 
             {/**Aca va a ir el footer */}

@@ -1,0 +1,20 @@
+.home{
+display: flex;
+flex-direction: column;
+gap: 1rem;
+align-items: center;
+}
+
+.home-container{
+
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    justify-content: center;
+    align-items: center;
+    width: 500px;
+    box-sizing: border-box;
+     min-height:100vh;
+     
+    padding:120px 2rem 2rem;
+}
