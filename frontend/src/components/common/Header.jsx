@@ -1,16 +1,17 @@
 import muniImage from '../../assets/escudo.png'
 import "./Header.css";
+import Menu from './Menu';
 function Header()
 {
     return(
         <header className="header">
+            <div className="header-logo">
+                <img className="img" src={muniImage} alt="Logo del municipio" />
+            </div>
 
-        <img className="img" src={muniImage} alt="Logo del municipio" />
-        {/*<h1 className="header-titulo">
-            Libro de quejas
-        </h1> */}
-
-       
+                <div className="header-menu">
+                    <Menu/>
+                </div>
         </header>       
         
     )
