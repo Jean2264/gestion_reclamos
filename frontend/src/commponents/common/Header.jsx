@@ -1,4 +1,4 @@
-import muniImage from '../../assets/muni.png'
+import muniImage from '../../assets/escudo.png'
 import "./Header.css";
 function Header()
 {

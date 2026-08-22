@@ -28,58 +28,64 @@ const [errors, setErrors]= useState({});
 
                 <section className="complaint-info">
 
-                    <label>
+                    <label className="complaint-label">
                         <span className="label-text">
                         DNI 
                         <span className="span-required">*</span>
-                        <input className="inputt"
+                        <input className="inputt  fiel-compact"
                         name="dni"
+                       type="text"
+                       autoComplete="off"
+                       inputMode="numeric"
                         value={formData.dni}
                         />
                         {errors.dni && <p className="input-error">{errors.dni}</p>}
                         </span>
                     </label>
 
-                    <label>
+                    <label className="complaint-label">
                         <span className="label-text">
                         Nombre
                         <span className="span-required">*</span>
                         <input className="inputt"
                         name="nombre"
+                        type="text"
                         value={formData.nombre}
                         />
                         {errors.nombre && <p className="input-error">{errors.nombre}</p>}
                         </span>
                     </label>
 
-                    <label>
+                    <label className="complaint-label">
                         <span className="label-text">
                         Apellido
                         <span className="span-required">*</span>
                         <input className="inputt"
                         name="apellido"
+                        type="text"
                         value={formData.dni}
                         />
                         {errors.dni && <p className="input-error">{errors.dni}</p>}
                         </span>
                     </label>
-                    <label>
+                    <label className="complaint-label">
                         <span className="label-text">
                         Direccion
                         <span className="span-required">*</span>
                         <input className="inputt"
                         name="direccion"
+                        type="text"
                         value={formData.direccion}
                         />
                         {errors.direccion && <p className="input-error">{errors.direccion}</p>}
                         </span>
                     </label>
 
-                    <label>
+                    <label className="complaint-label">
                         <span className="label-text">
                         Numero de lote
                         <span className="span-required">*</span>
-                        <input className="inputt"
+                        <input className="inputt fiel-compact"
                         name="lote"
                         value={formData.lote}
                         />
@@ -87,12 +93,13 @@ const [errors, setErrors]= useState({});
                         </span>
                     </label>
 
-                    <label>
+                    <label className="complaint-label">
                         <span className="label-text">
                         Descripcion
                         <span className="span-required">*</span>
-                        <textarea className="inputt"
+                        <textarea className="inputt fiel-compact"
                         name=""
+                        type="text"
                         value={formData.descripcion}
                         />
                         {errors.descripcion && <p className="input-error">{errors.descripcion}</p>}
