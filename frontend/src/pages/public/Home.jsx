@@ -9,9 +9,14 @@ function Home(){
             <Header/>
             <main className="home-container">
             {/**Si es necesario vamos a usar section */}
+            <section className="home-description">
+            <h1>
+                Registro de reclamos de ciudadano
+            </h1>
+            </section>
             <ComplaintForm/>
             </main>
-
+p
             {/**Aca va a ir el footer */}
         </div>
     )
