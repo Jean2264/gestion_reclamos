@@ -1,5 +1,5 @@
-import ComplaintForm from "../../commponents/citizen/ComplaintForm";
-import Header from "../../commponents/common/Header";
+import ComplaintForm from "../../components/citizen/ComplaintForm";
+import Header from "../../components/common/Header";
 import "./Home.css";
 
 function Home(){

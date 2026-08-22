@@ -1,6 +1,7 @@
 .complaint-form{
 display: flex;
-padding: 1rem;
+    padding-block: 0.35em 0.625em;
+    padding-inline: 0.75em;
 flex-direction: column;
 gap: 1rem;
 justify-content: center;
@@ -30,17 +31,35 @@ label{
      color: rgb(179, 3, 3);
      margin-left: .1rem;
 }
+/*input de tipo texto ej: apellido, nombre, etc.*/
+.complaint-info input[type="text"]
+{
+    padding: 10px 12px;
+    min-height: 48px;
+    border: 0;
+    border-bottom: 2px solid #d7e2ea;
+    color: var(--blue-dark);
+    background: transparent;
+    font: inherit;
+   
+}
+/*input de tipo numeric ej: dni.*/
+.field-compact{
+    border: 1px solid #d7e2ea !important;
+    border-radius:14px ;
+    background: #fbfdff !important;
+    padding: 0 16px;
+}
 
 .inputt
 {
     width: 100%;
-    padding: 0.5rem .5rem;
-    border: 1px solid #d1d5db;
-    border-radius: 0.5rem;
-    background: #ffffff;
+    
+    
+    
     font-weight: 500;
     font-size:  1rem;/*16px*/
-    color: #111827;
+    
     outline: none;
     box-sizing: border-box;
     transition: border-color 0.2s, box-shadow 0.2s;
@@ -62,12 +81,24 @@ textarea.inputt
 }
 
 .complaint-actions button{
-    border-radius: var(--radius);
-    border: none;
-    color: var( --soft);
-    padding: .5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0 18px;
+    border-radius: 999px;
+    border: 0;
+    font-weight: 900;
+    cursor: pointer;
 }
 
 .enviar{
     background-color: var(--blue);
+    color: #fff;
+}
+
+.cancelar
+{
+    color: var(--blue-dark);
+    background-color:#fff ;
 }
