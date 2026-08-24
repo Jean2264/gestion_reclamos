@@ -1,0 +1,28 @@
+.auth-overlay
+{
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.45);
+
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    z-index: 1000;
+   
+
+}
+
+
+.auth-modal
+{
+    background: var(--color-surface);
+    position: relative;
+    border-radius: 24px 24px 0 0;
+    padding: 2rem;
+    min-height: 60vh;
+    width: 100%;
+    max-width: 420px;
+  
+    overflow-y: auto;
+}
