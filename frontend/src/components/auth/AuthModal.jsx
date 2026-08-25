@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthProvider";
 import LoginForm from "./LoginForm";
 import BtnClose from "../common/BtnClose";
+import RegisterForm from "./RegisterForm";
 import "./AuthModal.css";
 
 function AuthModal(){
@@ -13,7 +14,7 @@ function AuthModal(){
         isAuthModalOpen,
         setIsAuthModalOpen
     }= useContext(AuthContext);
-    const [mode, setMode]= useState("");
+    const [mode, setMode]= useState("login");
 
     //// Si el modal está cerrado, no renderizamos nada.
     if(!isAuthModalOpen){
@@ -29,7 +30,13 @@ function AuthModal(){
             <div className="auth-modal">
                         <BtnClose
                         onClick={handleClose}/>
-                    <LoginForm/>
+                    { mode==="login" &&(
+                        <LoginForm onRegister={()=> setMode("register")}/>
+                    )}{
+                        mode ==="register" &&(
+                            <RegisterForm onLogin={()=> setMode("login")}/>
+                        )
+                    }
             </div>
         </div>
     )

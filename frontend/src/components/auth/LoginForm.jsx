@@ -2,7 +2,7 @@ import { useState } from "react";
 import "./LoginForm.css";
 
 
-function LoginForm(){
+function LoginForm({onRegister}){
 
     const [showPassword, setShowPassword]= useState(false);
         const [error, setError] = useState("");
@@ -105,7 +105,7 @@ function LoginForm(){
 
             <div className="login-actions">
                 <p>No tienes cuenta?<span
-                className="link-button">
+                className="link-button" onClick={onRegister}>
                     registrarse
                     </span></p>
             </div>
