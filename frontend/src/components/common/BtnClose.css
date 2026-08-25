@@ -1,0 +1,16 @@
+.btn-close{
+    background: var(--blue-dark);
+    padding: .6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    max-width: 10px;
+    max-height: 10px;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    cursor: pointer;
+}

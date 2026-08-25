@@ -1,21 +1,34 @@
-import { useContext } from "react"
+import { useContext, useState } from "react";
+import { AuthContext } from "../../context/AuthProvider";
 import LoginForm from "./LoginForm";
+import BtnClose from "../common/BtnClose";
 import "./AuthModal.css";
 
 function AuthModal(){
-
-    const {
+{/**"Quiero acceder a la información que AuthProvider está compartiendo." 
+    // useContext permite acceder a los estados y funciones
+// proporcionados por AuthProvider mediante AuthContext.
+    */}
+    const{
         isAuthModalOpen,
         setIsAuthModalOpen
-    }= useContext();
+    }= useContext(AuthContext);
+    const [mode, setMode]= useState("");
 
+    //// Si el modal está cerrado, no renderizamos nada.
     if(!isAuthModalOpen){
         return null;
     }
-
+   
+    function handleClose() {
+    setMode("login");
+    setIsAuthModalOpen(false);
+}
     return(
         <div className="auth-overlay">
             <div className="auth-modal">
+                        <BtnClose
+                        onClick={handleClose}/>
                     <LoginForm/>
             </div>
         </div>

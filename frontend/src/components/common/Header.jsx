@@ -1,6 +1,7 @@
 import muniImage from '../../assets/escudo.png'
 import "./Header.css";
 import Menu from './Menu';
+import UserButton from '../user/UserButton';
 function Header()
 {
     return(
@@ -10,7 +11,7 @@ function Header()
             </div>
 
                 <div className="header-menu">
-                    <Menu/>
+                    <UserButton/>
                 </div>
         </header>       
         
