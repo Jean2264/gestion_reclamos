@@ -1,0 +1,17 @@
+.menu-button{
+
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: #fff;
+    
+}
+
+.menu-button span{
+       display: block;
+    width: 20px;
+    height: 2px;
+    margin: 4px auto;
+    background: var(--blue);
+}

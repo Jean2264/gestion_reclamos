@@ -1,6 +1,6 @@
 :root {
     --blue: #11589f;
-    --blue-dark: #062a55;
+   --blue-dark : #062a55;
     --blue-mid: #0b77c5;
     --cyan: #00a6d6;
     --green: #058f61;
@@ -18,11 +18,14 @@
 }
 
 
-
+*{
+    box-sizing: border-box;
+}
 body
 {
-    font-family:Arial, Helvetica, sans-serif;
-    background-color: #e4edf6;
+    font-family: Arial, Helvetica, sans-serif;
+    color: var(--ink);
+   
     
     margin: 0;
     padding: 0;
