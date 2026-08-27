@@ -44,7 +44,7 @@ function LoginForm({onRegister}){
     return(
 
         <div className="login-form">
-            <span className="ciu">ACCESO CIUDADANO</span>
+           
             <div className="login-header">
              <h1>Ingresar a Mi San Vicente</h1>
                 <p>Entra con el correo que validaste y la contrasena que creaste para empezar a usar tu cuenta ciudadana.</p>
