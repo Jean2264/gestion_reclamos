@@ -7,7 +7,7 @@ function Header()
     return(
         <header className="header">
             <div className="header-logo">
-                <img className="img" src={muniImage} alt="Logo del municipio" />
+                <img className="img" src={muniImage} alt="Logo dl municipio" />
             </div>
 
                 <div className="header-menu">
