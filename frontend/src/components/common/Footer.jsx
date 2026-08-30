@@ -8,7 +8,7 @@ return(
         <div className="footer-mark">
             <img src={muniImage} alt="Escudo del Municipio de San Vicente"></img>
         </div>
-        <div class="footer-brand-copy">
+        <div className="footer-brand-copy">
         <strong>Municipio de San Vicente</strong>
         <span>San Vicente · Alejandro Korn · Domselaar</span>
       </div>

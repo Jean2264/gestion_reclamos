@@ -104,7 +104,7 @@ function LoginForm({onRegister}){
             </form>
 
             <div className="login-actions">
-                <p>No tienes cuenta?<span
+                <p>¿No tienes cuenta?<span
                 className="link-button" onClick={onRegister}>
                     registrarse
                     </span></p>

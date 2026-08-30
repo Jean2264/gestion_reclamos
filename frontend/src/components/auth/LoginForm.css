@@ -82,17 +82,22 @@ display: inline-flex;
 
 .pass{
     text-decoration: none;
-    width: fit-content;
+    
+   
     color: var(--blue);
-    font-weight: 950;
+    font-weight: 750;
+    text-align: center;
 }
+
 .login-actions{
-    gap:1rem
+    padding: 1rem;
+    gap:2rem
 }
 .login-actions p{
-    width: fit-content;
+    
     color: var(--blue);
     font-weight: 600;
+    
 }
 
 .link-button{
