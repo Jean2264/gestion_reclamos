@@ -1,16 +1,23 @@
-.admin-form{border: 1px solid var(--line);
+.admin-form{
+    border: 1px solid var(--line);
     border-radius: var(--radius);
     background: #fff;
     box-shadow: var(--shadow);
     display: grid;
     gap: 1rem;
     padding: 24px;
-    
+}
 .login-form{
     display: flex;
     flex-direction: column;
     gap: 2rem;
 }
+
+.login-header{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 .ciu{
     
@@ -89,12 +96,12 @@ display: inline-flex;
     text-align: center;
 }
 
-.login-actions{
-    padding: 1rem;
-    gap:2rem
-}
+
 .login-actions p{
     
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
     color: var(--blue);
     font-weight: 600;
     

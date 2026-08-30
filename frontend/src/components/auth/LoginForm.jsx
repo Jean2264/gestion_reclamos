@@ -1,4 +1,5 @@
 import { useState } from "react";
+import muniImage from '../../assets/escudo.png'
 import "./LoginForm.css";
 
 
@@ -46,8 +47,9 @@ function LoginForm({onRegister}){
         <div className="login-form">
            
             <div className="login-header">
-             <h1>Ingresar a Mi San Vicente</h1>
-                <p>Entra con el correo que validaste y la contrasena que creaste para empezar a usar tu cuenta ciudadana.</p>
+               
+            <h2>Ingresar a Mi San Vicente</h2> 
+                {/*<p>Entra con el correo que validaste y la contrasena que creaste para empezar a usar tu cuenta ciudadana.</p>*/}
             </div>
             <form className="admin-form">
             <label className="login-label">
