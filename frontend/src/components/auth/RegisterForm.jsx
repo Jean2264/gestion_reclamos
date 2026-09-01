@@ -163,13 +163,13 @@ function RegisterForm({ onLogin }) {
                 type={showPassword ? "text" : "password"}
               />
 
-              <button
+              {/** <button
                 type="button"
                 className="ojo"
                 onClick={() => setShowPassword(!showPassword)}
               >
                 <i className={showPassword ? "bi bi-eye-slash" : "bi bi-eye"} />
-              </button>
+              </button> */}
             </div>
           </label>
           <label className="login-label">
@@ -184,7 +184,7 @@ function RegisterForm({ onLogin }) {
                 type={showConfirmPassword ? "text" : "password"}
               />
 
-              <button
+              {/** <button
                 type="button"
                 className="ojo"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
@@ -194,7 +194,7 @@ function RegisterForm({ onLogin }) {
                     showConfirmPassword ? "bi bi-eye-slash" : "bi bi-eye"
                   }
                 />
-              </button>
+              </button> */}
             </div>
           </label>
         </section>
