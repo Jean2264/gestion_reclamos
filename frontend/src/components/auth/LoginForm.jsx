@@ -43,7 +43,8 @@ function LoginForm({ onRegister }) {
   return (
     <div className="login-form">
       <div className="login-header">
-        <h2>Ingresar a Mi San Vicente</h2>
+        <img className="img" src={muniImage} alt="Logo dl municipio" />
+        <h2>Iniciar sesion</h2>
         {/*<p>Entra con el correo que validaste y la contrasena que creaste para empezar a usar tu cuenta ciudadana.</p>*/}
       </div>
       <form className="admin-form">
@@ -74,7 +75,7 @@ function LoginForm({ onRegister }) {
             />
 
             <button
-              type="text"
+              type="button"
               className="ojo"
               onClick={() => setShowPassword(!showPassword)}
             >

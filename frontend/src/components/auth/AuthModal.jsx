@@ -26,7 +26,7 @@ function AuthModal() {
   }
   return (
     <div className="auth-overlay">
-      <div className="auth-modal">
+      <div className={`auth-modal ${mode === "register" ? "fullscreen" : ""}`}>
         <BtnClose onClick={handleClose} />
 
         <div className="auth-modal-container">
