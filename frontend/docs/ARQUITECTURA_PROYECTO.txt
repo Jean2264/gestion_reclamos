@@ -1,0 +1,179 @@
+ARQUITECTURA DEL PROYECTO: GESTIÓN DE RECLAMOS
+================================================
+
+Fecha de relevamiento: 16/09/2026
+
+Este documento describe la estructura actual del repositorio, sus carpetas,
+subcarpetas y archivos. Las carpetas indicadas como "vacía" están creadas,
+pero actualmente no contienen archivos.
+
+
+1. ESTRUCTURA GENERAL
+---------------------
+
+gestion_reclamos/
+├── backend/                         Backend reservado para la API y la lógica del servidor (vacío).
+└── frontend/                        Aplicación web del sistema, desarrollada con React y Vite.
+
+
+2. ESTRUCTURA COMPLETA DEL FRONTEND
+------------------------------------
+
+frontend/
+├── .gitignore                       Reglas de archivos ignorados por Git.
+├── docs/                            Documentación técnica del proyecto.
+│   └── ARQUITECTURA_PROYECTO.txt    Este documento.
+├── eslint.config.js                 Configuración de ESLint.
+├── index.html                       Documento HTML base donde se monta la aplicación React.
+├── package.json                     Metadatos, scripts y dependencias del frontend.
+├── package-lock.json                Versiones exactas de las dependencias instaladas.
+├── README.md                        Documentación inicial del template React + Vite.
+├── vite.config.js                   Configuración del bundler y servidor de desarrollo Vite.
+├── public/                          Recursos públicos servidos sin procesamiento del bundler.
+│   ├── favicon.svg                  Icono de la aplicación/pestaña del navegador.
+│   └── icons.svg                    Colección de iconos SVG públicos.
+└── src/                             Código fuente principal de la aplicación.
+    ├── App.jsx                      Componente raíz de la aplicación.
+    ├── main.jsx                     Punto de entrada: configura React, StrictMode y AuthProvider.
+    ├── assets/                      Recursos importados desde componentes React.
+    │   ├── escudo.png               Imagen del escudo institucional.
+    │   └── muni.png                 Imagen o identidad visual de la municipalidad.
+    ├── components/                  Componentes reutilizables organizados por dominio.
+    │   ├── admin/                   Componentes específicos del administrador (vacía).
+    │   ├── auth/                    Componentes de autenticación.
+    │   │   ├── AuthModal.css        Estilos del modal de autenticación.
+    │   │   ├── AuthModal.jsx        Modal que contiene los flujos de acceso/registro.
+    │   │   ├── LoginForm.css         Estilos del formulario de inicio de sesión.
+    │   │   ├── LoginForm.jsx         Formulario de inicio de sesión.
+    │   │   ├── RegisterForm.css      Estilos del formulario de registro.
+    │   │   └── RegisterForm.jsx      Formulario de registro de usuarios.
+    │   ├── citizen/                 Componentes orientados al ciudadano.
+    │   │   ├── ComplaintForm.css     Estilos del formulario de reclamos.
+    │   │   └── ComplaintForm.jsx     Formulario para crear/cargar reclamos.
+    │   ├── common/                  Componentes compartidos por distintas vistas.
+    │   │   ├── BtnClose.css          Estilos del botón de cierre.
+    │   │   ├── BtnClose.jsx          Botón reutilizable para cerrar modales o paneles.
+    │   │   ├── Footer.css            Estilos del pie de página.
+    │   │   ├── Footer.jsx            Pie de página compartido.
+    │   │   ├── Header.css            Estilos de la cabecera.
+    │   │   ├── Header.jsx            Cabecera compartida.
+    │   │   ├── Menu.css              Estilos del menú de navegación.
+    │   │   └── Menu.jsx              Menú de navegación compartido.
+    │   ├── panelLayout/              Componentes para la estructura de paneles (vacía).
+    │   └── user/                    Componentes relacionados con el usuario autenticado.
+    │       ├── UserButton.css        Estilos del botón o menú de usuario.
+    │       └── UserButton.jsx        Botón/acción asociada al usuario.
+    ├── context/                     Contextos globales de React.
+    │   └── AuthProvider.jsx          Proveedor de estado y acciones de autenticación.
+    ├── layouts/                     Layouts generales de la aplicación (vacía).
+    ├── pages/                       Páginas completas, agrupadas por tipo de usuario o acceso.
+    │   ├── admin/                   Páginas del administrador (vacía).
+    │   └── public/                  Páginas públicas.
+    │       ├── Home.css             Estilos de la página principal.
+    │       └── Home.jsx             Página de inicio pública.
+    ├── routes/                      Definición de rutas de la aplicación (vacía).
+    └── styles/                      Estilos globales.
+        └── global.css               Estilos y reglas CSS globales.
+
+
+3. ARQUITECTURA DE LA APLICACIÓN
+--------------------------------
+
+La aplicación está organizada siguiendo una separación por responsabilidades:
+
+- Entrada de la aplicación:
+  `src/main.jsx` crea la raíz de React, habilita StrictMode, importa los iconos
+  de Bootstrap y envuelve la aplicación con `AuthProvider`.
+
+- Componente raíz:
+  `src/App.jsx` compone la página pública `Home` y el `AuthModal`, además de
+  cargar los estilos globales.
+
+- Páginas:
+  La carpeta `src/pages` contiene vistas completas. Actualmente existe la
+  página pública `Home`; las páginas administrativas están previstas, pero la
+  carpeta aún está vacía.
+
+- Componentes:
+  La carpeta `src/components` contiene piezas reutilizables. Se divide por
+  dominio (`auth`, `citizen`, `user`, `admin`) y por uso transversal (`common`).
+
+- Estado global:
+  `src/context/AuthProvider.jsx` centraliza el contexto relacionado con la
+  autenticación y permite compartirlo entre componentes.
+
+- Presentación:
+  Los archivos `.css` ubicados junto a cada componente mantienen los estilos
+  cercanos al componente correspondiente. `src/styles/global.css` contiene las
+  reglas globales.
+
+- Recursos:
+  Los recursos importados desde JavaScript/JSX se encuentran en `src/assets`.
+  Los recursos estáticos que deben publicarse directamente se encuentran en
+  `public`.
+
+- Navegación:
+  `src/routes` está preparada para concentrar las rutas de la aplicación,
+  aunque actualmente no contiene archivos. El proyecto incluye
+  `react-router-dom` como dependencia.
+
+- Backend:
+  La carpeta `backend` existe como límite arquitectónico para la futura API,
+  persistencia y lógica del servidor, pero todavía no tiene implementación.
+
+
+4. TECNOLOGÍAS Y DEPENDENCIAS PRINCIPALES
+------------------------------------------
+
+Runtime y framework:
+- React 19.
+- React DOM 19.
+- Vite 8 como herramienta de desarrollo y build.
+- JavaScript con módulos ES (`type: module`).
+
+Navegación e interfaz:
+- React Router DOM 7.
+- Bootstrap Icons 1.13.
+- CSS plano organizado por componente.
+
+Calidad y desarrollo:
+- ESLint 10.
+- Plugins de ESLint para React Hooks y React Refresh.
+- Plugin de React para Vite.
+
+
+5. SCRIPTS DISPONIBLES
+----------------------
+
+Los scripts definidos en `frontend/package.json` son:
+
+- `npm run dev`       Inicia el servidor de desarrollo de Vite.
+- `npm run build`     Genera la compilación de producción.
+- `npm run lint`      Ejecuta ESLint sobre el frontend.
+- `npm run preview`   Sirve localmente la compilación generada.
+
+
+6. FLUJO DE ARRANQUE ACTUAL
+----------------------------
+
+1. El navegador carga `frontend/index.html`.
+2. `src/main.jsx` obtiene el elemento raíz y monta React.
+3. React renderiza `AuthProvider` como proveedor global.
+4. `AuthProvider` contiene a `App`.
+5. `App` muestra `Home` y `AuthModal`.
+6. Los componentes utilizan sus archivos CSS y los recursos de `src/assets`.
+
+
+7. NOTAS SOBRE EL ESTADO ACTUAL
+--------------------------------
+
+- `backend/` está creado, pero aún no contiene código.
+- `src/components/admin/` está creada, pero aún no contiene componentes.
+- `src/components/panelLayout/` está creada, pero aún no contiene componentes.
+- `src/layouts/` está creada, pero aún no contiene layouts.
+- `src/pages/admin/` está creada, pero aún no contiene páginas.
+- `src/routes/` está creada, pero aún no contiene archivos de rutas.
+- `node_modules/` no se incluye en este documento porque es una carpeta
+  generada por la instalación de dependencias y no forma parte del código fuente.
+- La estructura puede ampliarse cuando se implemente la API, el panel
+  administrativo, los layouts y la navegación formal.
