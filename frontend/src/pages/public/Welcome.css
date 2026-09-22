@@ -1,0 +1,173 @@
+.welcome {
+  display: flex;
+  flex-direction: column;
+
+  min-height: 100vh;
+  background: #f1f6fe;
+  color: var(--blue-dark);
+  box-sizing: border-box;
+}
+.welcome-content {
+  width: 100%;
+  max-width: 1100px;
+
+  margin: 69px auto 0;
+  padding: 69px 24px 80px;
+  box-sizing: border-box;
+} /* INTRODUCCIÓN */
+.welcome-introduction {
+  max-width: 760px;
+  margin: 0 auto 70px;
+  text-align: center;
+}
+.welcome-introduction h1 {
+  margin: 0 0 20px;
+  color: var(--blue-dark);
+  font-size: 42px;
+  line-height: 1.15;
+  font-weight: 700;
+}
+.welcome-introduction p {
+  max-width: 650px;
+  margin: 0 auto;
+  color: #64748b;
+  font-size: 17px;
+  line-height: 1.7;
+} /* ÁREAS DE RECLAMOS */
+.complaint-areas {
+  margin-bottom: 80px;
+}
+.complaint-areas > h2 {
+  margin: 0 0 32px;
+  color: var(--blue-dark);
+  font-size: 28px;
+  font-weight: 600;
+  text-align: center;
+}
+.complaint-areas-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+.complaint-area {
+  padding: 28px;
+  background: #ffffff;
+  border: 1px solid #dbeafe;
+  border-radius: 22px;
+  box-shadow: 0 8px 24px rgba(30, 64, 175, 0.06);
+  box-sizing: border-box;
+}
+.complaint-area-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  margin-bottom: 20px;
+  border-radius: 14px;
+  background: #dbeafe;
+  color: #2563eb;
+  font-size: 21px;
+}
+.complaint-area h3 {
+  margin: 0 0 10px;
+  color: #1e293b;
+  font-size: 19px;
+  font-weight: 600;
+}
+.complaint-area p {
+  margin: 0;
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.6;
+} /* ACCESO */
+.welcome-access {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.welcome-access-content {
+  width: 100%;
+  max-width: 720px;
+  padding: 40px;
+  background: #ffffff;
+  border: 1px solid #dbeafe;
+  border-radius: 24px;
+  box-shadow: 0 8px 24px rgba(30, 64, 175, 0.06);
+  text-align: center;
+  box-sizing: border-box;
+}
+.welcome-access-content h2 {
+  margin: 0 0 12px;
+  color: var(--blue-dark);
+  font-size: 26px;
+  font-weight: 600;
+}
+.welcome-access-content p {
+  margin: 0 auto 28px;
+  max-width: 560px;
+  color: #64748b;
+  font-size: 15px;
+  line-height: 1.6;
+} /* BOTONES */
+.welcome-actions {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+}
+.welcome-actions button {
+  padding: 12px 22px;
+  border: none;
+  border-radius: 50px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+.welcome-actions button:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+.welcome-actions button:last-child {
+  background: #eff6ff;
+  color: #2563eb;
+}
+.welcome-actions button:last-child:hover {
+  background: #dbeafe;
+} /* RESPONSIVE */
+@media (max-width: 768px) {
+  .welcome-content {
+    padding: 56px 18px;
+  }
+  .welcome-introduction {
+    margin-bottom: 52px;
+  }
+  .welcome-introduction h1 {
+    font-size: 32px;
+  }
+  .welcome-introduction p {
+    font-size: 15px;
+  }
+  .complaint-areas {
+    margin-bottom: 56px;
+  }
+  .complaint-areas > h2 {
+    font-size: 24px;
+  }
+  .complaint-areas-grid {
+    grid-template-columns: 1fr;
+  }
+  .welcome-access-content {
+    padding: 30px 20px;
+  }
+  .welcome-actions {
+    flex-direction: column;
+  }
+  .welcome-actions button {
+    width: 100%;
+  }
+}

@@ -1,41 +1,42 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
+
 import { AuthContext } from "../../context/AuthProvider";
+
 import LoginForm from "./LoginForm";
-import BtnClose from "../common/BtnClose";
 import RegisterForm from "./RegisterForm";
+
+import BtnClose from "../common/BtnClose";
+
 import "./AuthModal.css";
 
 function AuthModal() {
-  {
-    /**"Quiero acceder a la información que AuthProvider está compartiendo." 
-    // useContext permite acceder a los estados y funciones
-// proporcionados por AuthProvider mediante AuthContext.
-    */
-  }
-  const { isAuthModalOpen, setIsAuthModalOpen } = useContext(AuthContext);
-  const [mode, setMode] = useState("login");
+  const { isAuthModalOpen, setIsAuthModalOpen, authMode, setAuthMode } =
+    useContext(AuthContext);
 
-  //// Si el modal está cerrado, no renderizamos nada.
+  // Si el modal esta cerrado no renderizamos nada
   if (!isAuthModalOpen) {
     return null;
   }
 
   function handleClose() {
-    setMode("login");
+    setAuthMode("login");
     setIsAuthModalOpen(false);
   }
+
   return (
     <div className="auth-overlay">
-      <div className={`auth-modal ${mode === "register" ? "fullscreen" : ""}`}>
+      <div
+        className={`auth-modal ${authMode === "register" ? "fullscreen" : ""}`}
+      >
         <BtnClose onClick={handleClose} />
 
         <div className="auth-modal-container">
-          {mode === "login" && (
-            <LoginForm onRegister={() => setMode("register")} />
+          {authMode === "login" && (
+            <LoginForm onRegister={() => setAuthMode("register")} />
           )}
 
-          {mode === "register" && (
-            <RegisterForm onLogin={() => setMode("login")} />
+          {authMode === "register" && (
+            <RegisterForm onLogin={() => setAuthMode("login")} />
           )}
         </div>
       </div>

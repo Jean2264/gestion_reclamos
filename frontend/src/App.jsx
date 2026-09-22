@@ -10,6 +10,7 @@ function App() {
     <>
       <PublicRoutes />
       <AdminRoutes />
+      <AuthModal />
     </>
   );
 }
