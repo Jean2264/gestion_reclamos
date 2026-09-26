@@ -26,16 +26,6 @@ function AdminSidebar() {
               end
               className={({ isActive }) => (isActive ? "active" : "")}
             >
-              <i className="bi bi-grid"></i>
-              <span>Inicio</span>
-            </NavLink>
-          </li>
-
-          <li>
-            <NavLink
-              to="/admin/reclamos"
-              className={({ isActive }) => (isActive ? "active" : "")}
-            >
               <i className="bi bi-clipboard-check"></i>
               <span>Reclamos</span>
             </NavLink>
@@ -57,7 +47,7 @@ function AdminSidebar() {
               className={({ isActive }) => (isActive ? "active" : "")}
             >
               <i className="bi bi-people"></i>
-              <span>Usuarios</span>
+              <span>Ciudadanos</span>
             </NavLink>
           </li>
 
