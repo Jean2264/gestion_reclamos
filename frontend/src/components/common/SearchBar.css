@@ -20,23 +20,17 @@
 
 .input-search {
   flex: 1;
+  min-width: 0;
 
   height: 100%;
-
   padding: 0 12px;
 
   border: none;
   outline: none;
 
   background: transparent;
-
   color: #1f2937;
-
   font-size: 14px;
-}
-
-.input-search::placeholder {
-  color: #94a3b8;
 }
 
 .search-btn {
@@ -44,11 +38,12 @@
   align-items: center;
   justify-content: center;
 
+  flex: 0 0 38px;
+
   width: 38px;
   height: 38px;
 
   padding: 0;
-
   border: none;
   border-radius: 11px;
 
@@ -56,11 +51,10 @@
   color: #2563eb;
 
   cursor: pointer;
+}
 
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease,
-    transform 0.2s ease;
+.input-search::placeholder {
+  color: #94a3b8;
 }
 
 .search-btn:hover {

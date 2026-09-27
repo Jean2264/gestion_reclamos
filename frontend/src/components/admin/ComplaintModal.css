@@ -10,55 +10,95 @@
   padding: 1.5rem;
 
   background: rgba(15, 23, 42, 0.45);
+
+  box-sizing: border-box;
 }
 
+/* =========================
+   MODAL
+   ========================= */
+
 .complaint-modal {
+  display: flex;
+  flex-direction: column;
+
   width: 100%;
-  max-width: 560px;
+  max-width: 680px;
+  max-height: 85vh;
 
   background: #ffffff;
+
   border: 1px solid #dbeafe;
   border-radius: 24px;
 
   box-shadow: 0 20px 50px rgba(15, 23, 42, 0.2);
+
   overflow: hidden;
 }
+
+/* =========================
+   HEADER
+   ========================= */
 
 .complaint-modal-header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
+
   gap: 1rem;
 
   padding: 1.5rem;
 
   border-bottom: 1px solid #e2e8f0;
+
+  flex-shrink: 0;
 }
 
 .complaint-modal-subtitle {
   margin: 0 0 6px;
 
   color: #94a3b8;
+
   font-size: 13px;
+  font-weight: 500;
 }
 
-.complaint-modal-header h2 {
-  margin: 0;
+.cd-reclamo {
+  display: flex;
+  align-items: baseline;
 
+  gap: 0.5rem;
+}
+
+.cd-reclamo span {
+  color: #64748b;
+
+  font-size: 14px;
+}
+
+.cd-reclamo strong {
   color: #1d4ed8;
-  font-size: 24px;
+
+  font-size: 16px;
   font-weight: 600;
 }
+
+/* =========================
+   BOTÓN CERRAR
+   ========================= */
 
 .complaint-modal-close {
   display: flex;
   align-items: center;
   justify-content: center;
 
+  flex-shrink: 0;
+
   width: 36px;
   height: 36px;
 
   padding: 0;
+
   border: none;
   border-radius: 50%;
 
@@ -66,6 +106,10 @@
   color: #475569;
 
   cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .complaint-modal-close:hover {
@@ -73,40 +117,260 @@
   color: #2563eb;
 }
 
+/* =========================
+   CONTENIDO
+   ========================= */
+
 .complaint-modal-content {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+
+  gap: 1.5rem;
 
   padding: 1.5rem;
+
+  overflow-y: auto;
+
+  min-height: 0;
+
+  box-sizing: border-box;
 }
+
+/* =========================
+   SECCIONES
+   ========================= */
+
+.complaint-modal-section {
+  display: flex;
+  flex-direction: column;
+
+  gap: 1rem;
+
+  padding-bottom: 1.5rem;
+
+  border-bottom: 1px solid #e2e8f0;
+
+  box-sizing: border-box;
+}
+
+.complaint-modal-section:last-child {
+  padding-bottom: 0;
+
+  border-bottom: none;
+}
+
+.complaint-modal-section-title {
+  margin: 0;
+
+  color: #1e293b;
+
+  font-size: 17px;
+  font-weight: 600;
+}
+
+/* =========================
+   GRID
+   ========================= */
+
+.complaint-modal-grid {
+  display: grid;
+
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  gap: 1.25rem;
+}
+
+/* =========================
+   CAMPOS
+   ========================= */
 
 .complaint-modal-field {
   display: flex;
   flex-direction: column;
+
   gap: 5px;
+
+  min-width: 0;
 }
 
-.complaint-modal-field span {
+.complaint-modal-field span,
+.complaint-modal-field label {
   color: #94a3b8;
+
   font-size: 13px;
+  font-weight: 500;
 }
 
 .complaint-modal-field strong {
   color: #334155;
+
   font-size: 15px;
   font-weight: 500;
+
+  word-break: break-word;
 }
+
+/* =========================
+   SELECT
+   ========================= */
+
+.complaint-modal-field select {
+  width: 100%;
+  height: 44px;
+
+  padding: 0 12px;
+
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+
+  background-color: #ffffff;
+  color: #334155;
+
+  font-size: 14px;
+
+  outline: none;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.complaint-modal-field select:focus {
+  border-color: #60a5fa;
+
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+}
+
+.complaint-area-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  width: 100%;
+}
+
+.complaint-area-actions select {
+  flex: 1;
+  min-width: 0;
+}
+
+.complaint-area-save {
+  flex-shrink: 0;
+
+  padding: 10px 16px;
+
+  border: none;
+  border-radius: 12px;
+
+  background: #22c55e;
+  color: #ffffff;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.complaint-area-save:hover {
+  background: #16a34a;
+  transform: translateY(-1px);
+}
+
+/* =========================
+   IMÁGENES
+   ========================= */
+
+.complaint-modal-images {
+  display: flex;
+  flex-direction: column;
+
+  gap: 8px;
+}
+
+.complaint-modal-images > span {
+  color: #94a3b8;
+
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.complaint-modal-images-grid {
+  display: grid;
+
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 12px;
+}
+
+.complaint-modal-images-grid img {
+  display: block;
+
+  width: 100%;
+  height: 160px;
+
+  object-fit: cover;
+
+  border: 1px solid #dbeafe;
+  border-radius: 14px;
+}
+
+/* =========================
+   TEXTAREA
+   ========================= */
+
+.complaint-modal-field textarea {
+  width: 100%;
+  min-height: 120px;
+
+  padding: 12px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+
+  background: #f8fafc;
+  color: #334155;
+
+  font-family: inherit;
+  font-size: 14px;
+
+  line-height: 1.6;
+
+  resize: vertical;
+
+  outline: none;
+}
+
+/* =========================
+   FOOTER
+   ========================= */
 
 .complaint-modal-footer {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
+
+  flex-shrink: 0;
+
+  gap: 10px;
 
   padding: 1rem 1.5rem;
 
   background: #f8fafc;
+
   border-top: 1px solid #e2e8f0;
 }
+
+/* =========================
+   BOTONES
+   ========================= */
 
 .complaint-modal-button {
   padding: 10px 18px;
@@ -117,9 +381,98 @@
   background: #3b82f6;
   color: #ffffff;
 
+  font-size: 14px;
+  font-weight: 600;
+
   cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .complaint-modal-button:hover {
   background: #2563eb;
+
+  transform: translateY(-1px);
+}
+
+.complaint-modal-button-secondary {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.complaint-modal-button-secondary:hover {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+/* =========================
+   SCROLLBAR
+   ========================= */
+
+.complaint-modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.complaint-modal-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.complaint-modal-content::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+
+  border-radius: 50px;
+}
+
+.complaint-modal-content::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+
+@media (max-width: 900px) {
+  .complaint-modal-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .complaint-modal-overlay {
+    padding: 0.75rem;
+  }
+
+  .complaint-modal {
+    max-height: calc(100vh - 1.5rem);
+
+    border-radius: 18px;
+  }
+
+  .complaint-modal-header {
+    padding: 1.25rem;
+  }
+
+  .complaint-modal-content {
+    padding: 1.25rem;
+  }
+
+  .complaint-modal-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .complaint-modal-images-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .complaint-modal-footer {
+    padding: 1rem 1.25rem;
+
+    flex-direction: column-reverse;
+  }
+
+  .complaint-modal-button {
+    width: 100%;
+  }
 }

@@ -43,7 +43,7 @@ function AdminSidebar() {
 
           <li>
             <NavLink
-              to="/admin/usuarios"
+              to="/admin/ciudadanos"
               className={({ isActive }) => (isActive ? "active" : "")}
             >
               <i className="bi bi-people"></i>
