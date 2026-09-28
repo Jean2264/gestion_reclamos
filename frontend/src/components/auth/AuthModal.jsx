@@ -13,7 +13,6 @@ function AuthModal() {
   const { isAuthModalOpen, setIsAuthModalOpen, authMode, setAuthMode } =
     useContext(AuthContext);
 
-  // Si el modal esta cerrado no renderizamos nada
   if (!isAuthModalOpen) {
     return null;
   }
@@ -25,20 +24,16 @@ function AuthModal() {
 
   return (
     <div className="auth-overlay">
-      <div
-        className={`auth-modal ${authMode === "register" ? "fullscreen" : ""}`}
-      >
+      <div className={`auth-modal ${authMode}`}>
         <BtnClose onClick={handleClose} />
 
-        <div className="auth-modal-container">
-          {authMode === "login" && (
-            <LoginForm onRegister={() => setAuthMode("register")} />
-          )}
+        {authMode === "login" && (
+          <LoginForm onRegister={() => setAuthMode("register")} />
+        )}
 
-          {authMode === "register" && (
-            <RegisterForm onLogin={() => setAuthMode("login")} />
-          )}
-        </div>
+        {authMode === "register" && (
+          <RegisterForm onLogin={() => setAuthMode("login")} />
+        )}
       </div>
     </div>
   );

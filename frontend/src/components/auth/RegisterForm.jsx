@@ -1,15 +1,22 @@
-import "./RegisterForm.css";
 import { useState } from "react";
+import "./RegisterForm.css";
 
 function RegisterForm({ onLogin }) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   return (
     <div className="register-form">
-      <div className="register-header">
-        <h1>Registrarse</h1>
-      </div>
-      <form>
+      <header className="register-header">
+        <h1>Crear ciudadano</h1>
+        <p>Completá tus datos para crear tu cuenta ciudadana.</p>
+      </header>
+
+      <form className="register-form-content">
+        {/* =========================
+            INFORMACIÓN PERSONAL
+            ========================= */}
+
         <section className="register-section">
           <h2>Información personal</h2>
 
@@ -59,7 +66,7 @@ function RegisterForm({ onLogin }) {
 
           <label className="register-label">
             <span>
-              Telefono
+              Teléfono
               <span className="span-required">*</span>
             </span>
 
@@ -73,7 +80,7 @@ function RegisterForm({ onLogin }) {
 
           <label className="register-label">
             <span>
-              Correo electronico
+              Correo electrónico
               <span className="span-required">*</span>
             </span>
 
@@ -85,6 +92,10 @@ function RegisterForm({ onLogin }) {
             />
           </label>
         </section>
+
+        {/* =========================
+            DOMICILIO
+            ========================= */}
 
         <section className="register-section">
           <h2>Información de domicilio</h2>
@@ -98,7 +109,7 @@ function RegisterForm({ onLogin }) {
 
               <input
                 className="register-input"
-                name="dni"
+                name="calle"
                 type="text"
                 autoComplete="off"
               />
@@ -106,41 +117,46 @@ function RegisterForm({ onLogin }) {
 
             <label className="register-label">
               <span>
-                Numero
+                Número
                 <span className="span-required">*</span>
               </span>
 
               <input
                 className="register-input"
-                name="telefono"
+                name="numero"
                 type="text"
                 autoComplete="off"
               />
             </label>
           </div>
+
           <div className="form-row">
-            <label>
+            <label className="register-label">
               <span>
                 Localidad
                 <span className="span-required">*</span>
               </span>
+
               <select className="register-input" name="localidad">
                 <option value="">Seleccioná una localidad</option>
+
                 <option value="alejandro-korn">Alejandro Korn</option>
+
                 <option value="san-vicente">San Vicente</option>
+
                 <option value="domselaar">Domselaar</option>
               </select>
             </label>
 
             <label className="register-label">
               <span>
-                Codigo postal
+                Código postal
                 <span className="span-required">*</span>
               </span>
 
               <input
                 className="register-input"
-                name="cp"
+                name="codigoPostal"
                 type="text"
                 autoComplete="off"
               />
@@ -148,61 +164,85 @@ function RegisterForm({ onLogin }) {
           </div>
         </section>
 
+        {/* =========================
+            SEGURIDAD
+            ========================= */}
+
         <section className="register-section">
           <h2>Seguridad</h2>
 
-          <label className="login-label">
+          <label className="register-label">
             <span>
               Contraseña
               <span className="span-required">*</span>
             </span>
 
-            <div className="div-input">
+            <div className="register-password">
               <input
                 name="contrasenia"
                 type={showPassword ? "text" : "password"}
+                autoComplete="new-password"
               />
 
-              {/** <button
+              <button
                 type="button"
-                className="ojo"
+                className="register-password-toggle"
                 onClick={() => setShowPassword(!showPassword)}
+                aria-label={
+                  showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
+                }
               >
                 <i className={showPassword ? "bi bi-eye-slash" : "bi bi-eye"} />
-              </button> */}
+              </button>
             </div>
           </label>
-          <label className="login-label">
+
+          <label className="register-label">
             <span>
               Confirmar contraseña
               <span className="span-required">*</span>
             </span>
 
-            <div className="div-input">
+            <div className="register-password">
               <input
                 name="confirmarContrasenia"
                 type={showConfirmPassword ? "text" : "password"}
+                autoComplete="new-password"
               />
 
-              {/** <button
+              <button
                 type="button"
-                className="ojo"
+                className="register-password-toggle"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                aria-label={
+                  showConfirmPassword
+                    ? "Ocultar contraseña"
+                    : "Mostrar contraseña"
+                }
               >
                 <i
                   className={
                     showConfirmPassword ? "bi bi-eye-slash" : "bi bi-eye"
                   }
                 />
-              </button> */}
+              </button>
             </div>
           </label>
         </section>
 
-        <button className="btn-login" type="submit">
+        <button className="btn-register" type="submit">
           Crear cuenta
         </button>
       </form>
+
+      <div className="register-actions">
+        <p>
+          ¿Ya tienes una cuenta?
+          <span className="register-login-link" onClick={onLogin}>
+            Iniciar sesión
+          </span>
+        </p>
+      </div>
     </div>
   );
 }

@@ -4,10 +4,12 @@ import "./LoginForm.css";
 
 function LoginForm({ onRegister }) {
   const [showPassword, setShowPassword] = useState(false);
+
   const [error, setError] = useState("");
+
   const [formData, setFormData] = useState({
     email: "",
-    contasenia: "",
+    contrasenia: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -20,8 +22,6 @@ function LoginForm({ onRegister }) {
       [name]: value,
     });
 
-    // Si el usuario corrige el campo,
-    // eliminamos el error de ese campo.
     setErrors({
       ...errors,
       [name]: "",
@@ -33,23 +33,25 @@ function LoginForm({ onRegister }) {
 
     console.log("Datos del formulario:", formData);
 
-    // Más adelante acá vamos a:
+    // Más adelante:
     // 1. Validar los campos.
     // 2. Mostrar errores.
     // 3. Enviar los datos al backend.
     // 4. Mostrar loading.
     // 5. Mostrar success/error.
   }
+
   return (
     <div className="login-form">
-      <div className="login-header">
-        <img className="img" src={muniImage} alt="Logo dl municipio" />
-        <h2>Iniciar sesion</h2>
-        {/*<p>Entra con el correo que validaste y la contrasena que creaste para empezar a usar tu cuenta ciudadana.</p>*/}
-      </div>
-      <form className="admin-form">
+      <header className="login-header">
+        <img className="login-logo" src={muniImage} alt="Logo del municipio" />
+
+        <h2>Iniciar sesión</h2>
+      </header>
+
+      <form className="login-form-content" onSubmit={handleSubmit}>
         <label className="login-label">
-          <span>Correo electronico</span>
+          <span>Correo electrónico</span>
 
           <input
             className="login-input"
@@ -66,7 +68,6 @@ function LoginForm({ onRegister }) {
 
           <div className="div-input">
             <input
-              className="input  "
               name="contrasenia"
               type={showPassword ? "text" : "password"}
               autoComplete="off"
@@ -78,17 +79,26 @@ function LoginForm({ onRegister }) {
               type="button"
               className="ojo"
               onClick={() => setShowPassword(!showPassword)}
+              aria-label={
+                showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
+              }
             >
               <i className={showPassword ? "bi bi-eye-slash" : "bi bi-eye"} />
             </button>
           </div>
         </label>
-        {error && <span role="alert">{error}</span>}
+
+        {error && (
+          <span className="login-error" role="alert">
+            {error}
+          </span>
+        )}
 
         <button className="btn-login" type="submit">
           Ingresar
         </button>
-        <a className="pass" href="#">
+
+        <a className="pass" href="#" onClick={(e) => e.preventDefault()}>
           ¿Olvidaste tu contraseña?
         </a>
       </form>
@@ -97,7 +107,7 @@ function LoginForm({ onRegister }) {
         <p>
           ¿No tienes cuenta?
           <span className="link-button" onClick={onRegister}>
-            registrarse
+            Registrarse
           </span>
         </p>
       </div>
