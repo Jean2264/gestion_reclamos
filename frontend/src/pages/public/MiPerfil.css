@@ -1,0 +1,14 @@
+.mi-pefil {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 2rem;
+
+  background: #f1f6fe;
+  color: var(--blue-dark);
+
+  min-height: 100vh;
+  padding-top: 80px;
+  box-sizing: border-box;
+}

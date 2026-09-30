@@ -1,0 +1,440 @@
+/* =========================
+   OVERLAY
+========================= */
+
+.citizen-panel-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+
+  background: rgba(15, 23, 42, 0.18);
+
+  box-sizing: border-box;
+}
+
+/* =========================
+   PANEL
+========================= */
+
+.citizen-panel {
+  position: absolute;
+
+  top: 12px;
+  right: 16px;
+
+  display: flex;
+  flex-direction: column;
+
+  width: 390px;
+  max-width: calc(100vw - 32px);
+
+  min-height: 500px;
+  max-height: calc(100vh - 24px);
+
+  padding: 1.25rem;
+
+  box-sizing: border-box;
+
+  overflow: hidden;
+
+  border: 1px solid #dbeafe;
+  border-radius: 24px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 20px 45px rgba(15, 23, 42, 0.14),
+    0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+/* =========================
+   CERRAR
+========================= */
+
+.citizen-panel-close {
+  position: absolute;
+
+  top: 14px;
+  right: 14px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 34px;
+  height: 34px;
+
+  padding: 0;
+
+  border: none;
+  border-radius: 50%;
+
+  background: #f1f5f9;
+
+  color: #64748b;
+
+  font-size: 14px;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.citizen-panel-close:hover {
+  background: #e2e8f0;
+  color: #1e293b;
+  transform: scale(1.05);
+}
+
+.citizen-panel-close:active {
+  transform: scale(0.95);
+}
+
+/* =========================
+   PERFIL
+========================= */
+
+.citizen-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: 100%;
+
+  padding: 2rem 1rem 1.5rem;
+
+  box-sizing: border-box;
+}
+
+/* Avatar */
+
+.citizen-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 92px;
+  height: 92px;
+
+  margin-bottom: 1rem;
+
+  border: 4px solid #eff6ff;
+  border-radius: 50%;
+
+  background: #dbeafe;
+
+  color: var(--blue);
+
+  font-size: 38px;
+
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
+}
+
+/* Información */
+
+.citizen-profile-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 0.2rem;
+
+  width: 100%;
+
+  margin-bottom: 1rem;
+
+  text-align: center;
+}
+
+.citizen-profile-info h2 {
+  margin: 0;
+
+  color: var(--blue-dark);
+
+  font-size: 17px;
+  font-weight: 700;
+
+  line-height: 1.3;
+}
+
+.citizen-profile-info p {
+  margin: 0;
+
+  color: #64748b;
+
+  font-size: 13px;
+}
+
+/* Administrar perfil */
+
+.citizen-profile-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  max-width: 250px;
+  min-height: 42px;
+
+  padding: 0 20px;
+
+  border: 1px solid #bfdbfe;
+  border-radius: 12px;
+
+  background: #eff6ff;
+
+  color: var(--blue);
+
+  font-size: 13px;
+  font-weight: 700;
+
+  text-decoration: none;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.citizen-profile-button:hover {
+  border-color: #93c5fd;
+
+  background: #dbeafe;
+
+  transform: translateY(-1px);
+}
+
+.citizen-profile-button:active {
+  transform: translateY(0);
+}
+
+/* =========================
+   SEPARADOR
+========================= */
+
+.citizen-panel-divider {
+  width: 100%;
+  height: 1px;
+
+  background: #e2e8f0;
+}
+
+/* =========================
+   MENÚ
+========================= */
+
+.citizen-menu {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+
+  padding-top: 1rem;
+}
+
+/* Item */
+
+.citizen-menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+  min-height: 54px;
+
+  padding: 0 1rem;
+
+  box-sizing: border-box;
+
+  border: 1px solid transparent;
+  border-radius: 12px;
+
+  background: #f8fafc;
+
+  color: #334155;
+
+  text-decoration: none;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.citizen-menu-item:hover {
+  border-color: #dbeafe;
+
+  background: #eff6ff;
+
+  transform: translateX(2px);
+}
+
+/* Contenido izquierdo */
+
+.citizen-menu-item-content {
+  display: flex;
+  align-items: center;
+
+  gap: 0.75rem;
+}
+
+.citizen-menu-item-content i {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 32px;
+  height: 32px;
+
+  border-radius: 9px;
+
+  background: #dbeafe;
+
+  color: var(--blue);
+
+  font-size: 16px;
+}
+
+.citizen-menu-item-content span {
+  color: #334155;
+
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Flecha */
+
+.citizen-menu-item > i {
+  color: #64748b;
+
+  font-size: 14px;
+
+  transition: transform 0.2s ease;
+}
+
+.citizen-menu-item:hover > i {
+  color: var(--blue);
+
+  transform: translateX(2px);
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+.citizen-panel-footer {
+  margin-top: 1rem;
+}
+
+/* Cerrar sesión */
+
+.citizen-logout {
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+  min-height: 48px;
+
+  gap: 0.75rem;
+
+  padding: 0 1rem;
+
+  border: 1px solid transparent;
+  border-radius: 12px;
+
+  background: transparent;
+
+  color: #64748b;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.citizen-logout i {
+  font-size: 17px;
+}
+
+.citizen-logout:hover {
+  border-color: #fee2e2;
+
+  background: #fef2f2;
+
+  color: #dc2626;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+  .citizen-panel-overlay {
+    background: #ffffff;
+  }
+
+  .citizen-panel {
+    position: fixed;
+
+    inset: 0;
+
+    width: 100%;
+    max-width: none;
+
+    height: 100dvh;
+
+    min-height: 0;
+    max-height: none;
+
+    padding: 1rem;
+
+    border: none;
+    border-radius: 0;
+
+    box-shadow: none;
+  }
+
+  .citizen-panel-close {
+    top: 1rem;
+    right: 1rem;
+  }
+
+  .citizen-profile {
+    padding-top: 3.5rem;
+  }
+
+  .citizen-avatar {
+    width: 96px;
+    height: 96px;
+
+    font-size: 40px;
+  }
+
+  .citizen-profile-info h2 {
+    font-size: 18px;
+  }
+
+  .citizen-profile-button {
+    max-width: 280px;
+
+    min-height: 44px;
+  }
+
+  .citizen-menu-item {
+    min-height: 58px;
+  }
+}
