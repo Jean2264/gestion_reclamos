@@ -69,9 +69,17 @@ function AdminSidebar() {
             <i className="bi bi-person"></i>
           </div>
 
-          <div>
+          <div className="admin-sidebar-user-info">
             <strong>Administrador</strong>
-            <span>Panel administrativo</span>
+
+            <NavLink
+              to="/admin/perfil"
+              className={({ isActive }) =>
+                isActive ? "admin-profile-link active" : "admin-profile-link"
+              }
+            >
+              Administrar mi perfil
+            </NavLink>
           </div>
         </div>
       </div>

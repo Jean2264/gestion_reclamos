@@ -156,13 +156,30 @@
   font-size: 13px;
 }
 
-.admin-sidebar-user span {
-  display: block;
+.admin-profile-link {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
 
-  margin-top: 3px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #64748b;
 
-  color: #94a3b8;
-  font-size: 11px;
+  text-decoration: none;
+
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.admin-profile-link:hover {
+  color: #2563eb;
+  transform: translateX(2px);
+}
+
+.admin-profile-link.active {
+  color: #2563eb;
+  font-weight: 600;
 }
 
 @media (max-width: 768px) {
