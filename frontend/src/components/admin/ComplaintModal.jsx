@@ -107,6 +107,7 @@ function ComplaintModal({ reclamo, onClose }) {
                   <option value="ramas">Recolección de Ramas</option>
 
                   <option value="arbustos">Poda de Arbustos</option>
+                  <option value="otros">Otros...</option>
                 </select>
                 {hayCambios && (
                   <button

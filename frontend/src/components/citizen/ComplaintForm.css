@@ -335,7 +335,9 @@
 
 .complaint-declaration {
   width: 100%;
-
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
   padding: 1rem 1.25rem;
 
   box-sizing: border-box;

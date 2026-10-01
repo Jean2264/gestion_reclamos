@@ -10,6 +10,7 @@ function NuevoReclamo() {
       </header>
 
       <form className="nuevo-reclamo-form">
+        <section className="nuevo-reclamo-section"></section>
         <section className="nuevo-reclamo-section">
           <h2>Información personal del ciudadano</h2>
 

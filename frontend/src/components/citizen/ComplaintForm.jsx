@@ -8,6 +8,7 @@ function ComplaintForm() {
     altura: "",
     localidad: "",
     codigoPostal: "",
+    numeroPartida: "",
     descripcion: "",
   });
 
@@ -81,7 +82,21 @@ function ComplaintForm() {
             obligatorios.
           </p>
         </section>
+        <section className="complaint-section">
+          <label className="complaint-label">
+            <span className="label-text">
+              Numero de partida <span className="span-required">*</span>
+            </span>
 
+            <input
+              className="complaint-input"
+              type="text"
+              name="numeroPartida"
+              value={formData.numeroPartida}
+              onChange={handleChange}
+            />
+          </label>
+        </section>
         {/* ÁREA */}
         <section className="complaint-section">
           <h3>Área del reclamo</h3>
@@ -108,6 +123,7 @@ function ComplaintForm() {
               <option value="residuos">Recolección de Residuos</option>
               <option value="ramas">Recolección de Ramas</option>
               <option value="poda">Poda de Arbustos</option>
+              <option value="otros">Otros...</option>
             </select>
           </label>
         </section>
@@ -179,6 +195,36 @@ function ComplaintForm() {
                 type="text"
                 name="codigoPostal"
                 value={formData.codigoPostal}
+                onChange={handleChange}
+              />
+            </label>
+          </div>
+
+          <div className="complaint-row">
+            <label className="complaint-label">
+              <span className="label-text">
+                Entre calle 1 <span className="span-required">*</span>
+              </span>
+
+              <input
+                className="complaint-input"
+                type="text"
+                name="calle"
+                value={formData.calle}
+                onChange={handleChange}
+              />
+            </label>
+
+            <label className="complaint-label">
+              <span className="label-text">
+                Entre calle 2 <span className="span-required">*</span>
+              </span>
+
+              <input
+                className="complaint-input"
+                type="text"
+                name="altura"
+                value={formData.altura}
                 onChange={handleChange}
               />
             </label>
@@ -266,6 +312,11 @@ function ComplaintForm() {
               Declaro que la información proporcionada es verdadera y
               corresponde al reclamo que deseo realizar.
             </span>
+          </label>
+          <label className="declaration-label">
+            <input type="checkbox" />
+
+            <span>Declaro que mi estado tributario es al día.</span>
           </label>
         </div>
 
