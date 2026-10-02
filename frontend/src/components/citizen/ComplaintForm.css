@@ -89,6 +89,14 @@
   font-weight: 600;
 }
 
+.complaint-label .desc {
+  margin: -0.25rem 0 0;
+
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
 .label-text {
   display: block;
 }
@@ -139,6 +147,16 @@
   display: grid;
 
   grid-template-columns: 2fr 1fr;
+
+  gap: 1rem;
+
+  width: 100%;
+}
+
+.complaint-row-calles {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
 
   gap: 1rem;
 

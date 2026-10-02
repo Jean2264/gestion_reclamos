@@ -87,7 +87,9 @@ function ComplaintForm() {
             <span className="label-text">
               Numero de partida <span className="span-required">*</span>
             </span>
-
+            <p className="desc">
+              Ingrese el número de partida de la propiedad de residencia
+            </p>
             <input
               className="complaint-input"
               type="text"
@@ -165,7 +167,35 @@ function ComplaintForm() {
               />
             </label>
           </div>
+          <div className="complaint-row-calles">
+            <label className="complaint-label">
+              <span className="label-text">
+                Entre calle 1 <span className="span-required">*</span>
+              </span>
 
+              <input
+                className="complaint-input"
+                type="text"
+                name="calle"
+                value={formData.calle}
+                onChange={handleChange}
+              />
+            </label>
+
+            <label className="complaint-label">
+              <span className="label-text">
+                Entre calle 2 <span className="span-required">*</span>
+              </span>
+
+              <input
+                className="complaint-input"
+                type="text"
+                name="altura"
+                value={formData.altura}
+                onChange={handleChange}
+              />
+            </label>
+          </div>
           <div className="complaint-row">
             <label className="complaint-label">
               <span className="label-text">
@@ -195,36 +225,6 @@ function ComplaintForm() {
                 type="text"
                 name="codigoPostal"
                 value={formData.codigoPostal}
-                onChange={handleChange}
-              />
-            </label>
-          </div>
-
-          <div className="complaint-row">
-            <label className="complaint-label">
-              <span className="label-text">
-                Entre calle 1 <span className="span-required">*</span>
-              </span>
-
-              <input
-                className="complaint-input"
-                type="text"
-                name="calle"
-                value={formData.calle}
-                onChange={handleChange}
-              />
-            </label>
-
-            <label className="complaint-label">
-              <span className="label-text">
-                Entre calle 2 <span className="span-required">*</span>
-              </span>
-
-              <input
-                className="complaint-input"
-                type="text"
-                name="altura"
-                value={formData.altura}
                 onChange={handleChange}
               />
             </label>
@@ -308,15 +308,15 @@ function ComplaintForm() {
           <label className="declaration-label">
             <input type="checkbox" />
 
-            <span>
-              Declaro que la información proporcionada es verdadera y
-              corresponde al reclamo que deseo realizar.
-            </span>
+            <span>Declaro que mi estado tributario es al día.</span>
           </label>
           <label className="declaration-label">
             <input type="checkbox" />
 
-            <span>Declaro que mi estado tributario es al día.</span>
+            <span>
+              Declaro que la información proporcionada es verdadera y
+              corresponde al reclamo que deseo realizar.
+            </span>
           </label>
         </div>
 
