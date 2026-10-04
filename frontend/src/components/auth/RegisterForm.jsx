@@ -1,9 +1,28 @@
 import { useState } from "react";
 import "./RegisterForm.css";
+import PasswordStrength from "./PasswordStrength";
 
 function RegisterForm({ onLogin }) {
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const passwordsMatch =
+    confirmPassword.length > 0 &&
+    confirmPassword.length >= password.length &&
+    confirmPassword === password;
+
+  const passwordIsValid =
+    password.length >= 8 &&
+    password.length <= 50 &&
+    /[a-z]/.test(password) &&
+    /[A-Z]/.test(password) &&
+    /\d/.test(password) &&
+    /[!-/:-@[-`{-~]/.test(password);
+
+  const canRegister = passwordIsValid && passwordsMatch;
 
   return (
     <div className="register-form">
@@ -181,6 +200,8 @@ function RegisterForm({ onLogin }) {
               <input
                 name="contrasenia"
                 type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 autoComplete="new-password"
               />
 
@@ -195,6 +216,7 @@ function RegisterForm({ onLogin }) {
                 <i className={showPassword ? "bi bi-eye-slash" : "bi bi-eye"} />
               </button>
             </div>
+            <PasswordStrength value={password} />
           </label>
 
           <label className="register-label">
@@ -207,9 +229,10 @@ function RegisterForm({ onLogin }) {
               <input
                 name="confirmarContrasenia"
                 type={showConfirmPassword ? "text" : "password"}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
                 autoComplete="new-password"
               />
-
               <button
                 type="button"
                 className="register-password-toggle"
@@ -227,10 +250,22 @@ function RegisterForm({ onLogin }) {
                 />
               </button>
             </div>
+            {confirmPassword.length > 0 &&
+              confirmPassword.length >= password.length && (
+                <p
+                  className={
+                    passwordsMatch ? "password-match" : "password-mismatch"
+                  }
+                >
+                  {passwordsMatch
+                    ? "✓ Las contraseñas coinciden"
+                    : "Las contraseñas no coinciden"}
+                </p>
+              )}
           </label>
         </section>
 
-        <button className="btn-register" type="submit">
+        <button className="btn-register" type="submit" disabled={!canRegister}>
           Crear cuenta
         </button>
       </form>

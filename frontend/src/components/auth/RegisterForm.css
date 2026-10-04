@@ -47,7 +47,7 @@
   flex: 1;
   min-height: 0;
 
-  padding: 0 1rem 1rem;
+  padding: 0 0 5px;
 
   box-sizing: border-box;
 
@@ -283,6 +283,18 @@
 
 .btn-register:active {
   transform: translateY(0);
+}
+
+.btn-register:disabled {
+  background: #cbd5e1;
+  color: #64748b;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-register:disabled:hover {
+  background: #cbd5e1;
+  transform: none;
 }
 
 /* =========================
