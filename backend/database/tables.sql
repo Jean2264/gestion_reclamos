@@ -26,6 +26,9 @@ ALTER TABLE usuario
 ADD CONSTRAINT fk_usuario_rol_usuario
 FOREIGN KEY (id_rol) REFERENCES rol_usuario(id_rol)
 
+ALTER TABLE usuario
+ALTER COLUMN contrasenia TYPE VARCHAR(255);
+
 CREATE TABLE ciudadano
 (
 id_ciudadano SERIAL PRIMARY KEY,
