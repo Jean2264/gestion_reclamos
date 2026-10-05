@@ -44,6 +44,8 @@ codigo_postal VARCHAR(20) NOT NULL,
 id_usuario INTEGER
 )
 
+select * from ciudadano
+
 ALTER TABLE ciudadano
 ADD CONSTRAINT uq_ciudadano_usuario
 UNIQUE (id_usuario);

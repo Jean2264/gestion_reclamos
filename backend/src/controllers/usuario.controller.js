@@ -35,9 +35,19 @@ export async function registrar(req, res) {
 
     const resultado = await usuarioService.registrarUsuario(datosRegistro);
 
+    res.cookie("token", resultado.token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      maxAge: 8 * 60 * 60 * 1000,
+    });
+
     return res.status(201).json({
       message: "Usuario registrado correctamente",
-      data: resultado,
+      data: {
+        usuario: resultado.usuario,
+        ciudadano: resultado.ciudadano,
+      },
     });
   } catch (error) {
     console.error("Error al registrar usuario", error);

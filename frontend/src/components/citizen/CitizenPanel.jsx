@@ -1,10 +1,29 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useContext } from "react";
+
+import { AuthContext } from "../../context/AuthProvider";
 
 import "./citizenPanel.css";
 
 function CitizenPanel({ isOpen, onClose }) {
+  const { usuario, cerrarSesion } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   if (!isOpen) {
     return null;
+  }
+  const inicial = usuario?.ciudadano?.nombre?.charAt(0).toUpperCase();
+  async function handleCerrarSesion() {
+    console.log("CLICK EN CERRAR SESIÓN");
+    try {
+      await cerrarSesion();
+
+      navigate("/", {
+        replace: true,
+      });
+    } catch (error) {
+      console.error("Error al cerrar sesion:", error);
+    }
   }
 
   return (
@@ -20,12 +39,12 @@ function CitizenPanel({ isOpen, onClose }) {
         </button>
 
         <section className="citizen-profile">
-          <div className="citizen-avatar">
-            <i className="bi bi-person"></i>
-          </div>
+          <div className="citizen-avatar">{inicial}</div>
 
           <div className="citizen-profile-info">
-            <h2>Nombre del ciudadano</h2>
+            <h2>
+              {usuario?.ciudadano?.nombre} {usuario?.ciudadano?.apellido}
+            </h2>
             <p>Ciudadano</p>
           </div>
 
@@ -57,7 +76,11 @@ function CitizenPanel({ isOpen, onClose }) {
         </nav>
 
         <div className="citizen-panel-footer">
-          <button type="button" className="citizen-logout">
+          <button
+            type="button"
+            className="citizen-logout"
+            onClick={handleCerrarSesion}
+          >
             <i className="bi bi-box-arrow-right"></i>
 
             <span>Cerrar sesión</span>

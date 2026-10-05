@@ -1,8 +1,13 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/AuthProvider";
+
 import muniImage from "../../assets/escudo.png";
 import "./LoginForm.css";
 
 function LoginForm({ onRegister }) {
+  const { iniciarSesion, setIsAuthModalOpen } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
   const [error, setError] = useState("");
@@ -26,12 +31,23 @@ function LoginForm({ onRegister }) {
       ...errors,
       [name]: "",
     });
+    setError("");
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
+    setError("");
 
-    console.log("Datos del formulario:", formData);
+    try {
+      await iniciarSesion(formData.email, formData.contrasenia);
+
+      setIsAuthModalOpen(false);
+
+      navigate("/reclamo", { replace: true });
+    } catch (error) {
+      console.error("Error al iniciar sesion", error);
+      setError(error.message || "No se pudo inciar sesión.");
+    }
 
     // Más adelante:
     // 1. Validar los campos.

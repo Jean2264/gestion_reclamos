@@ -67,6 +67,84 @@
   width: 100%;
 }
 
+.profile-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  width: 100%;
+  padding: 1.25rem;
+
+  box-sizing: border-box;
+
+  border: 1px solid #dbeafe;
+  border-radius: 18px;
+
+  background: #ffffff;
+
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.05);
+}
+
+.profile-section-header {
+  display: flex;
+  align-items: center;
+
+  gap: 0.85rem;
+
+  padding-bottom: 0.25rem;
+}
+
+.profile-section-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  width: 42px;
+  height: 42px;
+
+  border-radius: 12px;
+
+  background: #eff6ff;
+
+  color: var(--blue);
+
+  font-size: 18px;
+}
+
+.profile-section-header h2 {
+  margin: 0;
+
+  color: var(--blue-dark);
+
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.profile-section-header p {
+  margin: 0.2rem 0 0;
+
+  color: #64748b;
+
+  font-size: 12px;
+}
+
+.profile-section-fields {
+  display: flex;
+  flex-direction: column;
+
+  gap: 0.75rem;
+}
+
+.profile-password-placeholder {
+  color: #1e293b;
+
+  font-size: 15px;
+  font-weight: 600;
+
+  letter-spacing: 2px;
+}
 /* =========================
    TARJETA
 ========================= */

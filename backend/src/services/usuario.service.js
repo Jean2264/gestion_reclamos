@@ -86,7 +86,14 @@ export async function registrarUsuario(datosRegistro) {
     // 10. Confirmar transacción
     await client.query("COMMIT");
 
+    const token = generarToken({
+      idUsuario: usuarioCreado.id_usuario,
+      idCiudadano: ciudadanoCreado.id_ciudadano,
+      idRol: usuarioCreado.id_rol,
+    });
+
     return {
+      token,
       usuario: usuarioCreado,
       ciudadano: ciudadanoCreado,
     };

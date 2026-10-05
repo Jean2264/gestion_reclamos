@@ -6,16 +6,16 @@ import Footer from "../../components/common/Footer";
 
 function MiPerfil() {
   const [formData, setFormData] = useState({
-    dni: "12.345.678",
-    nombre: "Jean",
-    apellido: "Paiva",
-    fechaNacimiento: "2005-01-22",
-    calle: "Av. Siempre Viva",
-    numero: "123",
-    localidad: "Alejandro Kor",
-    codigoPostal: "1000",
-    telefono: "11 1234-5678",
-    email: "jean@email.com",
+    dni: "",
+    nombre: "",
+    apellido: "",
+    fechaNacimiento: "",
+    calle: "",
+    numero: "",
+    localidad: "",
+    codigoPostal: "",
+    telefono: "",
+    email: "",
   });
 
   const [originalData, setOriginalData] = useState(formData);
@@ -23,13 +23,13 @@ function MiPerfil() {
   const [editing, setEditing] = useState({
     nombre: false,
     apellido: false,
+    fechaNacimiento: false,
     calle: false,
     numero: false,
     localidad: false,
     codigoPostal: false,
     telefono: false,
     email: false,
-    fechaNacimiento: false,
   });
 
   function handleChange(e) {
@@ -56,13 +56,13 @@ function MiPerfil() {
     setEditing({
       nombre: false,
       apellido: false,
+      fechaNacimiento: false,
       calle: false,
       numero: false,
       localidad: false,
       codigoPostal: false,
       telefono: false,
       email: false,
-      fechaNacimiento: false,
     });
   }
 
@@ -96,6 +96,8 @@ function MiPerfil() {
                 disabled={!editing[field]}
                 onChange={handleChange}
               >
+                <option value="">Seleccioná una localidad</option>
+
                 {options.map((option) => (
                   <option key={option} value={option}>
                     {option}
@@ -143,80 +145,152 @@ function MiPerfil() {
         </div>
 
         <div className="mi-perfil-sections">
-          {/* DNI */}
-          {renderField({
-            field: "dni",
-            label: "DNI",
-            icon: "bi-person-vcard",
-            editable: false,
-          })}
+          {/* =========================
+              INFORMACIÓN PERSONAL
+              ========================= */}
 
-          {/* Nombre */}
-          {renderField({
-            field: "nombre",
-            label: "Nombre",
-            icon: "bi-person",
-          })}
+          <section className="profile-section">
+            <div className="profile-section-header">
+              <div className="profile-section-icon">
+                <i className="bi bi-person"></i>
+              </div>
 
-          {/* Apellido */}
-          {renderField({
-            field: "apellido",
-            label: "Apellido",
-            icon: "bi-person",
-          })}
+              <div>
+                <h2>Información personal</h2>
+                <p>Datos personales del ciudadano.</p>
+              </div>
+            </div>
 
-          {/* Fecha de nacimiento */}
-          {renderField({
-            field: "fechaNacimiento",
-            label: "Fecha de nacimiento",
-            icon: "bi-calendar-event",
-            type: "date",
-          })}
+            <div className="profile-section-fields">
+              {renderField({
+                field: "dni",
+                label: "DNI",
+                icon: "bi-person-vcard",
+                editable: false,
+              })}
 
-          {/* Calle */}
-          {renderField({
-            field: "calle",
-            label: "Calle",
-            icon: "bi-signpost-2",
-          })}
+              {renderField({
+                field: "nombre",
+                label: "Nombre",
+                icon: "bi-person",
+              })}
 
-          {/* Número */}
-          {renderField({
-            field: "numero",
-            label: "Número",
-            icon: "bi-house",
-          })}
+              {renderField({
+                field: "apellido",
+                label: "Apellido",
+                icon: "bi-person",
+              })}
 
-          {/* Localidad */}
-          {renderField({
-            field: "localidad",
-            label: "Localidad",
-            icon: "bi-geo-alt",
-            type: "select",
-            options: ["Alejandro Korn", "San Vicente", "Domselar"],
-          })}
+              {renderField({
+                field: "fechaNacimiento",
+                label: "Fecha de nacimiento",
+                icon: "bi-calendar-event",
+                type: "date",
+              })}
 
-          {/* Código postal */}
-          {renderField({
-            field: "codigoPostal",
-            label: "Código postal",
-            icon: "bi-mailbox",
-          })}
+              {renderField({
+                field: "telefono",
+                label: "Teléfono",
+                icon: "bi-telephone",
+              })}
+            </div>
+          </section>
 
-          {/* Teléfono */}
-          {renderField({
-            field: "telefono",
-            label: "Teléfono",
-            icon: "bi-telephone",
-          })}
+          {/* =========================
+              DOMICILIO
+              ========================= */}
 
-          {/* Email */}
-          {renderField({
-            field: "email",
-            label: "Correo electrónico",
-            icon: "bi-envelope",
-            type: "email",
-          })}
+          <section className="profile-section">
+            <div className="profile-section-header">
+              <div className="profile-section-icon">
+                <i className="bi bi-house"></i>
+              </div>
+
+              <div>
+                <h2>Información de domicilio</h2>
+                <p>Datos correspondientes a tu domicilio.</p>
+              </div>
+            </div>
+
+            <div className="profile-section-fields">
+              {renderField({
+                field: "calle",
+                label: "Calle",
+                icon: "bi-signpost-2",
+              })}
+
+              {renderField({
+                field: "numero",
+                label: "Número",
+                icon: "bi-house",
+              })}
+
+              {renderField({
+                field: "localidad",
+                label: "Localidad",
+                icon: "bi-geo-alt",
+                type: "select",
+                options: ["Alejandro Korn", "San Vicente", "Domselaar"],
+              })}
+
+              {renderField({
+                field: "codigoPostal",
+                label: "Código postal",
+                icon: "bi-mailbox",
+              })}
+            </div>
+          </section>
+
+          {/* =========================
+              INFORMACIÓN DE CUENTA
+              ========================= */}
+
+          <section className="profile-section">
+            <div className="profile-section-header">
+              <div className="profile-section-icon">
+                <i className="bi bi-person-lock"></i>
+              </div>
+
+              <div>
+                <h2>Información de cuenta</h2>
+                <p>Datos asociados a tu cuenta ciudadana.</p>
+              </div>
+            </div>
+
+            <div className="profile-section-fields">
+              {renderField({
+                field: "email",
+                label: "Correo electrónico",
+                icon: "bi-envelope",
+                type: "email",
+              })}
+
+              <section className="profile-card">
+                <div className="profile-card-info">
+                  <div className="profile-card-icon">
+                    <i className="bi bi-key"></i>
+                  </div>
+
+                  <div className="profile-card-data">
+                    <span className="profile-card-label">Contraseña</span>
+
+                    <span className="profile-password-placeholder">
+                      ••••••••
+                    </span>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  className="profile-edit-button"
+                  onClick={() => console.log("Cambiar contraseña")}
+                  aria-label="Cambiar contraseña"
+                >
+                  <i className="bi bi-pencil"></i>
+                </button>
+              </section>
+            </div>
+          </section>
         </div>
 
         {hasChanges && (
@@ -232,6 +306,7 @@ function MiPerfil() {
           </div>
         )}
       </main>
+
       <Footer />
     </div>
   );
