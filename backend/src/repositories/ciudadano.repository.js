@@ -97,3 +97,26 @@ export async function buscarCiudadanoPorId(idCiudadano) {
 
   return result.rows[0] ?? null;
 }
+
+export async function miPerfil(idCiudadano) {
+  const resultado = await pool.query(
+    `
+      SELECT
+      c.id_ciudadano,
+      c.nombre,
+      c.apellido,
+      c.dni,
+      c.telefono,
+      c.fecha_nacimiento,
+      c.calle,
+      c.numero,
+      c.localidad,
+      c.codigo_postal,
+      u.email,
+      FROM ciudadano c 
+      INNER JOIN usuario u ON
+      c.id_usuario = u.id_usuario WHERE c.id_ciudadano= $1
+    `,
+    [idCiudadano],
+  );
+}

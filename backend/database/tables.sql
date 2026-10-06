@@ -41,14 +41,12 @@ calle VARCHAR(20) NOT NULL,
 numero VARCHAR(20) NOT NULL,
 localidad VARCHAR(50) NOT NULL,
 codigo_postal VARCHAR(20) NOT NULL,
-id_usuario INTEGER
+id_usuario INTEGER UNIQUE
 )
 
 select * from ciudadano
 
-ALTER TABLE ciudadano
-ADD CONSTRAINT uq_ciudadano_usuario
-UNIQUE (id_usuario);
+
 
 ALTER TABLE ciudadano
 ADD CONSTRAINT fk_ciudadano_usuario
