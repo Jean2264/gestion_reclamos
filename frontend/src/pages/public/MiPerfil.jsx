@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./MiPerfil.css";
 
 import Header from "../../components/common/Header";
 import Footer from "../../components/common/Footer";
+import * as cidudadanoService from "../../services/ciudadano.service.js";
 
 function MiPerfil() {
   const [formData, setFormData] = useState({

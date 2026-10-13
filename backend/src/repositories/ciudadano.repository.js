@@ -112,11 +112,12 @@ export async function miPerfil(idCiudadano) {
       c.numero,
       c.localidad,
       c.codigo_postal,
-      u.email,
+      u.email
       FROM ciudadano c 
       INNER JOIN usuario u ON
       c.id_usuario = u.id_usuario WHERE c.id_ciudadano= $1
     `,
     [idCiudadano],
   );
+  return resultado.rows[0] ?? null;
 }
