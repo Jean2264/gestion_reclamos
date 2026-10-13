@@ -35,6 +35,21 @@ export async function crearUsuario(email, contrasenia, idRol, client = pool) {
   return result.rows[0];
 }
 
+//actualizar email
+export async function actualizarEmailUsuario(idUsuario, email, client = pool) {
+  const resultado = await client.query(
+    `
+    UPDATE usuario
+    SET email= $1
+    WHERE id_usuario= $2
+    RETURNING id_usuario, email, id_rol
+    `,
+    [email, idUsuario],
+  );
+
+  return resultado.rows[0] ?? null;
+}
+
 export async function buscarUsuarioPorId(idUsuario) {
   const result = await pool.query(
     `

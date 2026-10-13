@@ -4,8 +4,13 @@ import "./MiPerfil.css";
 import Header from "../../components/common/Header";
 import Footer from "../../components/common/Footer";
 import * as cidudadanoService from "../../services/ciudadano.service.js";
+import { validarPerfil } from "../../validators/ciudadano.validator.js";
 
 function MiPerfil() {
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState("");
+  const [errores, setErrores] = useState({});
+
   const [formData, setFormData] = useState({
     dni: "",
     nombre: "",
@@ -40,6 +45,11 @@ function MiPerfil() {
       ...prev,
       [name]: value,
     }));
+
+    setErrores((prev) => ({
+      ...prev,
+      [name]: "",
+    }));
   }
 
   function handleEdit(field) {
@@ -49,22 +59,62 @@ function MiPerfil() {
     }));
   }
 
-  function handleSave() {
-    console.log("Datos guardados:", formData);
+  async function handleSave() {
+    // Validar los datos actuales del formulario.
+    const erroresValidacion = validarPerfil(formData);
 
-    setOriginalData(formData);
+    setErrores(erroresValidacion);
 
-    setEditing({
-      nombre: false,
-      apellido: false,
-      fechaNacimiento: false,
-      calle: false,
-      numero: false,
-      localidad: false,
-      codigoPostal: false,
-      telefono: false,
-      email: false,
-    });
+    // Si hay errores, no enviamos nada al backend.
+    if (Object.keys(erroresValidacion).length > 0) {
+      return;
+    }
+
+    try {
+      setError("");
+
+      const respuesta = await cidudadanoService.actualizarMiPerfil(formData);
+
+      // Actualizar la copia original solo si se guardó correctamente.
+      const perfil = respuesta.data;
+
+      const datosPerfil = {
+        dni: perfil.dni ?? "",
+        nombre: perfil.nombre ?? "",
+        apellido: perfil.apellido ?? "",
+        fechaNacimiento: perfil.fecha_nacimiento
+          ? String(perfil.fecha_nacimiento).slice(0, 10)
+          : "",
+        calle: perfil.calle ?? "",
+        numero: perfil.numero ?? "",
+        localidad: perfil.localidad ?? "",
+        codigoPostal: perfil.codigo_postal ?? "",
+        telefono: perfil.telefono ?? "",
+        email: perfil.email ?? "",
+      };
+
+      setFormData(datosPerfil);
+      setOriginalData(datosPerfil);
+
+      setEditing({
+        nombre: false,
+        apellido: false,
+        fechaNacimiento: false,
+        calle: false,
+        numero: false,
+        localidad: false,
+        codigoPostal: false,
+        telefono: false,
+        email: false,
+      });
+    } catch (error) {
+      setError(error.message || "No se pudo guardar el perfil");
+
+      // Si el backend devuelve errores por campo, también los mostramos.
+      if (error.errors) {
+        setErrores(error.errors);
+      }
+    }
   }
 
   const hasChanges = JSON.stringify(formData) !== JSON.stringify(originalData);
@@ -117,6 +167,7 @@ function MiPerfil() {
                 onChange={handleChange}
               />
             )}
+            {errores[field] && <p className="field-error">{errores[field]}</p>}
           </div>
         </div>
 
@@ -133,6 +184,44 @@ function MiPerfil() {
       </section>
     );
   }
+
+  //useEffect para mostrar los datos del ciudadano
+  useEffect(() => {
+    async function cargarPerfil() {
+      try {
+        setCargando(true);
+        setError("");
+
+        const respuesta = await cidudadanoService.miPerfil();
+
+        const perfil = respuesta.data;
+
+        const datosPerfil = {
+          dni: perfil.dni ?? "",
+          nombre: perfil.nombre ?? "",
+          apellido: perfil.apellido ?? "",
+          fechaNacimiento: perfil.fecha_nacimiento
+            ? String(perfil.fecha_nacimiento).slice(0, 10)
+            : "",
+          calle: perfil.calle ?? "",
+          numero: perfil.numero ?? "",
+          localidad: perfil.localidad ?? "",
+          codigoPostal: perfil.codigo_postal ?? "",
+          telefono: perfil.telefono ?? "",
+          email: perfil.email ?? "",
+        };
+
+        setFormData(datosPerfil);
+        setOriginalData(datosPerfil);
+      } catch (error) {
+        console.error("Error al cargar el perfil:", error);
+        setError(error.message || "No se pudo cargar el perfil");
+      } finally {
+        setCargando(false);
+      }
+    }
+    cargarPerfil();
+  }, []);
 
   return (
     <div className="mi-perfil">

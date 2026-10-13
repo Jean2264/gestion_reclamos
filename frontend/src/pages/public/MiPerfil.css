@@ -388,6 +388,11 @@
 .profile-save-button:active {
   transform: translateY(0);
 }
+.field-error {
+  color: #dc2626;
+  font-size: 0.8rem;
+  margin-top: 4px;
+}
 
 /* =========================
    MOBILE

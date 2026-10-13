@@ -36,3 +36,58 @@ export async function miPerfil(req, res) {
     });
   }
 }
+
+//actualizar datos
+export async function actualizarMiPerfil(req, res) {
+  try {
+    const { idCiudadano, idUsuario } = req.usuario;
+
+    if (!idCiudadano || !idUsuario) {
+      return res.status(403).json({
+        message: "La sesión no está asociada a un ciudadano",
+      });
+    }
+
+    const perfil = await ciudadanoService.actualizarMiPerfil(
+      idCiudadano,
+      idUsuario,
+      req.body,
+    );
+
+    return res.status(200).json({
+      message: "Perfil actualizado correctamente",
+      data: perfil,
+    });
+  } catch (error) {
+    console.error("Error al actualizar el perfil:", error);
+
+    if (error.statusCode === 400) {
+      return res.status(400).json({
+        message: error.message,
+        errors: error.details,
+      });
+    }
+
+    if (error.statusCode === 409 || error.code === "23505") {
+      return res.status(409).json({
+        message: "Ese email ya está registrado",
+        errors: {
+          email: "Elegí otra dirección de correo",
+        },
+      });
+    }
+
+    if (
+      error.message === "Ciudadano no encontrado" ||
+      error.message === "Usuario no encontrado"
+    ) {
+      return res.status(404).json({
+        message: error.message,
+      });
+    }
+
+    return res.status(500).json({
+      message: "Error interno al actualizar el perfil",
+    });
+  }
+}

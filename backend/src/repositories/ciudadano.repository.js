@@ -64,6 +64,53 @@ export async function crearCiudadano(datosCiudadano, client = pool) {
   return result.rows[0];
 }
 
+//actualizar perfil
+export async function actualizarDatosCiudadano(
+  idCiudadano,
+  datos,
+  client = pool,
+) {
+  const {
+    nombre,
+    apellido,
+    telefono,
+    fechaNacimiento,
+    calle,
+    numero,
+    localidad,
+    codigoPostal,
+  } = datos;
+
+  const resultado = await client.query(
+    `UPDATE ciudadano
+     SET nombre = $1,
+         apellido = $2,
+         telefono = $3,
+         fecha_nacimiento = $4,
+         calle = $5,
+         numero = $6,
+         localidad = $7,
+         codigo_postal = $8
+     WHERE id_ciudadano = $9
+     RETURNING id_ciudadano, nombre, apellido, dni,
+               telefono, fecha_nacimiento, calle,
+               numero, localidad, codigo_postal`,
+    [
+      nombre,
+      apellido,
+      telefono,
+      fechaNacimiento,
+      calle,
+      numero,
+      localidad,
+      codigoPostal,
+      idCiudadano,
+    ],
+  );
+
+  return resultado.rows[0] ?? null;
+}
+
 export async function buscarCiudadanoPorIdUsuario(idUsuario, client = pool) {
   const result = await client.query(
     `
