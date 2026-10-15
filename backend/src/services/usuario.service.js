@@ -187,3 +187,11 @@ export async function obtenerUsuarioActual(idUsuario, idCiudadano) {
     },
   };
 }
+
+export async function actualizarPassword(idUsuario, password) {
+  const contraseniaHash = await bcrypt.hash(password, 10);
+  return await usuarioRepository.actualizarPasswordUsuario(
+    idUsuario,
+    contraseniaHash,
+  );
+}

@@ -5,6 +5,7 @@ import Header from "../../components/common/Header";
 import Footer from "../../components/common/Footer";
 import * as cidudadanoService from "../../services/ciudadano.service.js";
 import { validarPerfil } from "../../validators/ciudadano.validator.js";
+import CambiarPassword from "../../components/perfil/CambiarPassword.jsx";
 
 function MiPerfil() {
   const [cargando, setCargando] = useState(true);
@@ -25,6 +26,7 @@ function MiPerfil() {
   });
 
   const [originalData, setOriginalData] = useState(formData);
+  const [isModalOpen, setisModalOpen] = useState(false);
 
   const [editing, setEditing] = useState({
     nombre: false,
@@ -37,6 +39,14 @@ function MiPerfil() {
     telefono: false,
     email: false,
   });
+
+  function handleModalOpen() {
+    setisModalOpen(true);
+  }
+
+  function handleModalClose() {
+    setisModalOpen(false);
+  }
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -373,7 +383,7 @@ function MiPerfil() {
                 <button
                   type="button"
                   className="profile-edit-button"
-                  onClick={() => console.log("Cambiar contraseña")}
+                  onClick={handleModalOpen}
                   aria-label="Cambiar contraseña"
                 >
                   <i className="bi bi-pencil"></i>
@@ -398,6 +408,8 @@ function MiPerfil() {
       </main>
 
       <Footer />
+
+      {isModalOpen && <CambiarPassword onClose={handleModalClose} />}
     </div>
   );
 }

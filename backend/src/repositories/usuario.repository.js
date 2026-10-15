@@ -50,6 +50,20 @@ export async function actualizarEmailUsuario(idUsuario, email, client = pool) {
   return resultado.rows[0] ?? null;
 }
 
+export async function actualizarPasswordUsuario(idUsuario, password) {
+  const result = await pool.query(
+    `
+    UPDATE usuario
+    SET contrasenia= $1
+    WHERE id_usuario= $2
+    RETURNING id_usuario, id_rol
+    `,
+    [password, idUsuario],
+  );
+
+  return result.rows[0] ?? null;
+}
+
 export async function buscarUsuarioPorId(idUsuario) {
   const result = await pool.query(
     `

@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { autenticar } from "../middleware/auth.middleware.js";
 import * as usuarioController from "../controllers/usuario.controller.js";
+import { verificarToken } from "../config/jwt.js";
 
 const router = Router();
 
@@ -13,5 +14,7 @@ router.post("/login", usuarioController.login);
 router.get("/me", autenticar, usuarioController.obtenerUsuarioActual);
 
 router.post("/logout", usuarioController.logout);
+
+router.patch("/password", autenticar, usuarioController.actualizarPassword);
 
 export default router;
