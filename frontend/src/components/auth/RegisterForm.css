@@ -145,6 +145,13 @@
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
 }
 
+.p-cp {
+  color: #64748b;
+  font-size: 12px;
+  margin-top: 3px;
+  font-weight: 200;
+}
+
 /* =========================
    NOMBRE / APELLIDO
    ========================= */
@@ -243,6 +250,18 @@
   cursor: pointer;
 }
 
+/* =========================
+   CAMPOS CON ERROR
+   ========================= */
+
+.register-input.input-error {
+  color: var(--blue-dark);
+}
+
+.register-error {
+  color: #a40f0f;
+  font-weight: 200;
+}
 .register-password-toggle:hover {
   background: #eff6ff;
 

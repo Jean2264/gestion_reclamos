@@ -39,6 +39,11 @@ function MiPerfil() {
     telefono: false,
     email: false,
   });
+  const codigosPostales = {
+    "alejandro-korn": "1864",
+    "san-vicente": "1865",
+    domselaar: "1984",
+  };
 
   function handleModalOpen() {
     setisModalOpen(true);
@@ -51,14 +56,25 @@ function MiPerfil() {
   function handleChange(e) {
     const { name, value } = e.target;
 
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => {
+      const nuevosDatos = {
+        ...prev,
+        [name]: value,
+      };
+
+      // Autocompletar el código postal según la localidad.
+      if (name === "localidad") {
+        nuevosDatos.codigoPostal =
+          codigosPostales[value.toLowerCase().replaceAll(" ", "-")] ?? "";
+      }
+
+      return nuevosDatos;
+    });
 
     setErrores((prev) => ({
       ...prev,
       [name]: "",
+      ...(name === "localidad" ? { codigoPostal: "" } : {}),
     }));
   }
 
@@ -88,6 +104,16 @@ function MiPerfil() {
       // Actualizar la copia original solo si se guardó correctamente.
       const perfil = respuesta.data;
 
+      const localidades = ["Alejandro Korn", "San Vicente", "Domselaar"];
+
+      const localidadRecibida = (perfil.localidad ?? "").trim();
+
+      const localidadNormalizada =
+        localidades.find(
+          (localidad) =>
+            localidad.toLowerCase() === localidadRecibida.toLowerCase(),
+        ) ?? "";
+
       const datosPerfil = {
         dni: perfil.dni ?? "",
         nombre: perfil.nombre ?? "",
@@ -97,8 +123,13 @@ function MiPerfil() {
           : "",
         calle: perfil.calle ?? "",
         numero: perfil.numero ?? "",
-        localidad: perfil.localidad ?? "",
-        codigoPostal: perfil.codigo_postal ?? "",
+        localidad: localidadNormalizada,
+        codigoPostal:
+          codigosPostales[
+            localidadNormalizada.toLowerCase().replaceAll(" ", "-")
+          ] ??
+          perfil.codigo_postal ??
+          "",
         telefono: perfil.telefono ?? "",
         email: perfil.email ?? "",
       };
@@ -113,7 +144,7 @@ function MiPerfil() {
         calle: false,
         numero: false,
         localidad: false,
-        codigoPostal: false,
+
         telefono: false,
         email: false,
       });
@@ -157,8 +188,6 @@ function MiPerfil() {
                 disabled={!editing[field]}
                 onChange={handleChange}
               >
-                <option value="">Seleccioná una localidad</option>
-
                 {options.map((option) => (
                   <option key={option} value={option}>
                     {option}
@@ -205,7 +234,18 @@ function MiPerfil() {
         const respuesta = await cidudadanoService.miPerfil();
 
         const perfil = respuesta.data;
+        const localidades = ["Alejandro Korn", "San Vicente", "Domselaar"];
 
+        const localidadRecibida = (perfil.localidad ?? "").trim();
+
+        const localidadNormalizada =
+          localidades.find(
+            (localidad) =>
+              localidad.toLowerCase() === localidadRecibida.toLowerCase(),
+          ) ?? "";
+
+        console.log("Perfil recibido:", perfil);
+        console.log("Localidad recibida:", perfil.localidad);
         const datosPerfil = {
           dni: perfil.dni ?? "",
           nombre: perfil.nombre ?? "",
@@ -215,7 +255,7 @@ function MiPerfil() {
             : "",
           calle: perfil.calle ?? "",
           numero: perfil.numero ?? "",
-          localidad: perfil.localidad ?? "",
+          localidad: localidadNormalizada,
           codigoPostal: perfil.codigo_postal ?? "",
           telefono: perfil.telefono ?? "",
           email: perfil.email ?? "",
@@ -337,6 +377,7 @@ function MiPerfil() {
                 field: "codigoPostal",
                 label: "Código postal",
                 icon: "bi-mailbox",
+                editable: false,
               })}
             </div>
           </section>
