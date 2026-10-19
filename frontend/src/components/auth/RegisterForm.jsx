@@ -43,6 +43,11 @@ function RegisterForm({ onLogin }) {
   const [errores, setErrores] = useState({});
   const [registrando, setRegistrando] = useState(false);
   const [errorRegistro, setErrorRegistro] = useState("");
+  const codigosPostales = {
+    "alejandro-korn": "1864",
+    "san-vicente": "1865",
+    domselaar: "1984",
+  };
 
   const hoy = new Date();
 
@@ -121,14 +126,23 @@ function RegisterForm({ onLogin }) {
   function handleChange(e) {
     const { name, value } = e.target;
 
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => {
+      const nuevosDatos = {
+        ...prev,
+        [name]: value,
+      };
+
+      if (name === "localidad") {
+        nuevosDatos.codigoPostal = codigosPostales[value] ?? "";
+      }
+
+      return nuevosDatos;
+    });
 
     setErrores((prev) => ({
       ...prev,
       [name]: "",
+      ...(name === "localidad" ? { codigoPostal: "" } : {}),
     }));
 
     setErrorRegistro("");
@@ -537,10 +551,7 @@ function RegisterForm({ onLogin }) {
                 autoComplete="postal-code"
                 maxLength={20}
               />
-
-              {errores.codigoPostal && (
-                <small className="register-error">{errores.codigoPostal}</small>
-              )}
+              <p className="p-cp">El cp se autocompleta</p>
             </label>
           </div>
         </section>
@@ -660,11 +671,7 @@ function RegisterForm({ onLogin }) {
 
         {/* BOTÓN */}
 
-        <button
-          className="btn-register"
-          type="submit"
-          disabled={!formularioValido || registrando}
-        >
+        <button className="btn-register" type="submit">
           {registrando ? (
             <>
               <span className="register-spinner"></span>
