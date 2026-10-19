@@ -19,21 +19,25 @@ function AuthProvider({ children }) {
 
     return data;
   }
+
   async function registrarUsuario(datosRegistro) {
     const data = await usuarioService.registrarUsuario(datosRegistro);
 
-    setUsuario(data.data);
+    // Recuperamos el usuario de la sesión recién iniciada.
+    await verificarSesion();
 
     return data;
   }
 
   async function verificarSesion() {
     try {
-      const data = await usuarioService.obtenerUsuarioActual();
-      console.log("DATOS DEL USUARIO:", data);
-      setUsuario(data.data);
+      const respuesta = await usuarioService.obtenerUsuarioActual();
+
+      setUsuario(respuesta.data);
+      return respuesta.data;
     } catch (error) {
       setUsuario(null);
+      throw error;
     } finally {
       setCargando(false);
     }
@@ -41,12 +45,13 @@ function AuthProvider({ children }) {
 
   async function cerrarSesion() {
     await usuarioService.cerrarSesion();
-
     setUsuario(null);
   }
 
   useEffect(() => {
-    verificarSesion();
+    verificarSesion().catch(() => {
+      // La sesión puede no existir al abrir la aplicación.
+    });
   }, []);
 
   return (
