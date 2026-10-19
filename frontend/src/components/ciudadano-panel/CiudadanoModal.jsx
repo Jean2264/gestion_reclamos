@@ -1,19 +1,189 @@
 import { useState } from "react";
 import "./CiudadanoModal.css";
+import * as usuarioService from "../../services/usuario.service.js";
 
 function CiudadanoModal({ onClose }) {
   const [formData, setFormData] = useState({
-    dni: "",
-    apellido: "",
     nombre: "",
+    apellido: "",
+    dni: "",
     telefono: "",
     email: "",
+    fechaNacimiento: "",
     calle: "",
     numero: "",
     localidad: "",
     codigoPostal: "",
-    estadoTributario: "",
   });
+
+  const [errores, setErrores] = useState({});
+  const [registrando, setRegistrando] = useState(false);
+  const [errorRegistro, setErrorRegistro] = useState("");
+  const [password, setPassword] = useState("");
+  const hoy = new Date();
+
+  const fechaMaximaNacimiento = new Date(
+    hoy.getFullYear() - 18,
+    hoy.getMonth(),
+    hoy.getDate(),
+  );
+
+  const fechaMaximaNacimientoString = fechaMaximaNacimiento
+    .toISOString()
+    .split("T")[0];
+
+  const fechaNacimientoValida =
+    formData.fechaNacimiento !== "" &&
+    new Date(`${formData.fechaNacimiento}T00:00:00`) <= fechaMaximaNacimiento;
+
+  const nombreValido =
+    formData.nombre.trim().length > 0 &&
+    /^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+$/.test(formData.nombre);
+
+  const apellidoValido =
+    formData.apellido.trim().length > 0 &&
+    /^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+$/.test(formData.apellido);
+
+  const dniValido = /^\d{8}$/.test(formData.dni);
+
+  const telefonoValido =
+    formData.telefono.trim().length > 0 &&
+    formData.telefono.length <= 30 &&
+    /^[0-9+\-()\s]+$/.test(formData.telefono);
+
+  const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email);
+
+  const calleValida = formData.calle.trim().length > 0;
+
+  const numeroValido = formData.numero.trim().length > 0;
+
+  const localidadValida = formData.localidad !== "";
+
+  const codigoPostalValido = formData.codigoPostal.trim().length > 0;
+
+  const formularioValido =
+    nombreValido &&
+    apellidoValido &&
+    dniValido &&
+    telefonoValido &&
+    emailValido &&
+    fechaNacimientoValida &&
+    calleValida &&
+    numeroValido &&
+    localidadValida &&
+    codigoPostalValido;
+
+  function handleChange(e) {
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    setErrores((prev) => ({
+      ...prev,
+      [name]: "",
+    }));
+
+    setErrorRegistro("");
+  }
+
+  // =========================
+  // VALIDACIÓN COMPLETA
+  // =========================
+
+  function validarFormulario() {
+    const nuevosErrores = {};
+
+    if (!formData.nombre.trim()) {
+      nuevosErrores.nombre = "El nombre es obligatorio.";
+    } else if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+$/.test(formData.nombre)) {
+      nuevosErrores.nombre = "El nombre solo puede contener letras y espacios.";
+    }
+
+    if (!formData.apellido.trim()) {
+      nuevosErrores.apellido = "El apellido es obligatorio.";
+    } else if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+$/.test(formData.apellido)) {
+      nuevosErrores.apellido =
+        "El apellido solo puede contener letras y espacios.";
+    }
+
+    if (!formData.dni) {
+      nuevosErrores.dni = "El DNI es obligatorio.";
+    } else if (!/^\d{8}$/.test(formData.dni)) {
+      nuevosErrores.dni = "El DNI debe contener exactamente 8 números.";
+    }
+
+    if (!formData.fechaNacimiento) {
+      nuevosErrores.fechaNacimiento = "La fecha de nacimiento es obligatoria.";
+    } else if (!fechaNacimientoValida) {
+      nuevosErrores.fechaNacimiento = "Debés tener al menos 18 años.";
+    }
+
+    if (!formData.telefono.trim()) {
+      nuevosErrores.telefono = "El teléfono es obligatorio.";
+    } else if (!/^[0-9+\-()\s]+$/.test(formData.telefono)) {
+      nuevosErrores.telefono = "El teléfono contiene caracteres no permitidos.";
+    } else if (formData.telefono.length > 30) {
+      nuevosErrores.telefono =
+        "El teléfono no puede superar los 30 caracteres.";
+    }
+
+    if (!formData.email.trim()) {
+      nuevosErrores.email = "El correo electrónico es obligatorio.";
+    } else if (!emailValido) {
+      nuevosErrores.email = "Ingresá un correo electrónico válido.";
+    }
+
+    if (!formData.calle.trim()) {
+      nuevosErrores.calle = "La calle es obligatoria.";
+    }
+
+    if (!formData.numero.trim()) {
+      nuevosErrores.numero = "El número de domicilio es obligatorio.";
+    }
+
+    if (!formData.localidad) {
+      nuevosErrores.localidad = "Seleccioná una localidad.";
+    }
+
+    if (!formData.codigoPostal.trim()) {
+      nuevosErrores.codigoPostal = "El código postal es obligatorio.";
+    }
+
+    setErrores(nuevosErrores);
+
+    return Object.keys(nuevosErrores).length === 0;
+  }
+
+  //Registro//
+  async function handleSubmit(e) {
+    e.preventDefault();
+
+    setErrorRegistro("");
+
+    const formularioEsValido = validarFormulario();
+
+    if (!formularioEsValido) {
+      return;
+    }
+
+    try {
+      setRegistrando(true);
+
+      await usuarioService.registrarUsuario({
+        ...formData,
+        contrasenia: password,
+      });
+    } catch (error) {
+      console.error("Error al registrar ciudadano: ", error);
+
+      setErrorRegistro(error.message || "No se pudo crear la cuenta.");
+    } finally {
+      setRegistrando(false);
+    }
+  }
   return (
     <div className="ciudadano-modal-overlay" onClick={onClose}>
       <section
@@ -50,11 +220,32 @@ function CiudadanoModal({ onClose }) {
               </span>
 
               <input
-                className="ciudadano-input"
+                className={`ciudadano-input ${errores.dni ? "input-error" : ""}`}
                 name="dni"
                 type="text"
+                value={formData.dni}
                 autoComplete="off"
+                maxLength={8}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/\D/g, "");
+
+                  if (value.length <= 8) {
+                    setFormData((prev) => ({
+                      ...prev,
+                      dni: value,
+                    }));
+
+                    setErrores((prev) => ({
+                      ...prev,
+                      dni: "",
+                    }));
+                  }
+                }}
               />
+
+              {errores.dni && (
+                <small className="registrar-error">{errores.dni}</small>
+              )}
             </label>
 
             <div className="ciudadano-modal-row">
@@ -65,11 +256,18 @@ function CiudadanoModal({ onClose }) {
                 </span>
 
                 <input
-                  className="ciudadano-input"
+                  className={`ciudadano-input ${errores.apellido ? "input-error" : ""}`}
                   name="apellido"
                   type="text"
+                  value={formData.apellido}
+                  maxLength={100}
+                  handleChange={handleChange}
                   autoComplete="off"
                 />
+
+                {errores.apellido && (
+                  <small className="registrar-error">{errores.apellido}</small>
+                )}
               </label>
 
               <label className="ciudadano-label">
@@ -79,11 +277,17 @@ function CiudadanoModal({ onClose }) {
                 </span>
 
                 <input
-                  className="ciudadano-input"
+                  className={`ciudadano-input ${errores.nombre ? "input-error" : ""}`}
                   name="nombre"
                   type="text"
+                  value={formData.nombre}
+                  maxLength={100}
+                  handleChange={handleChange}
                   autoComplete="off"
                 />
+                {errores.nombre && (
+                  <small className="registrar-error">{errores.nombre}</small>
+                )}
               </label>
             </div>
 
@@ -94,11 +298,33 @@ function CiudadanoModal({ onClose }) {
               </span>
 
               <input
-                className="ciudadano-input"
+                className={`ciudadano-input ${errores.nombre ? "input-error" : ""}`}
                 name="telefono"
+                value={formData.telefono}
                 type="text"
-                autoComplete="off"
+                autoComplete="tel"
+                onChange={(e) => {
+                  const value = e.target.value;
+
+                  if (/^[0-9+\-()\s]*$/.test(value) && value.length <= 30) {
+                    setFormData((prev) => ({
+                      ...prev,
+                      telefono: value,
+                    }));
+
+                    setErrores((prev) => ({
+                      ...prev,
+                      telefono: "",
+                    }));
+                  }
+                }}
+                maxLength={30}
+                placeholder="+54 9 11 1234-5678"
               />
+
+              {errores.telefono && (
+                <small className="register-error">{errores.dni}</small>
+              )}
             </label>
 
             <label className="ciudadano-label">
@@ -108,9 +334,11 @@ function CiudadanoModal({ onClose }) {
               </span>
 
               <input
-                className="ciudadano-input"
+                className={`ciudadano-input ${errores.nombre ? "input-error" : ""}`}
                 name="email"
                 type="email"
+                value={formData.email}
+                maxLength={50}
                 autoComplete="off"
               />
             </label>
