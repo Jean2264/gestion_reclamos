@@ -108,16 +108,16 @@ export async function registrarUsuario(datosRegistro) {
   }
 }
 
-export async function iniciarSesion(email, contrasenia) {
-  //1. busco al user por el email
 
+export async function iniciarSesion(email, contrasenia) {
+  // 1. Buscar usuario por email
   const usuario = await usuarioRepository.bucarUsuarioPorEmail(email);
 
   if (!usuario) {
     throw new Error("Email o contraseña incorrectos");
   }
 
-  //2. comparo las conrasenias
+  // 2. Validar contraseña
   const contraseniaCorrecta = await bcrypt.compare(
     contrasenia,
     usuario.contrasenia,
@@ -127,23 +127,20 @@ export async function iniciarSesion(email, contrasenia) {
     throw new Error("Email o contraseña incorrectos");
   }
 
-  //3. buscar ciudadano asociado
-  const ciudadano = await ciudadanoRepository.buscarCiudadanoPorIdUsuario(
-    usuario.id_usuario,
-  );
+  // 3. Buscar ciudadano asociado, si existe
+  const ciudadano =
+    await ciudadanoRepository.buscarCiudadanoPorIdUsuario(
+      usuario.id_usuario,
+    );
 
-  if (!ciudadano) {
-    throw new Error("El usuario no cuenta con un ciudadano asociado.");
-  }
-
-  // generamos token jwt
+  // 4. Generar JWT para cualquier usuario autenticado
   const token = generarToken({
     idUsuario: usuario.id_usuario,
-    idCiudadano: ciudadano.id_ciudadano,
+    idCiudadano: ciudadano?.id_ciudadano ?? null,
     idRol: usuario.id_rol,
   });
 
-  //5. devolver informacion necesaria
+  // 5. Devolver los datos de la sesión
   return {
     token,
     usuario: {
@@ -151,42 +148,56 @@ export async function iniciarSesion(email, contrasenia) {
       email: usuario.email,
       id_rol: usuario.id_rol,
     },
-    ciudadano: {
-      id_ciudadano: ciudadano.id_ciudadano,
-      id_usuario: ciudadano.id_usuario,
-      nombre: ciudadano.nombre,
-      apellido: ciudadano.apellido,
-    },
+    ciudadano: ciudadano
+      ? {
+          id_ciudadano: ciudadano.id_ciudadano,
+          id_usuario: ciudadano.id_usuario,
+          nombre: ciudadano.nombre,
+          apellido: ciudadano.apellido,
+        }
+      : null,
   };
 }
 
+
+
 export async function obtenerUsuarioActual(idUsuario, idCiudadano) {
+  // 1. Buscar el usuario autenticado
   const usuario = await usuarioRepository.buscarUsuarioPorId(idUsuario);
 
   if (!usuario) {
     throw new Error("Usuario no encontrado");
   }
 
-  const ciudadano = await ciudadanoRepository.buscarCiudadanoPorId(idCiudadano);
+  // 2. Buscar el ciudadano solo si tiene uno asociado
+  let ciudadano = null;
 
-  if (!ciudadano) {
-    throw new Error("Ciudadano no encontrado");
+  if (idCiudadano != null) {
+    ciudadano = await ciudadanoRepository.buscarCiudadanoPorId(idCiudadano);
+
+    if (!ciudadano) {
+      throw new Error("Ciudadano no encontrado");
+    }
   }
 
+  // 3. Devolver los datos públicos de la sesión
   return {
     usuario: {
       id_usuario: usuario.id_usuario,
       email: usuario.email,
       id_rol: usuario.id_rol,
     },
-    ciudadano: {
-      id_ciudadano: ciudadano.id_ciudadano,
-      id_usuario: ciudadano.id_usuario,
-      nombre: ciudadano.nombre,
-      apellido: ciudadano.apellido,
-    },
+    ciudadano: ciudadano
+      ? {
+          id_ciudadano: ciudadano.id_ciudadano,
+          id_usuario: ciudadano.id_usuario,
+          nombre: ciudadano.nombre,
+          apellido: ciudadano.apellido,
+        }
+      : null,
   };
 }
+
 
 export async function actualizarPassword(idUsuario, password) {
   const contraseniaHash = await bcrypt.hash(password, 10);

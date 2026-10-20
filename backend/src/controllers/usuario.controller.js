@@ -1,6 +1,29 @@
 import e from "express";
 import * as usuarioService from "../services/usuario.service.js";
 
+
+function establecerCookieSesion(res, token) {
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    // Sin maxAge ni expires:
+    // cookie de sesión del navegador.
+  });
+}
+
+function eliminarCookieSesion(res) {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+  });
+}
+
+
+
 export async function obtenerUsuario(req, res) {
   try {
     const { email } = req.query;
@@ -19,7 +42,9 @@ export async function obtenerUsuario(req, res) {
       });
     }
 
-    return res.status(200).json(usuario);
+    const { contrasenia, ...usuarioSeguro } = usuario;
+
+return res.status(200).json(usuarioSeguro);
   } catch (error) {
     console.error("Error al obtener usuario", error);
 
@@ -35,13 +60,7 @@ export async function registrar(req, res) {
 
     const resultado = await usuarioService.registrarUsuario(datosRegistro);
 
-    res.cookie("token", resultado.token, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "lax",
-      maxAge: 8 * 60 * 60 * 1000,
-    });
-
+    establecerCookieSesion(res, resultado.token);
     return res.status(201).json({
       message: "Usuario registrado correctamente",
       data: {
@@ -72,12 +91,7 @@ export async function login(req, res) {
     const resultado = await usuarioService.iniciarSesion(email, contrasenia);
 
     //guardarmos el token en una cookie "que ricooo"
-    res.cookie("token", resultado.token, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "lax",
-      maxAge: 8 * 60 * 60 * 1000,
-    });
+    establecerCookieSesion(res, resultado.token);
 
     return res.status(200).json({
       message: "Inicio de sesión correcto",
@@ -151,7 +165,7 @@ export async function actualizarPassword(req, res) {
 }
 
 export async function logout(req, res) {
-  res.clearCookie("token");
+  eliminarCookieSesion(res);
 
   return res.status(200).json({
     message: "Sesión cerrada correctamente",

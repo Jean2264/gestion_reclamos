@@ -1,422 +1,535 @@
-import { useState } from "react";
+
+import { useMemo, useState } from "react";
+
 import "./CiudadanoModal.css";
-import * as usuarioService from "../../services/usuario.service.js";
+//import { crearCiudadano } from "../../services/ciudadano.service";
 
-function CiudadanoModal({ onClose }) {
-  const [formData, setFormData] = useState({
-    nombre: "",
-    apellido: "",
-    dni: "",
-    telefono: "",
-    email: "",
-    fechaNacimiento: "",
-    calle: "",
-    numero: "",
-    localidad: "",
-    codigoPostal: "",
-  });
+const CODIGOS_POSTALES = {
+  "alejandro-korn": "1864",
+  "san-vicente": "1865",
+  domselaar: "1984",
+};
 
-  const [errores, setErrores] = useState({});
-  const [registrando, setRegistrando] = useState(false);
-  const [errorRegistro, setErrorRegistro] = useState("");
-  const [password, setPassword] = useState("");
-  const hoy = new Date();
+const LOCALIDADES = [
+  { value: "alejandro-korn", label: "Alejandro Korn" },
+  { value: "san-vicente", label: "San Vicente" },
+  { value: "domselaar", label: "Domselaar" },
+];
 
-  const fechaMaximaNacimiento = new Date(
-    hoy.getFullYear() - 18,
-    hoy.getMonth(),
-    hoy.getDate(),
-  );
+const FORMULARIO_INICIAL = {
+  nombre: "",
+  apellido: "",
+  dni: "",
+  telefono: "",
+  email: "",
+  fechaNacimiento: "",
+  calle: "",
+  numero: "",
+  localidad: "",
+  codigoPostal: "",
+};
 
-  const fechaMaximaNacimientoString = fechaMaximaNacimiento
-    .toISOString()
-    .split("T")[0];
+function validarCampo(nombre, valor) {
+  const texto = String(valor ?? "").trim();
 
-  const fechaNacimientoValida =
-    formData.fechaNacimiento !== "" &&
-    new Date(`${formData.fechaNacimiento}T00:00:00`) <= fechaMaximaNacimiento;
+  switch (nombre) {
+    case "nombre":
+    case "apellido":
+      if (!texto) return "Este campo es obligatorio.";
+      if (!/^[\p{L}\s'-]+$/u.test(texto)) {
+        return "Ingresá un nombre válido.";
+      }
+      if (texto.length < 2 || texto.length > 100) {
+        return "Debe tener entre 2 y 100 caracteres.";
+      }
+      return "";
 
-  const nombreValido =
-    formData.nombre.trim().length > 0 &&
-    /^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+$/.test(formData.nombre);
+    case "dni":
+      if (!texto) return "El DNI es obligatorio.";
+      if (!/^\d{8}$/.test(texto)) {
+        return "El DNI debe contener exactamente 8 números.";
+      }
+      return "";
 
-  const apellidoValido =
-    formData.apellido.trim().length > 0 &&
-    /^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+$/.test(formData.apellido);
+    case "telefono":
+      if (!texto) return "El teléfono es obligatorio.";
+      if (!/^[0-9+()\s-]{8,20}$/.test(texto)) {
+        return "Ingresá un teléfono válido.";
+      }
+      return "";
 
-  const dniValido = /^\d{8}$/.test(formData.dni);
+    case "email":
+      if (!texto) return "El correo electrónico es obligatorio.";
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(texto)) {
+        return "Ingresá un correo electrónico válido.";
+      }
+      if (texto.length > 50) {
+        return "El correo no puede superar los 50 caracteres.";
+      }
+      return "";
 
-  const telefonoValido =
-    formData.telefono.trim().length > 0 &&
-    formData.telefono.length <= 30 &&
-    /^[0-9+\-()\s]+$/.test(formData.telefono);
+    case "fechaNacimiento": {
+      if (!texto) return "La fecha de nacimiento es obligatoria.";
 
-  const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email);
+      const fecha = new Date(`${texto}T00:00:00`);
+      if (Number.isNaN(fecha.getTime())) {
+        return "Ingresá una fecha válida.";
+      }
 
-  const calleValida = formData.calle.trim().length > 0;
+      const hoy = new Date();
+      const minimo = new Date(
+        hoy.getFullYear() - 18,
+        hoy.getMonth(),
+        hoy.getDate()
+      );
 
-  const numeroValido = formData.numero.trim().length > 0;
+      if (fecha > minimo) {
+        return "El ciudadano debe tener al menos 18 años.";
+      }
 
-  const localidadValida = formData.localidad !== "";
+      if (fecha > hoy) return "La fecha no puede ser futura.";
+      return "";
+    }
 
-  const codigoPostalValido = formData.codigoPostal.trim().length > 0;
+    case "calle":
+      if (!texto) return "La calle es obligatoria.";
+      if (texto.length > 20) {
+        return "La calle no puede superar los 20 caracteres.";
+      }
+      return "";
 
-  const formularioValido =
-    nombreValido &&
-    apellidoValido &&
-    dniValido &&
-    telefonoValido &&
-    emailValido &&
-    fechaNacimientoValida &&
-    calleValida &&
-    numeroValido &&
-    localidadValida &&
-    codigoPostalValido;
+    case "numero":
+      if (!texto) return "El número de domicilio es obligatorio.";
+      if (texto.length > 20) {
+        return "El número no puede superar los 20 caracteres.";
+      }
+      return "";
 
-  function handleChange(e) {
-    const { name, value } = e.target;
+    case "localidad":
+      if (!texto) return "Seleccioná una localidad.";
+      if (!CODIGOS_POSTALES[texto]) {
+        return "Seleccioná una localidad válida.";
+      }
+      return "";
 
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    case "codigoPostal":
+      if (!texto) return "El código postal es obligatorio.";
+      return "";
 
-    setErrores((prev) => ({
-      ...prev,
-      [name]: "",
-    }));
-
-    setErrorRegistro("");
+    default:
+      return "";
   }
+}
 
-  // =========================
-  // VALIDACIÓN COMPLETA
-  // =========================
+export default function CiudadanoModal({ onClose, onCreated }) {
+  const [formData, setFormData] = useState(FORMULARIO_INICIAL);
+  const [errores, setErrores] = useState({});
+  const [errorGeneral, setErrorGeneral] = useState("");
+  const [registrando, setRegistrando] = useState(false);
+  const [intentoEnviar, setIntentoEnviar] = useState(false);
+
+  const fechaMaxima = useMemo(() => {
+    const hoy = new Date();
+    const fecha = new Date(
+      hoy.getFullYear() - 18,
+      hoy.getMonth(),
+      hoy.getDate()
+    );
+
+    const mes = String(fecha.getMonth() + 1).padStart(2, "0");
+    const dia = String(fecha.getDate()).padStart(2, "0");
+
+    return `${fecha.getFullYear()}-${mes}-${dia}`;
+  }, []);
+
+  function handleChange(event) {
+    const { name, value } = event.target;
+
+    setErrorGeneral("");
+
+    setFormData((previo) => {
+      const actualizado = {
+        ...previo,
+        [name]: value,
+      };
+
+      if (name === "localidad") {
+        actualizado.codigoPostal = CODIGOS_POSTALES[value] ?? "";
+      }
+
+      return actualizado;
+    });
+
+    setErrores((previo) => ({
+      ...previo,
+      [name]: "",
+      ...(name === "localidad" ? { codigoPostal: "" } : {}),
+    }));
+  }
 
   function validarFormulario() {
     const nuevosErrores = {};
 
-    if (!formData.nombre.trim()) {
-      nuevosErrores.nombre = "El nombre es obligatorio.";
-    } else if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+$/.test(formData.nombre)) {
-      nuevosErrores.nombre = "El nombre solo puede contener letras y espacios.";
-    }
-
-    if (!formData.apellido.trim()) {
-      nuevosErrores.apellido = "El apellido es obligatorio.";
-    } else if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+$/.test(formData.apellido)) {
-      nuevosErrores.apellido =
-        "El apellido solo puede contener letras y espacios.";
-    }
-
-    if (!formData.dni) {
-      nuevosErrores.dni = "El DNI es obligatorio.";
-    } else if (!/^\d{8}$/.test(formData.dni)) {
-      nuevosErrores.dni = "El DNI debe contener exactamente 8 números.";
-    }
-
-    if (!formData.fechaNacimiento) {
-      nuevosErrores.fechaNacimiento = "La fecha de nacimiento es obligatoria.";
-    } else if (!fechaNacimientoValida) {
-      nuevosErrores.fechaNacimiento = "Debés tener al menos 18 años.";
-    }
-
-    if (!formData.telefono.trim()) {
-      nuevosErrores.telefono = "El teléfono es obligatorio.";
-    } else if (!/^[0-9+\-()\s]+$/.test(formData.telefono)) {
-      nuevosErrores.telefono = "El teléfono contiene caracteres no permitidos.";
-    } else if (formData.telefono.length > 30) {
-      nuevosErrores.telefono =
-        "El teléfono no puede superar los 30 caracteres.";
-    }
-
-    if (!formData.email.trim()) {
-      nuevosErrores.email = "El correo electrónico es obligatorio.";
-    } else if (!emailValido) {
-      nuevosErrores.email = "Ingresá un correo electrónico válido.";
-    }
-
-    if (!formData.calle.trim()) {
-      nuevosErrores.calle = "La calle es obligatoria.";
-    }
-
-    if (!formData.numero.trim()) {
-      nuevosErrores.numero = "El número de domicilio es obligatorio.";
-    }
-
-    if (!formData.localidad) {
-      nuevosErrores.localidad = "Seleccioná una localidad.";
-    }
-
-    if (!formData.codigoPostal.trim()) {
-      nuevosErrores.codigoPostal = "El código postal es obligatorio.";
-    }
+    Object.entries(formData).forEach(([campo, valor]) => {
+      const error = validarCampo(campo, valor);
+      if (error) nuevosErrores[campo] = error;
+    });
 
     setErrores(nuevosErrores);
-
     return Object.keys(nuevosErrores).length === 0;
   }
 
-  //Registro//
-  async function handleSubmit(e) {
-    e.preventDefault();
+  async function handleSubmit(event) {
+    event.preventDefault();
 
-    setErrorRegistro("");
+    if (registrando) return;
 
-    const formularioEsValido = validarFormulario();
+    setIntentoEnviar(true);
+    setErrorGeneral("");
 
-    if (!formularioEsValido) {
-      return;
-    }
+    if (!validarFormulario()) return;
+
+    setRegistrando(true);
 
     try {
-      setRegistrando(true);
-
-      await usuarioService.registrarUsuario({
+      const datosCiudadano = {
         ...formData,
-        contrasenia: password,
-      });
-    } catch (error) {
-      console.error("Error al registrar ciudadano: ", error);
+        nombre: formData.nombre.trim(),
+        apellido: formData.apellido.trim(),
+        dni: formData.dni.trim(),
+        telefono: formData.telefono.trim(),
+        email: formData.email.trim().toLowerCase(),
+        calle: formData.calle.trim(),
+        numero: formData.numero.trim(),
+        localidad: formData.localidad,
+        codigoPostal: formData.codigoPostal,
+      };
 
-      setErrorRegistro(error.message || "No se pudo crear la cuenta.");
+      // El backend generará la contraseña inicial a partir del DNI.
+      // Este formulario NO envía una contraseña ni inicia sesión como ciudadano.
+      const resultado = await crearCiudadano(datosCiudadano);
+
+      onCreated?.(resultado);
+      onClose?.();
+    } catch (error) {
+      if (error.errors && typeof error.errors === "object") {
+        setErrores((previo) => ({ ...previo, ...error.errors }));
+      }
+
+      setErrorGeneral(
+        error.message ||
+          "No se pudo registrar al ciudadano. Intentá nuevamente."
+      );
     } finally {
       setRegistrando(false);
     }
   }
+
+  function cerrarModal() {
+    if (!registrando) onClose?.();
+  }
+
+  function detenerPropagacion(event) {
+    event.stopPropagation();
+  }
+
+  function campoInvalido(nombre) {
+    return intentoEnviar && Boolean(errores[nombre]);
+  }
+
   return (
-    <div className="ciudadano-modal-overlay" onClick={onClose}>
+    <div
+      className="ciudadano-modal-overlay"
+      onClick={cerrarModal}
+      role="presentation"
+    >
       <section
-        className="ciudadano-modal"
-        onClick={(event) => event.stopPropagation()}
+        className="ciudadano-modal-content"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="titulo-alta-ciudadano"
+        onClick={detenerPropagacion}
       >
         <header className="ciudadano-modal-header">
-          <div className="ciudadano-modal-title">
-            <div className="ciudadano-modal-title-icon">
-              <i className="bi bi-person-plus"></i>
-            </div>
-            <span>Nuevo ciudadano</span>
+          <div>
+            <h2 id="titulo-alta-ciudadano">Registrar ciudadano</h2>
+            <p>Completá los datos para dar de alta al ciudadano.</p>
           </div>
 
           <button
             type="button"
             className="ciudadano-modal-close"
+            onClick={cerrarModal}
+            disabled={registrando}
             aria-label="Cerrar modal"
-            onClick={onClose}
           >
-            <i className="bi bi-x-lg"></i>
+            ×
           </button>
         </header>
 
-        {/* Contenido */}
-        <form className="ciudadano-modal-content">
-          <section className="ciudadano-modal-section">
-            <h3>Información personal</h3>
+        <form
+          id="form-ciudadano"
+          onSubmit={handleSubmit}
+          noValidate
+        >
+          <div className="ciudadano-modal-body">
+            <h3>Datos personales</h3>
 
-            <label className="ciudadano-label">
-              <span>
-                DNI
-                <span className="span-required">*</span>
-              </span>
-
-              <input
-                className={`ciudadano-input ${errores.dni ? "input-error" : ""}`}
-                name="dni"
-                type="text"
-                value={formData.dni}
-                autoComplete="off"
-                maxLength={8}
-                onChange={(e) => {
-                  const value = e.target.value.replace(/\D/g, "");
-
-                  if (value.length <= 8) {
-                    setFormData((prev) => ({
-                      ...prev,
-                      dni: value,
-                    }));
-
-                    setErrores((prev) => ({
-                      ...prev,
-                      dni: "",
-                    }));
-                  }
-                }}
-              />
-
-              {errores.dni && (
-                <small className="registrar-error">{errores.dni}</small>
-              )}
-            </label>
-
-            <div className="ciudadano-modal-row">
-              <label className="ciudadano-label">
-                <span>
-                  Apellido
-                  <span className="span-required">*</span>
-                </span>
-
+            <div className="ciudadano-form-grid">
+              <div className="ciudadano-form-group">
+                <label htmlFor="nombre">Nombre *</label>
                 <input
-                  className={`ciudadano-input ${errores.apellido ? "input-error" : ""}`}
-                  name="apellido"
-                  type="text"
-                  value={formData.apellido}
-                  maxLength={100}
-                  handleChange={handleChange}
-                  autoComplete="off"
-                />
-
-                {errores.apellido && (
-                  <small className="registrar-error">{errores.apellido}</small>
-                )}
-              </label>
-
-              <label className="ciudadano-label">
-                <span>
-                  Nombre
-                  <span className="span-required">*</span>
-                </span>
-
-                <input
-                  className={`ciudadano-input ${errores.nombre ? "input-error" : ""}`}
+                  id="nombre"
                   name="nombre"
                   type="text"
                   value={formData.nombre}
+                  onChange={handleChange}
+                  onBlur={() =>
+                    setErrores((previo) => ({
+                      ...previo,
+                      nombre: validarCampo("nombre", formData.nombre),
+                    }))
+                  }
+                  autoComplete="given-name"
                   maxLength={100}
-                  handleChange={handleChange}
-                  autoComplete="off"
+                  required
+                  aria-invalid={campoInvalido("nombre")}
                 />
-                {errores.nombre && (
+                {intentoEnviar && errores.nombre && (
                   <small className="registrar-error">{errores.nombre}</small>
                 )}
-              </label>
+              </div>
+
+              <div className="ciudadano-form-group">
+                <label htmlFor="apellido">Apellido *</label>
+                <input
+                  id="apellido"
+                  name="apellido"
+                  type="text"
+                  value={formData.apellido}
+                  onChange={handleChange}
+                  onBlur={() =>
+                    setErrores((previo) => ({
+                      ...previo,
+                      apellido: validarCampo("apellido", formData.apellido),
+                    }))
+                  }
+                  autoComplete="family-name"
+                  maxLength={100}
+                  required
+                  aria-invalid={campoInvalido("apellido")}
+                />
+                {intentoEnviar && errores.apellido && (
+                  <small className="registrar-error">{errores.apellido}</small>
+                )}
+              </div>
+
+              <div className="ciudadano-form-group">
+                <label htmlFor="dni">DNI *</label>
+                <input
+                  id="dni"
+                  name="dni"
+                  type="text"
+                  inputMode="numeric"
+                  value={formData.dni}
+                  onChange={(event) => {
+                    const dni = event.target.value
+                      .replace(/\D/g, "")
+                      .slice(0, 8);
+
+                    handleChange({
+                      target: { name: "dni", value: dni },
+                    });
+                  }}
+                  maxLength={8}
+                  autoComplete="off"
+                  required
+                  aria-invalid={campoInvalido("dni")}
+                  placeholder="Ej.: 12345678"
+                />
+                {intentoEnviar && errores.dni && (
+                  <small className="registrar-error">{errores.dni}</small>
+                )}
+              </div>
+
+              <div className="ciudadano-form-group">
+                <label htmlFor="telefono">Teléfono *</label>
+                <input
+                  id="telefono"
+                  name="telefono"
+                  type="tel"
+                  value={formData.telefono}
+                  onChange={handleChange}
+                  autoComplete="tel"
+                  maxLength={20}
+                  required
+                  aria-invalid={campoInvalido("telefono")}
+                />
+                {intentoEnviar && errores.telefono && (
+                  <small className="registrar-error">
+                    {errores.telefono}
+                  </small>
+                )}
+              </div>
+
+              <div className="ciudadano-form-group">
+                <label htmlFor="email">Correo electrónico *</label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  autoComplete="email"
+                  maxLength={50}
+                  required
+                  aria-invalid={campoInvalido("email")}
+                />
+                {intentoEnviar && errores.email && (
+                  <small className="registrar-error">{errores.email}</small>
+                )}
+              </div>
+
+              <div className="ciudadano-form-group">
+                <label htmlFor="fechaNacimiento">Fecha de nacimiento *</label>
+                <input
+                  id="fechaNacimiento"
+                  name="fechaNacimiento"
+                  type="date"
+                  value={formData.fechaNacimiento}
+                  onChange={handleChange}
+                  max={fechaMaxima}
+                  required
+                  aria-invalid={campoInvalido("fechaNacimiento")}
+                />
+                {intentoEnviar && errores.fechaNacimiento && (
+                  <small className="registrar-error">
+                    {errores.fechaNacimiento}
+                  </small>
+                )}
+              </div>
             </div>
 
-            <label className="ciudadano-label">
-              <span>
-                Teléfono
-                <span className="span-required">*</span>
-              </span>
+            <h3 className="ciudadano-section-title">Domicilio</h3>
 
-              <input
-                className={`ciudadano-input ${errores.nombre ? "input-error" : ""}`}
-                name="telefono"
-                value={formData.telefono}
-                type="text"
-                autoComplete="tel"
-                onChange={(e) => {
-                  const value = e.target.value;
-
-                  if (/^[0-9+\-()\s]*$/.test(value) && value.length <= 30) {
-                    setFormData((prev) => ({
-                      ...prev,
-                      telefono: value,
-                    }));
-
-                    setErrores((prev) => ({
-                      ...prev,
-                      telefono: "",
-                    }));
-                  }
-                }}
-                maxLength={30}
-                placeholder="+54 9 11 1234-5678"
-              />
-
-              {errores.telefono && (
-                <small className="register-error">{errores.dni}</small>
-              )}
-            </label>
-
-            <label className="ciudadano-label">
-              <span>
-                Correo electrónico
-                <span className="span-required">*</span>
-              </span>
-
-              <input
-                className={`ciudadano-input ${errores.nombre ? "input-error" : ""}`}
-                name="email"
-                type="email"
-                value={formData.email}
-                maxLength={50}
-                autoComplete="off"
-              />
-            </label>
-          </section>
-
-          <section className="ciudadano-modal-section">
-            <h3>Información de domicilio</h3>
-
-            <div className="ciudadano-modal-row">
-              <label className="ciudadano-label">
-                <span>
-                  Calle
-                  <span className="span-required">*</span>
-                </span>
-
+            <div className="ciudadano-form-grid">
+              <div className="ciudadano-form-group">
+                <label htmlFor="calle">Calle *</label>
                 <input
-                  className="ciudadano-input"
+                  id="calle"
                   name="calle"
                   type="text"
-                  autoComplete="off"
+                  value={formData.calle}
+                  onChange={handleChange}
+                  autoComplete="address-line1"
+                  maxLength={20}
+                  required
+                  aria-invalid={campoInvalido("calle")}
                 />
-              </label>
+                {intentoEnviar && errores.calle && (
+                  <small className="registrar-error">{errores.calle}</small>
+                )}
+              </div>
 
-              <label className="ciudadano-label">
-                <span>
-                  Número
-                  <span className="span-required">*</span>
-                </span>
-
+              <div className="ciudadano-form-group">
+                <label htmlFor="numero">Número *</label>
                 <input
-                  className="ciudadano-input"
+                  id="numero"
                   name="numero"
                   type="text"
-                  autoComplete="off"
+                  value={formData.numero}
+                  onChange={handleChange}
+                  maxLength={20}
+                  required
+                  aria-invalid={campoInvalido("numero")}
                 />
-              </label>
-            </div>
+                {intentoEnviar && errores.numero && (
+                  <small className="registrar-error">{errores.numero}</small>
+                )}
+              </div>
 
-            <div className="ciudadano-modal-row">
-              <label className="ciudadano-label">
-                <span>
-                  Localidad
-                  <span className="span-required">*</span>
-                </span>
-
-                <select className="ciudadano-input" name="localidad">
+              <div className="ciudadano-form-group">
+                <label htmlFor="localidad">Localidad *</label>
+                
+             
+               <div className="select-wrapper">
+                <select
+                 className="complaint-input"
+                  id="localidad"
+                  name="localidad"
+                  value={formData.localidad}
+                  onChange={handleChange}
+                  required
+                  aria-invalid={campoInvalido("localidad")}
+                >
                   <option value="">Seleccioná una localidad</option>
-                  <option value="alejandro-korn">Alejandro Korn</option>
-                  <option value="san-vicente">San Vicente</option>
-                  <option value="domselaar">Domselaar</option>
+                  {LOCALIDADES.map((localidad) => (
+                    <option key={localidad.value} value={localidad.value}>
+                      {localidad.label}
+                    </option>
+                  ))}
                 </select>
-              </label>
+                 <span className="select-arrow" aria-hidden="true"></span>
+                 </div>
+                {intentoEnviar && errores.localidad && (
+                  <small className="registrar-error">
+                    {errores.localidad}
+                  </small>
+                )}
+              </div>
 
-              <label className="ciudadano-label">
-                <span>
-                  Código postal
-                  <span className="span-required">*</span>
-                </span>
-
+              <div className="ciudadano-form-group">
+                <label htmlFor="codigoPostal">Código postal *</label>
                 <input
-                  className="ciudadano-input"
+                  id="codigoPostal"
                   name="codigoPostal"
                   type="text"
-                  autoComplete="off"
+                  value={formData.codigoPostal}
+                  readOnly
+                  required
+                  placeholder="Se completa automáticamente"
+                  aria-invalid={campoInvalido("codigoPostal")}
                 />
-              </label>
+                {intentoEnviar && errores.codigoPostal && (
+                  <small className="registrar-error">
+                    {errores.codigoPostal}
+                  </small>
+                )}
+              </div>
             </div>
-          </section>
-        </form>
 
-        <footer className="ciudadano-modal-footer">
-          <button className="btn-action" type="submit">
-            Guardar
-          </button>
-        </footer>
+            <p className="ciudadano-modal-help">
+              La contraseña inicial del ciudadano será su DNI. Podrá cambiarla
+              después de ingresar al sistema.
+            </p>
+
+            {errorGeneral && (
+              <div className="ciudadano-modal-error" role="alert">
+                {errorGeneral}
+              </div>
+            )}
+          </div>
+
+          <footer className="ciudadano-modal-footer">
+            <button
+              type="button"
+              className="btn-cancel"
+              onClick={cerrarModal}
+              disabled={registrando}
+            >
+              Cancelar
+            </button>
+
+            <button
+              type="submit"
+              className="btn-action"
+              disabled={registrando}
+            >
+              {registrando ? "Guardando..." : "Registrar ciudadano"}
+            </button>
+          </footer>
+        </form>
       </section>
     </div>
   );
 }
-
-export default CiudadanoModal;

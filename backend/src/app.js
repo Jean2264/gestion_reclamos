@@ -3,6 +3,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import UsuarioRoutes from "./routes/usuario.routes.js";
 import CiudadanoRoutes from "./routes/ciudadano.routes.js";
+import ReclamoRoutes from "./routes/reclamo.routes.js";
 
 const app = express();
 
@@ -18,5 +19,6 @@ app.use(express.json());
 
 app.use("/api/usuarios", UsuarioRoutes);
 app.use("/api/ciudadanos", CiudadanoRoutes);
+app.use("/api/reclamos", ReclamoRoutes);
 
 export default app;

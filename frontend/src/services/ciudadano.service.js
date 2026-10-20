@@ -38,3 +38,32 @@ export async function actualizarMiPerfil(datosPerfil) {
 
   return data;
 }
+
+
+//crear desde el apartado administrativo
+
+export async function crearCiudadano(datosCiudadano) {
+  const response = await fetch(`${API_URL}/ciudadanos`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(datosCiudadano),
+  });
+
+  const data = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    const error = new Error(
+      data.message || "No se pudo registrar al ciudadano."
+    );
+
+    error.status = response.status;
+    error.errors = data.errors;
+
+    throw error;
+  }
+
+  return data;
+}

@@ -45,6 +45,25 @@ function MiPerfil() {
     domselaar: "1984",
   };
 
+
+  
+const localidades = ["Alejandro Korn", "San Vicente", "Domselaar"];
+
+function normalizarLocalidad(valor) {
+  const valorNormalizado = (valor ?? "")
+    .trim()
+    .toLowerCase()
+    .replaceAll("-", " ")
+    .replace(/\s+/g, " ");
+
+  return (
+    localidades.find(
+      (localidad) => localidad.toLowerCase() === valorNormalizado,
+    ) ?? ""
+  );
+}
+
+
   function handleModalOpen() {
     setisModalOpen(true);
   }
@@ -104,15 +123,7 @@ function MiPerfil() {
       // Actualizar la copia original solo si se guardó correctamente.
       const perfil = respuesta.data;
 
-      const localidades = ["Alejandro Korn", "San Vicente", "Domselaar"];
-
-      const localidadRecibida = (perfil.localidad ?? "").trim();
-
-      const localidadNormalizada =
-        localidades.find(
-          (localidad) =>
-            localidad.toLowerCase() === localidadRecibida.toLowerCase(),
-        ) ?? "";
+     const localidadNormalizada = normalizarLocalidad(perfil.localidad);
 
       const datosPerfil = {
         dni: perfil.dni ?? "",
@@ -234,18 +245,7 @@ function MiPerfil() {
         const respuesta = await cidudadanoService.miPerfil();
 
         const perfil = respuesta.data;
-        const localidades = ["Alejandro Korn", "San Vicente", "Domselaar"];
-
-        const localidadRecibida = (perfil.localidad ?? "").trim();
-
-        const localidadNormalizada =
-          localidades.find(
-            (localidad) =>
-              localidad.toLowerCase() === localidadRecibida.toLowerCase(),
-          ) ?? "";
-
-        console.log("Perfil recibido:", perfil);
-        console.log("Localidad recibida:", perfil.localidad);
+       const localidadNormalizada = normalizarLocalidad(perfil.localidad);
         const datosPerfil = {
           dni: perfil.dni ?? "",
           nombre: perfil.nombre ?? "",

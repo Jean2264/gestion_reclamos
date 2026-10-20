@@ -132,6 +132,7 @@ foreign key (id_empleado) references empleado_municipal(id_empleado)
 )
 
 
+
 CREATE TABLE imagen_reclamo(
 id_imagen serial primary key,
 imagen_url text,
@@ -140,3 +141,4 @@ constraint fk_imagen_reclamo
 foreign key (id_reclamo) references reclamo(id_reclamo)
 
 )
+

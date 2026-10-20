@@ -91,3 +91,39 @@ export async function actualizarMiPerfil(req, res) {
     });
   }
 }
+
+
+
+
+export async function crear(req, res) {
+  try {
+    const ciudadano = await ciudadanoService.crearCiudadanoDesdePanel(
+      req.body,
+    );
+
+    return res.status(201).json({
+      message: "Ciudadano creado correctamente",
+      data: ciudadano,
+    });
+  } catch (error) {
+    console.error("Error al crear ciudadano:", error);
+
+    if (error.statusCode === 400) {
+      return res.status(400).json({
+        message: error.message,
+        errors: error.details ?? {},
+      });
+    }
+
+    if (error.statusCode === 409 || error.code === "23505") {
+      return res.status(409).json({
+        message: error.message || "El email o el DNI ya están registrados",
+        errors: error.details ?? {},
+      });
+    }
+
+    return res.status(500).json({
+      message: "Error interno al crear el ciudadano",
+    });
+  }
+}

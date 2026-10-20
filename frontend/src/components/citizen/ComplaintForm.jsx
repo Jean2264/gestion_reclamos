@@ -1,7 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { obtenerAreas } from "../../services/reclamo.service";
 import "./ComplaintForm.css";
 
 function ComplaintForm() {
+  const [areas, setAreas]= useState([]);
+  const [errorAreas,setErrorAreas]= useState("");
   const [formData, setFormData] = useState({
     area: "",
     calle: "",
@@ -69,6 +72,20 @@ function ComplaintForm() {
     // - mensaje de éxito
   }
 
+useEffect(() => {
+  async function cargarAreas() {
+    try {
+      const data = await obtenerAreas();
+      setAreas(data);
+    } catch (error) {
+      console.error("Error al cargar las áreas:", error);
+      setErrorAreas("No se pudieron cargar las áreas.");
+    }
+  }
+
+  cargarAreas();
+}, []);
+
   return (
     <div className="complaint-form">
       <form onSubmit={handleSubmit}>
@@ -112,21 +129,25 @@ function ComplaintForm() {
               Área <span className="span-required">*</span>
             </span>
 
-            <select
-              className="complaint-input"
-              name="area"
-              value={formData.area}
-              onChange={handleChange}
-            >
-              <option value="">Seleccione un área</option>
-              <option value="alumbrado">Alumbrado Público / Luminaria</option>
-              <option value="pavimentacion">Pavimentación</option>
-              <option value="abovedado">Abovedado con Zanjeo</option>
-              <option value="residuos">Recolección de Residuos</option>
-              <option value="ramas">Recolección de Ramas</option>
-              <option value="poda">Poda de Arbustos</option>
-              <option value="otros">Otros...</option>
-            </select>
+             <div className="select-wrapper">
+    <select
+      className="complaint-input"
+      name="area"
+      value={formData.area}
+      onChange={handleChange}
+    >
+      <option value="">Seleccione un área</option>
+
+      {areas.map((area) => (
+    <option key={area.id_area} value={area.id_area}>
+      {area.nombre_area}
+    </option>
+  ))}
+      
+    </select>
+ 
+    <span className="select-arrow" aria-hidden="true"></span>
+  </div>
           </label>
         </section>
 
@@ -201,18 +222,23 @@ function ComplaintForm() {
               <span className="label-text">
                 Localidad <span className="span-required">*</span>
               </span>
-
+                <div className="select-wrapper">
               <select
                 className="complaint-input"
                 name="localidad"
                 value={formData.localidad}
                 onChange={handleChange}
               >
-                <option value="">Seleccione una localidad</option>
-                <option value="localidad1">Localidad 1</option>
-                <option value="localidad2">Localidad 2</option>
-                <option value="localidad3">Localidad 3</option>
+                 <option value="">Seleccioná una localidad</option>
+
+                <option value="alejandro-korn">Alejandro Korn</option>
+
+                <option value="san-vicente">San Vicente</option>
+
+                <option value="domselaar">Domselaar</option>
               </select>
+               <span className="select-arrow" aria-hidden="true"></span>
+              </div>
             </label>
 
             <label className="complaint-label">
