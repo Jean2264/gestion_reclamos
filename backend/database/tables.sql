@@ -1,202 +1,202 @@
-CREATE TABLE rol_usuario(
-id_rol SERIAL PRIMARY KEY,
-nombre_rol VARCHAR(40) NOT NULL,
-descripcion VARCHAR(100)
-)
 
-SELECT id_rol, nombre_rol
-FROM rol_usuario
-ORDER BY id_rol;
+-- =====================================================
+-- 1. ROLES DE USUARIO
+-- =====================================================
 
-insert into rol_usuario(
-nombre_rol,
-descripcion
-) values ('Empleado', 'el chamba')
+CREATE TABLE rol_usuario (
+    id_rol SERIAL PRIMARY KEY,
+    nombre_rol VARCHAR(40) NOT NULL UNIQUE,
+    descripcion VARCHAR(100)
+);
 
 INSERT INTO rol_usuario (nombre_rol, descripcion)
-VALUES ('Ciudadano', 'Usuario ciudadano del sistema');
-INSERT INTO rol_usuario (nombre_rol, descripcion)
-VALUES ('Ciudadano', 'Usuario ciudadano del sistema');
-
-select * from rol_usuario
-select * from localidad
-CREATE TABLE usuario(
-id_usuario SERIAL PRIMARY KEY,
-email VARCHAR(50) NOT NULL UNIQUE,
-contrasenia VARCHAR(50) NOT NULL,
-id_rol INTEGER NOT NULL
-
-)
-
-select * from usuario
-//creo los usuarios de prueba
-INSERT INTO usuario (email, contrasenia, id_rol)
 VALUES
-    ('admin@prueba.com', 'PEGAR_HASH_ADMIN_AQUI', 1),
-    ('empleado@prueba.com', 'PEGAR_HASH_EMPLEADO_AQUI', 2)
-	delete from usuario where email='admin@prueba.com'
+    ('Administrador', 'Administrador del sistema'),
+    ('Empleado', 'Personal municipal'),
+    ('Ciudadano', 'Usuario ciudadano del sistema');
 
 
-SELECT
-    u.id_usuario,
-    u.email,
-    u.id_rol,
-    r.nombre_rol
-FROM usuario u
-JOIN rol_usuario r ON r.id_rol = u.id_rol
-WHERE u.email IN (
-    'admin@prueba.com',
-    'empleado@prueba.com'
-)
-ORDER BY u.id_rol;
-	
+-- =====================================================
+-- 2. USUARIOS
+-- =====================================================
 
-ALTER TABLE usuario
-ADD CONSTRAINT fk_usuario_rol_usuario
-FOREIGN KEY (id_rol) REFERENCES rol_usuario(id_rol)
+CREATE TABLE usuario (
+    id_usuario SERIAL PRIMARY KEY,
+    email VARCHAR(50) NOT NULL UNIQUE,
+    contrasenia VARCHAR(255) NOT NULL,
+    id_rol INTEGER NOT NULL,
 
-ALTER TABLE usuario
-ALTER COLUMN contrasenia TYPE VARCHAR(255);
-
-CREATE TABLE ciudadano
-(
-id_ciudadano SERIAL PRIMARY KEY,
-nombre VARCHAR(100) NOT NULL,
-apellido VARCHAR(100) NOT NULL,
-dni VARCHAR(8) NOT NULL UNIQUE,
-telefono VARCHAR(30) NOT NULL,
-fecha_nacimiento TIMESTAMP NOT NULL,
-calle VARCHAR(20) NOT NULL,
-numero VARCHAR(20) NOT NULL,
-localidad VARCHAR(50) NOT NULL,
-codigo_postal VARCHAR(20) NOT NULL,
-id_usuario INTEGER UNIQUE
-)
-
-select * from ciudadano
+    CONSTRAINT fk_usuario_rol
+        FOREIGN KEY (id_rol)
+        REFERENCES rol_usuario(id_rol)
+);
 
 
+-- =====================================================
+-- 3. CIUDADANOS
+-- =====================================================
 
-ALTER TABLE ciudadano
-ADD CONSTRAINT fk_ciudadano_usuario
-FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
+CREATE TABLE ciudadano (
+    id_ciudadano SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    apellido VARCHAR(100) NOT NULL,
+    dni VARCHAR(8) NOT NULL UNIQUE,
+    telefono VARCHAR(30) NOT NULL,
+    fecha_nacimiento TIMESTAMP NOT NULL,
+    calle VARCHAR(20) NOT NULL,
+    numero VARCHAR(20) NOT NULL,
+    localidad VARCHAR(50) NOT NULL,
+    codigo_postal VARCHAR(20) NOT NULL,
+    id_usuario INTEGER UNIQUE,
+
+    CONSTRAINT fk_ciudadano_usuario
+        FOREIGN KEY (id_usuario)
+        REFERENCES usuario(id_usuario)
+);
 
 
+-- =====================================================
+-- 4. EMPLEADOS MUNICIPALES
+-- =====================================================
 
-CREATE TABLE empleado_municipal(
-id_empleado SERIAL PRIMARY KEY,
-nombre VARCHAR(100) NOT NULL,
-apellido VARCHAR(100) NOT NULL,
-dni VARCHAR(8) NOT NULL UNIQUE,
-telefono VARCHAR(8) NOT NULL,
-calle VARCHAR(20) NOT NULL,
-numero VARCHAR(20) NOT NULL,
-localidad VARCHAR(50) NOT NULL,
-codigo_postal VARCHAR(20) NOT NULL,
-empleado BOOLEAN default TRUE,
-id_usuario INTEGER UNIQUE,
-CONSTRAINT fk_empleado_usuario
-foreign key(id_usuario) references usuario(id_usuario)
-)
+CREATE TABLE empleado_municipal (
+    id_empleado SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    apellido VARCHAR(100) NOT NULL,
+    dni VARCHAR(8) NOT NULL UNIQUE,
+    telefono VARCHAR(30) NOT NULL,
+    calle VARCHAR(20) NOT NULL,
+    numero VARCHAR(20) NOT NULL,
+    localidad VARCHAR(50) NOT NULL,
+    codigo_postal VARCHAR(20) NOT NULL,
+    estado BOOLEAN NOT NULL DEFAULT TRUE,
+    id_usuario INTEGER UNIQUE,
+
+    CONSTRAINT fk_empleado_usuario
+        FOREIGN KEY (id_usuario)
+        REFERENCES usuario(id_usuario)
+);
 
 select * from empleado_municipal
 
-ALTER TABLE empleado_municipal
-ALTER COLUMN telefono TYPE VARCHAR(30);
 
-CREATE TABLE area_gestion 
-(
+
+-- =====================================================
+-- 5. ÁREAS DE GESTIÓN
+-- =====================================================
+
+CREATE TABLE area_gestion (
     id_area SERIAL PRIMARY KEY,
-    nombre_area VARCHAR (50) NOT NULL,
-    descripcion VARCHAR (200)
-)
+    nombre_area VARCHAR(50) NOT NULL,
+    descripcion VARCHAR(200)
+);
 
 INSERT INTO area_gestion (nombre_area, descripcion)
 VALUES
-    ('Alumbrado Público / Luminaria', 'Reclamos por luminarias apagadas, dañadas o con fallas en el alumbrado público.'),
-    ('Pavimentación', 'Reclamos relacionados con calles, pavimento deteriorado y necesidades de pavimentación.'),
-    ('Abovedado con Zanjeo', 'Reclamos por trabajos de abovedado, zanjeo y mantenimiento de calles y cunetas.'),
-    ('Recolección de Residuos', 'Reclamos por falta de recolección de residuos o problemas con el servicio.'),
-    ('Recolección de Ramas', 'Reclamos por falta de retiro de ramas y restos de poda.'),
-    ('Poda de Arbustos', 'Reclamos relacionados con poda y mantenimiento de arbustos en espacios públicos.'),
-    ('Otros', 'Reclamos que no corresponden a ninguna de las áreas específicas disponibles.');
-
-select * from area_gestion
-order by id_area
-
-CREATE TABLE estado_reclamo(
-id_estado SERIAL PRIMARY KEY,
-nombre_estado varchar(50) not null,
-descripcion varchar(200)
-)
-
-
-select * from estado_reclamo
-
-
-CREATE TABLE reclamo(
-id_reclamo SERIAL PRIMARY KEY,
-fecha_alta TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-calle VARCHAR(20) NOT NULL,
-altura varchar(20) not null,
-
-localidad VARCHAR(50) not null,
-codigo_postal VARCHAR(20) NOT NULL,
-detalle_reclamo text not null,
-estado_tributario boolean,
-id_ciudadano integer unique,
-id_area integer,
-id_estado integer,
-constraint fk_reclamo_ciudadano
-foreign key(id_ciudadano) references ciudadano(id_ciudadano),
-
-constraint fk_reclamo_area
-foreign key(id_area) references area_gestion(id_area),
-
-constraint fk_reclamo_estado
-foreign key(id_estado) references estado_reclamo(id_estado)
-)
-
-ALTER TABLE reclamo
-DROP CONSTRAINT IF EXISTS fk_reclamo_ciudadano;
-
-ALTER TABLE reclamo
-DROP CONSTRAINT IF EXISTS reclamo_id_ciudadano_key;
-
-ALTER TABLE reclamo
-ALTER COLUMN id_ciudadano SET NOT NULL;
-
-ALTER TABLE reclamo
-ADD CONSTRAINT fk_reclamo_ciudadano
-FOREIGN KEY (id_ciudadano)
-REFERENCES ciudadano(id_ciudadano);
-
-CREATE TABLE historico_reclamo(
-id_historial serial primary key,
-fecha_alta TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-estado varchar(50) not null,
-resolucion varchar(200),
-id_reclamo integer unique ,
-constraint fk_historico_reclamo
-foreign key (id_reclamo) references reclamo(id_reclamo),
-id_empleado integer,
-constraint fk_historico_empleado
-foreign key (id_empleado) references empleado_municipal(id_empleado)
-)
-
-ALTER TABLE historico_reclamo
-DROP CONSTRAINT IF EXISTS historico_reclamo_id_reclamo_key;
+    (
+        'Alumbrado Público / Luminaria',
+        'Reclamos por luminarias apagadas, dañadas o con fallas.'
+    ),
+    (
+        'Pavimentación',
+        'Reclamos relacionados con calles y pavimento deteriorado.'
+    ),
+    (
+        'Abovedado con Zanjeo',
+        'Reclamos por zanjeo y mantenimiento de calles y cunetas.'
+    ),
+    (
+        'Recolección de Residuos',
+        'Reclamos por falta de recolección de residuos.'
+    ),
+    (
+        'Recolección de Ramas',
+        'Solicitudes de retiro de ramas y restos de poda.'
+    ),
+    (
+        'Poda de Arbustos',
+        'Solicitudes de poda y mantenimiento de arbustos.'
+    ),
+    (
+        'Otros',
+        'Incidencias generales no contempladas en otras áreas.'
+    );
 
 
-CREATE TABLE imagen_reclamo(
-id_imagen serial primary key,
-imagen_url text,
-id_reclamo integer unique ,
-constraint fk_imagen_reclamo
-foreign key (id_reclamo) references reclamo(id_reclamo)
+-- =====================================================
+-- 6. ESTADOS DE RECLAMO
+-- =====================================================
 
-)
+CREATE TABLE estado_reclamo (
+    id_estado SERIAL PRIMARY KEY,
+    nombre_estado VARCHAR(50) NOT NULL,
+    descripcion VARCHAR(200)
+);
 
 
-ALTER TABLE imagen_reclamo
-DROP CONSTRAINT IF EXISTS imagen_reclamo_id_reclamo_key;
+-- =====================================================
+-- 7. RECLAMOS
+-- =====================================================
+
+CREATE TABLE reclamo (
+    id_reclamo SERIAL PRIMARY KEY,
+    fecha_alta TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    calle VARCHAR(20) NOT NULL,
+    altura VARCHAR(20) NOT NULL,
+    localidad VARCHAR(50) NOT NULL,
+    codigo_postal VARCHAR(20) NOT NULL,
+    detalle_reclamo TEXT NOT NULL,
+    estado_tributario BOOLEAN,
+    id_ciudadano INTEGER NOT NULL,
+    id_area INTEGER,
+    id_estado INTEGER,
+
+    CONSTRAINT fk_reclamo_ciudadano
+        FOREIGN KEY (id_ciudadano)
+        REFERENCES ciudadano(id_ciudadano),
+
+    CONSTRAINT fk_reclamo_area
+        FOREIGN KEY (id_area)
+        REFERENCES area_gestion(id_area),
+
+    CONSTRAINT fk_reclamo_estado
+        FOREIGN KEY (id_estado)
+        REFERENCES estado_reclamo(id_estado)
+);
+
+
+-- =====================================================
+-- 8. HISTORIAL DE RECLAMOS
+-- =====================================================
+
+CREATE TABLE historico_reclamo (
+    id_historial SERIAL PRIMARY KEY,
+    fecha_alta TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    estado VARCHAR(50) NOT NULL,
+    resolucion VARCHAR(200),
+    id_reclamo INTEGER NOT NULL,
+    id_empleado INTEGER,
+
+    CONSTRAINT fk_historico_reclamo
+        FOREIGN KEY (id_reclamo)
+        REFERENCES reclamo(id_reclamo),
+
+    CONSTRAINT fk_historico_empleado
+        FOREIGN KEY (id_empleado)
+        REFERENCES empleado_municipal(id_empleado)
+);
+
+
+-- =====================================================
+-- 9. IMÁGENES DE RECLAMOS
+-- =====================================================
+
+CREATE TABLE imagen_reclamo (
+    id_imagen SERIAL PRIMARY KEY,
+    imagen_url TEXT,
+    id_reclamo INTEGER NOT NULL,
+
+    CONSTRAINT fk_imagen_reclamo
+        FOREIGN KEY (id_reclamo)
+        REFERENCES reclamo(id_reclamo)
+);

@@ -20,6 +20,21 @@ function AuthProvider({ children }) {
     return data;
   }
 
+
+async function iniciarSesionAdmin(dni, contrasenia) {
+  const data = await usuarioService.iniciarSesionAdmin(
+    dni,
+    contrasenia
+  );
+
+  setUsuario(data.data);
+
+  return data;
+}
+
+
+
+
   async function registrarUsuario(datosRegistro) {
     const data = await usuarioService.registrarUsuario(datosRegistro);
 
@@ -67,6 +82,7 @@ function AuthProvider({ children }) {
         usuario,
         cargando,
         iniciarSesion,
+        iniciarSesionAdmin,
         registrarUsuario,
         cerrarSesion,
       }}

@@ -11,6 +11,8 @@ router.post("/registro", usuarioController.registrar);
 
 router.post("/login", usuarioController.login);
 
+router.post("/login-admin",usuarioController.loginAdmin);
+
 router.get("/me", autenticar, usuarioController.obtenerUsuarioActual);
 
 router.post("/logout", usuarioController.logout);

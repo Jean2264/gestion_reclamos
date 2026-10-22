@@ -17,6 +17,21 @@ export async function bucarUsuarioPorEmail(email) {
   return result.rows[0] ?? null;
 }
 
+
+export async function buscarUsuarioPublicoPorEmail(email) {
+  const result = await pool.query(
+    `
+      SELECT id_usuario, email, id_rol
+      FROM usuario
+      WHERE email = $1
+    `,
+    [email],
+  );
+
+  return result.rows[0] ?? null;
+}
+
+
 //Crear usuario
 export async function crearUsuario(email, contrasenia, idRol, client = pool) {
   const result = await client.query(

@@ -22,6 +22,29 @@ export async function iniciarSesion(email, contrasenia) {
   return data;
 }
 
+
+//inicio sesion administrativo
+
+export async function iniciarSesionAdmin(dni, contrasenia) {
+  const response = await fetch(`${API_URL}/usuarios/login-admin`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify({ dni, contrasenia }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Error al iniciar sesión.");
+  }
+
+  return data;
+}
+
+
 export async function registrarUsuario(datosRegistro) {
   const response = await fetch(`${API_URL}/usuarios/registro`, {
     method: "POST",

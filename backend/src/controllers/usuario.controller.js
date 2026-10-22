@@ -2,6 +2,7 @@ import e from "express";
 import * as usuarioService from "../services/usuario.service.js";
 
 
+
 function establecerCookieSesion(res, token) {
   res.cookie("token", token, {
     httpOnly: true,
@@ -69,12 +70,18 @@ export async function registrar(req, res) {
       },
     });
   } catch (error) {
-    console.error("Error al registrar usuario", error);
-
-    return res.status(500).json({
+  if (error.statusCode === 409) {
+    return res.status(409).json({
       message: error.message,
     });
   }
+
+  console.error("Error al registrar usuario:", error);
+
+  return res.status(500).json({
+    message: "Error interno del servidor",
+  });
+}
 }
 
 export async function login(req, res) {
@@ -101,10 +108,55 @@ export async function login(req, res) {
       },
     });
   } catch (error) {
-    console.error("Error al inciar sesión");
-
-    return res.status(500).json({
+  if (error.statusCode === 401) {
+    return res.status(401).json({
       message: error.message,
+    });
+  }
+
+  console.error("Error al iniciar sesión:", error);
+
+  return res.status(500).json({
+    message: "Error interno del servidor",
+  });
+}
+}
+
+
+
+//login admin
+
+export async function loginAdmin(req, res) {
+  try{
+    const {dni, contrasenia}= req.body;
+
+    if(!dni || !contrasenia){
+     return res.status(400).json({
+        message:"El DNI y la contraseña son obligatorios.",
+      });
+    }
+
+    const resultado= await usuarioService.iniciarSesionAdmin(dni,contrasenia);
+
+
+    establecerCookieSesion(res, resultado.token);
+
+
+    return res.status(200).json({
+      message: "Inicio de sesión administrativo exitoso.",
+      data:{
+        usuario: resultado.usuario,
+        empleado: resultado.empleado,
+      },
+    });
+  }catch(error){
+    console.error("Error en login administrativo: ", error.message);
+
+
+    return res.status(error.statusCode || 500).json({
+      message:
+      error.statusCode===401
+      ?"DNI o contraseña incorrectos": "Error al iniciar sesion",
     });
   }
 }

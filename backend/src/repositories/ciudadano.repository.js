@@ -9,6 +9,7 @@ export async function bucarCiudadanoPorDni(dni) {
         dni
         FROM ciudadano
         WHERE dni=$1
+        AND estado= TRUE
         `,
     [dni],
   );
