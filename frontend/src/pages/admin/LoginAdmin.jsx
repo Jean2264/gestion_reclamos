@@ -2,7 +2,7 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthProvider";
-import escudo from "../../assets/escudo.png";
+import escudo from "../../assets/muni-muni.png";
 import "./LoginAdmin.css";
 
 function LoginAdmin() {
@@ -59,8 +59,8 @@ function LoginAdmin() {
             <img src={escudo} alt="Escudo municipal" />
 
             <div className="login-admin_brand-name">
-              <strong>MUNICIPALIDAD</strong>
-              <span>DE NUESTRA CIUDAD</span>
+              <strong>SAN VICENTE</strong>
+              <span>MUNICIPIO</span>
             </div>
 
             <span className="login-admin_brand-divider" />

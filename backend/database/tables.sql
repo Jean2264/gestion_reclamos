@@ -147,7 +147,7 @@ CREATE TABLE reclamo (
     codigo_postal VARCHAR(20) NOT NULL,
     detalle_reclamo TEXT NOT NULL,
     estado_tributario BOOLEAN,
-    id_ciudadano INTEGER NOT NULL,
+    id_ciudadano INTEGER NOT NULL UNIQUE,
     id_area INTEGER,
     id_estado INTEGER,
 
