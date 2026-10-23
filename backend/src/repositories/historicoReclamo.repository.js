@@ -12,11 +12,11 @@ export async function crearHistorico (datosHistorico, client = pool){
     const result = await client.query(
     `   
         INSERT INTO historico_reclamo (
-            fechaAlta,
+            fecha_alta,
             estado,
             resolucion,
-            idReclamo,
-            idEmpleado
+            id_reclamo,
+            id_empleado
         )
         VALUES ($1, $2, $3, $4, $5)
         RETURNING *

@@ -1,0 +1,1 @@
+import * as imagenReclamoRepository from "../repositories/imagenReclamo.repository.js";
