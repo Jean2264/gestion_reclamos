@@ -334,16 +334,11 @@ useEffect(() => {
           <label className="declaration-label">
             <input type="checkbox" />
 
-            <span>Declaro que mi estado tributario es al día.</span>
-          </label>
-          <label className="declaration-label">
-            <input type="checkbox" />
-
-            <span>
-              Declaro que la información proporcionada es verdadera y
-              corresponde al reclamo que deseo realizar.
+            <span><strong>En carácter de declaración jurada,</strong> declaro que al momento de realizar el presente
+             reclamo, mi estado tributario se encuentra al día.
             </span>
           </label>
+          
         </div>
 
         {/* ACCIONES */}
