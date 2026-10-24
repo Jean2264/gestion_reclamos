@@ -549,7 +549,7 @@ function RegisterForm({ onLogin }) {
                 value={formData.codigoPostal}
                 onChange={handleChange}
                 autoComplete="postal-code"
-                maxLength={20}
+                maxLength={4}
               />
               <p className="p-cp">El cp se autocompleta</p>
             </label>
