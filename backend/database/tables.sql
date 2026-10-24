@@ -44,6 +44,7 @@ CREATE TABLE ciudadano (
     telefono VARCHAR(30) NOT NULL,
     fecha_nacimiento TIMESTAMP NOT NULL,
     calle VARCHAR(20) NOT NULL,
+	estado boolean default true,
     numero VARCHAR(20) NOT NULL,
     localidad VARCHAR(50) NOT NULL,
     codigo_postal VARCHAR(20) NOT NULL,
@@ -53,6 +54,8 @@ CREATE TABLE ciudadano (
         FOREIGN KEY (id_usuario)
         REFERENCES usuario(id_usuario)
 );
+
+select * from ciudadano where codigo_postal= 'romina@gmail.com'
 
 
 -- =====================================================
@@ -142,11 +145,14 @@ CREATE TABLE reclamo (
     id_reclamo SERIAL PRIMARY KEY,
     fecha_alta TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     calle VARCHAR(20) NOT NULL,
+	calle_uno VARCHAR(20) NOT NULL,
+	calle_dos VARCHAR(20) NOT NULL,
     altura VARCHAR(20) NOT NULL,
     localidad VARCHAR(50) NOT NULL,
     codigo_postal VARCHAR(20) NOT NULL,
     detalle_reclamo TEXT NOT NULL,
     estado_tributario BOOLEAN,
+	numero_partida varchar(20) not null,
     id_ciudadano INTEGER NOT NULL UNIQUE,
     id_area INTEGER,
     id_estado INTEGER,

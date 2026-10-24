@@ -1,5 +1,6 @@
 import * as ciudadanoRepository from "../repositories/ciudadano.repository.js";
 import * as usuarioRepository from "../repositories/usuario.repository.js";
+
 import { validarDatosCiudadano } from "../validators/ciudadano.validator.js";
 import pool from "../config/database.js";
 import bcrypt from "bcrypt";
