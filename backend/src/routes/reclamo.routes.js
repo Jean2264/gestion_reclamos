@@ -1,6 +1,6 @@
 import {Router} from "express";
 
-import * as reclamoController from "../controllers/reclamo. controller.js";
+import * as reclamoController from "../controllers/reclamo.controller.js";
 
 const router = Router();
 

@@ -218,7 +218,7 @@
 
   overflow: hidden;
 
-  border-radius: 16px;
+  border-radius:none;
 }
 
 /* Zona para cargar imagen */
@@ -505,6 +505,66 @@
 /* =========================
    RESPONSIVE
 ========================= */
+
+
+/* Indicadores del carrusel: ocultos en escritorio */
+.image-pagination {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .complaint-images {
+    display: flex;
+    gap: 1rem;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+
+    scrollbar-width: none;
+  }
+
+  .complaint-images::-webkit-scrollbar {
+    display: none;
+  }
+
+  .complaint-image-container {
+    flex: 0 0 100%;
+    min-width: 0;
+
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+
+  .image-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+
+    margin-top: 0.25rem;
+  }
+
+  .image-dot {
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+    background: #cbd5e1;
+
+    transition:
+      background-color 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  .image-dot.active {
+    background: var(--blue);
+    transform: scale(1.15);
+  }
+}
 
 @media (max-width: 600px) {
   .complaint-section {

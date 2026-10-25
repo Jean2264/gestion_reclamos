@@ -11,9 +11,22 @@ export async function  areasGestion() {
         return (await result).rows;
 }
 
+export async function obtenerEstadoPorNombre(nombreEstado, client = pool) {
+    const result = await client.query(
+        `
+        SELECT id_estado, nombre_estado
+        FROM estado_reclamo
+        WHERE LOWER(nombre_estado) = LOWER($1)
+        LIMIT 1;
+        `,
+        [nombreEstado]
+    );
+
+    return result.rows[0] ?? null;
+}
 
 
-export async function crearReclamo(datosReclamo, client = pool) {
+export async function crearReclamo(datosReclamo, idEstado, client = pool) {
     const {
         numeroPartida,
         calle,
@@ -25,8 +38,7 @@ export async function crearReclamo(datosReclamo, client = pool) {
         detalle,
         estadoTributario,
         idCiudadano,
-        idArea,
-        idEstado
+        idArea
     } = datosReclamo;
 
     const result = await client.query(
