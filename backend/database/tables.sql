@@ -135,7 +135,14 @@ CREATE TABLE estado_reclamo (
     nombre_estado VARCHAR(50) NOT NULL,
     descripcion VARCHAR(200)
 );
+INSERT INTO estado_reclamo(nombre_estado)
+values(
+'Nuevo'
+),
+('asignado'),
+('finalizado');
 
+select * from estado_reclamo
 
 -- =====================================================
 -- 7. RECLAMOS
