@@ -3,9 +3,12 @@ import { useState, useRef } from "react";
 import "./CambiarPassword.css";
 import BtnClose from "../common/BtnClose";
 import PasswordStrength from "../auth/PasswordStrength";
-import { actualizarPassword } from "../../services/usuario.service";
+import {
+  actualizarPassword,
+  actualizarPasswordPorEmail,
+} from "../../services/usuario.service";
 
-function CambiarPassword({ onClose }) {
+function CambiarPassword({ onClose, origen = "perfil", email }) {
   // Código temporal para probar el frontend.
   const codigoEsperado = "482731";
 
@@ -91,12 +94,30 @@ function CambiarPassword({ onClose }) {
     setErrorActualizacion("");
 
     try {
-      const resultado = await actualizarPassword(password);
+      let resultado;
+
+      if (origen === "perfil") {
+        resultado = await actualizarPassword(password);
+      } else if (origen === "login") {
+        if (!email) {
+          throw new Error("No se encontró el email de la cuenta.");
+        }
+
+        resultado = await actualizarPasswordPorEmail(email, password);
+      } else if (origen === "admin") {
+        throw new Error(
+          "La recuperación de contraseña administrativa todavía no está implementada.",
+        );
+      } else {
+        throw new Error("Origen de actualización de contraseña no válido.");
+      }
 
       setMensajeActualizacion(
         resultado.message || "Contraseña actualizada correctamente",
       );
+
       setEstadoActualizacion("success");
+
       setTimeout(() => {
         onClose();
       }, 2000);
@@ -104,9 +125,11 @@ function CambiarPassword({ onClose }) {
       setErrorActualizacion(
         error.message || "No se pudo actualizar la contraseña",
       );
+
       setMensajeActualizacion(
         error.message || "No se pudo actualizar la contraseña",
       );
+
       setEstadoActualizacion("error");
     } finally {
       setActualizando(false);

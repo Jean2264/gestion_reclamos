@@ -11,12 +11,14 @@ router.post("/registro", usuarioController.registrar);
 
 router.post("/login", usuarioController.login);
 
-router.post("/login-admin",usuarioController.loginAdmin);
+router.post("/login-admin", usuarioController.loginAdmin);
 
 router.get("/me", autenticar, usuarioController.obtenerUsuarioActual);
 
 router.post("/logout", usuarioController.logout);
 
 router.patch("/password", autenticar, usuarioController.actualizarPassword);
+
+router.patch("/password-email", usuarioController.actualizarPasswordPorEmail);
 
 export default router;

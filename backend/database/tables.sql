@@ -15,7 +15,7 @@ VALUES
     ('Empleado', 'Personal municipal'),
     ('Ciudadano', 'Usuario ciudadano del sistema');
 
-
+select * from rol_usuario
 -- =====================================================
 -- 2. USUARIOS
 -- =====================================================
@@ -24,6 +24,7 @@ CREATE TABLE usuario (
     id_usuario SERIAL PRIMARY KEY,
     email VARCHAR(50) NOT NULL UNIQUE,
     contrasenia VARCHAR(255) NOT NULL,
+	debe_cambiar_contrasenia BOOLEAN NOT NULL DEFAULT FALSE,
     id_rol INTEGER NOT NULL,
 
     CONSTRAINT fk_usuario_rol
@@ -82,7 +83,21 @@ CREATE TABLE empleado_municipal (
 
 select * from empleado_municipal
 
-
+SELECT
+    e.id_empleado,
+    e.nombre,
+    e.apellido,
+    e.dni,
+    e.estado,
+    u.id_usuario,
+    u.email,
+    r.nombre_rol
+FROM empleado_municipal e
+LEFT JOIN usuario u
+    ON u.id_usuario = e.id_usuario
+LEFT JOIN rol_usuario r
+    ON r.id_rol = u.id_rol
+ORDER BY e.id_empleado;
 
 -- =====================================================
 -- 5. ÁREAS DE GESTIÓN
@@ -178,6 +193,15 @@ CREATE TABLE reclamo (
 );
 
 
+ALTER TABLE reclamo
+ADD COLUMN codigo_reclamo VARCHAR(20) UNIQUE;
+
+ALTER TABLE reclamo
+DROP CONSTRAINT reclamo_id_ciudadano_key;
+
+update reclamo
+set id_estado= '2' where id_reclamo='6'
+select * from reclamo
 -- =====================================================
 -- 8. HISTORIAL DE RECLAMOS
 -- =====================================================
@@ -213,3 +237,6 @@ CREATE TABLE imagen_reclamo (
         FOREIGN KEY (id_reclamo)
         REFERENCES reclamo(id_reclamo)
 );
+
+
+

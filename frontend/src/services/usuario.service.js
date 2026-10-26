@@ -22,7 +22,6 @@ export async function iniciarSesion(email, contrasenia) {
   return data;
 }
 
-
 //inicio sesion administrativo
 
 export async function iniciarSesionAdmin(dni, contrasenia) {
@@ -43,7 +42,6 @@ export async function iniciarSesionAdmin(dni, contrasenia) {
 
   return data;
 }
-
 
 export async function registrarUsuario(datosRegistro) {
   const response = await fetch(`${API_URL}/usuarios/registro`, {
@@ -92,6 +90,24 @@ export async function actualizarPassword(password) {
   const data = await response.json();
   if (!response.ok) {
     throw new Error(data.message);
+  }
+
+  return data;
+}
+
+export async function actualizarPasswordPorEmail(email, password) {
+  const response = await fetch(`${API_URL}/usuarios/password-email`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email, password }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Error al actualizar la contraseña.");
   }
 
   return data;

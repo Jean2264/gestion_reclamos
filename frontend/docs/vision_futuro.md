@@ -43,3 +43,14 @@ DROP CONSTRAINT reclamo_id_ciudadano_key;
 
 instalar : npm install jspdf
 para pdf
+
+# CODIGO DE TOKEN DE PASSWORD
+
+const codigoEsperado = "482731";
+
+## Agregar este campo a la tabla de usuario
+
+ALTER TABLE usuario
+ADD COLUMN debe_cambiar_contrasenia BOOLEAN NOT NULL DEFAULT FALSE;
+
+### Es para el tema de primer login

@@ -1,12 +1,14 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthProvider";
+import CambiarPassword from "../perfil/CambiarPassword";
 
 import muniImage from "../../assets/escudo.png";
 import "./LoginForm.css";
 
 function LoginForm({ onRegister }) {
   const { iniciarSesion, setIsAuthModalOpen } = useContext(AuthContext);
+  const [isModalOpen, setisModalOpen] = useState(false);
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -18,6 +20,14 @@ function LoginForm({ onRegister }) {
   });
 
   const [errors, setErrors] = useState({});
+
+  function handleModalOpen() {
+    setisModalOpen(true);
+  }
+
+  function handleModalClose() {
+    setisModalOpen(false);
+  }
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -114,7 +124,7 @@ function LoginForm({ onRegister }) {
           Ingresar
         </button>
 
-        <a className="pass" href="#" onClick={(e) => e.preventDefault()}>
+        <a className="pass" href="#" onClick={handleModalOpen}>
           ¿Olvidaste tu contraseña?
         </a>
       </form>
@@ -127,6 +137,13 @@ function LoginForm({ onRegister }) {
           </span>
         </p>
       </div>
+      {isModalOpen && (
+        <CambiarPassword
+          origen="login"
+          email={formData.email}
+          onClose={handleModalClose}
+        />
+      )}
     </div>
   );
 }

@@ -1,6 +1,8 @@
 import { createContext, useState, useEffect } from "react";
 import * as usuarioService from "../services/usuario.service.js";
 
+const ADMIN_SESSION_KEY = "admin_session_active";
+const ADMIN_ROLE = "Administrador";
 export const AuthContext = createContext();
 
 function AuthProvider({ children }) {
@@ -20,21 +22,20 @@ function AuthProvider({ children }) {
     return data;
   }
 
+  async function iniciarSesionAdmin(dni, contrasenia) {
+    const data = await usuarioService.iniciarSesionAdmin(dni, contrasenia);
 
-async function iniciarSesionAdmin(dni, contrasenia) {
-  const data = await usuarioService.iniciarSesionAdmin(
-    dni,
-    contrasenia
-  );
+    if (data.data?.usuario?.nombre_rol !== ADMIN_ROLE) {
+      await usuarioService.cerrarSesion();
 
-  setUsuario(data.data);
+      throw new Error("No tenés permisos para acceder al panel.");
+    }
 
-  return data;
-}
+    sessionStorage.setItem(ADMIN_SESSION_KEY, "true");
+    setUsuario(data.data);
 
-
-
-
+    return data;
+  }
   async function registrarUsuario(datosRegistro) {
     const data = await usuarioService.registrarUsuario(datosRegistro);
 
@@ -47,9 +48,23 @@ async function iniciarSesionAdmin(dni, contrasenia) {
   async function verificarSesion() {
     try {
       const respuesta = await usuarioService.obtenerUsuarioActual();
+      const usuarioActual = respuesta.data;
 
-      setUsuario(respuesta.data);
-      return respuesta.data;
+      const rol = usuarioActual?.usuario?.nombre_rol;
+
+      if (rol === ADMIN_ROLE) {
+        const sesionAdministrativaActiva =
+          sessionStorage.getItem(ADMIN_SESSION_KEY) === "true";
+
+        if (!sesionAdministrativaActiva) {
+          await usuarioService.cerrarSesion();
+          setUsuario(null);
+          return null;
+        }
+      }
+
+      setUsuario(usuarioActual);
+      return usuarioActual;
     } catch (error) {
       setUsuario(null);
       throw error;
@@ -59,8 +74,12 @@ async function iniciarSesionAdmin(dni, contrasenia) {
   }
 
   async function cerrarSesion() {
-    await usuarioService.cerrarSesion();
-    setUsuario(null);
+    try {
+      await usuarioService.cerrarSesion();
+    } finally {
+      sessionStorage.removeItem(ADMIN_SESSION_KEY);
+      setUsuario(null);
+    }
   }
 
   useEffect(() => {

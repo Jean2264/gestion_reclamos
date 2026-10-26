@@ -3,7 +3,7 @@ import { Navigate, Outlet } from "react-router-dom";
 
 import { AuthContext } from "../context/AuthProvider";
 
-function ProtectedRoute() {
+function ProtectedRoute({ rolRequerido, redireccion = "/" }) {
   const { usuario, cargando } = useContext(AuthContext);
 
   if (cargando) {
@@ -11,7 +11,13 @@ function ProtectedRoute() {
   }
 
   if (!usuario) {
-    return <Navigate to="/" replace />;
+    return <Navigate to={redireccion} replace />;
+  }
+
+  const rol = usuario.usuario?.nombre_rol;
+
+  if (rolRequerido && rol !== rolRequerido) {
+    return <Navigate to={redireccion} replace />;
   }
 
   return <Outlet />;

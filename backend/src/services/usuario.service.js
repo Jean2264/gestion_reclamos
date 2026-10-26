@@ -34,17 +34,16 @@ export async function registrarUsuario(datosRegistro) {
   // 1. Verificar que el email no exista
   const usuarioExiste = await usuarioRepository.bucarUsuarioPorEmail(email);
 
-if (usuarioExiste) {
-  throw crearError("El email ya está registrado", 409);
-}
+  if (usuarioExiste) {
+    throw crearError("El email ya está registrado", 409);
+  }
 
   // 2. Verificar que el DNI no exista
   const ciudadanoExiste = await ciudadanoRepository.bucarCiudadanoPorDni(dni);
 
-
-if (ciudadanoExiste) {
-  throw crearError("El DNI ya está registrado", 409);
-}
+  if (ciudadanoExiste) {
+    throw crearError("El DNI ya está registrado", 409);
+  }
   // 3. Buscar rol Ciudadano
   const rolCiudadano = await rolRepository.buscarRolPorNombre("Ciudadano");
 
@@ -115,7 +114,6 @@ if (ciudadanoExiste) {
   }
 }
 
-
 export async function iniciarSesion(email, contrasenia) {
   // 1. Buscar usuario por email
   const usuario = await usuarioRepository.bucarUsuarioPorEmail(email);
@@ -135,10 +133,9 @@ export async function iniciarSesion(email, contrasenia) {
   }
 
   // 3. Buscar ciudadano asociado, si existe
-  const ciudadano =
-    await ciudadanoRepository.buscarCiudadanoPorIdUsuario(
-      usuario.id_usuario,
-    );
+  const ciudadano = await ciudadanoRepository.buscarCiudadanoPorIdUsuario(
+    usuario.id_usuario,
+  );
 
   // 4. Generar JWT para cualquier usuario autenticado
   const token = generarToken({
@@ -166,48 +163,47 @@ export async function iniciarSesion(email, contrasenia) {
   };
 }
 
-export async function  iniciarSesionAdmin(dni,contrasenia) {
+export async function iniciarSesionAdmin(dni, contrasenia) {
   const empleado = await empleadoRepository.buscarEmpleadoPorDni(dni);
 
-
   //valido existencia de empleado activo
-  if(!empleado)
-  {
-    const error= new Error("DNI o contraseña incorrecttos.");
-    error.statusCode=401;
+  if (!empleado) {
+    const error = new Error("DNI o contraseña incorrecttos.");
+    error.statusCode = 401;
     throw error;
   }
 
   //Permitos solamente roles admin o empleado
-  const rolesPermitidos= ["Administrador", "Empleado"];
+  const rolesPermitidos = ["Administrador", "Empleado"];
 
-  if(!rolesPermitidos.includes(empleado.nombre_rol)){
-   const error= new Error("DNI o contraseña incorrecttos.");
-    error.statusCode=401;
+  if (!rolesPermitidos.includes(empleado.nombre_rol)) {
+    const error = new Error("DNI o contraseña incorrecttos.");
+    error.statusCode = 401;
     throw error;
   }
 
   //verificar contrasenia
 
-  const contraseniaValida= await bcrypt.compare(contrasenia,
-    empleado.contrasenia
+  const contraseniaValida = await bcrypt.compare(
+    contrasenia,
+    empleado.contrasenia,
   );
 
-  if(!contraseniaValida){
-    const error= new Error("DNI o contraseña incorrecttos.");
-    error.statusCode=401;
+  if (!contraseniaValida) {
+    const error = new Error("DNI o contraseña incorrecttos.");
+    error.statusCode = 401;
     throw error;
   }
 
   //Genero la sesion administrativa
-  const token= generarToken({
+  const token = generarToken({
     idUsuario: empleado.id_usuario,
     idCiudadano: null,
     idRol: empleado.id_rol,
   });
 
-  return{
-     token,
+  return {
+    token,
     usuario: {
       id_usuario: empleado.id_usuario,
       email: empleado.email,
@@ -219,34 +215,43 @@ export async function  iniciarSesionAdmin(dni,contrasenia) {
       dni: empleado.dni,
     },
   };
-  
 }
 
 export async function obtenerUsuarioActual(idUsuario, idCiudadano) {
-  // 1. Buscar el usuario autenticado
   const usuario = await usuarioRepository.buscarUsuarioPorId(idUsuario);
 
   if (!usuario) {
-    throw new Error("Usuario no encontrado");
+    throw crearError("Usuario no encontrado", 401);
   }
 
-  // 2. Buscar el ciudadano solo si tiene uno asociado
   let ciudadano = null;
+  let empleado = null;
 
   if (idCiudadano != null) {
     ciudadano = await ciudadanoRepository.buscarCiudadanoPorId(idCiudadano);
 
     if (!ciudadano) {
-      throw new Error("Ciudadano no encontrado");
+      throw crearError("Ciudadano no encontrado", 404);
     }
   }
 
-  // 3. Devolver los datos públicos de la sesión
+  if (
+    usuario.nombre_rol === "Administrador" ||
+    usuario.nombre_rol === "Empleado"
+  ) {
+    empleado = await empleadoRepository.buscarEmpleadoPorUsuarioId(idUsuario);
+
+    if (!empleado) {
+      throw crearError("Empleado municipal no encontrado", 404);
+    }
+  }
+
   return {
     usuario: {
       id_usuario: usuario.id_usuario,
       email: usuario.email,
       id_rol: usuario.id_rol,
+      nombre_rol: usuario.nombre_rol,
     },
     ciudadano: ciudadano
       ? {
@@ -256,14 +261,26 @@ export async function obtenerUsuarioActual(idUsuario, idCiudadano) {
           apellido: ciudadano.apellido,
         }
       : null,
+    empleado: empleado
+      ? {
+          id_empleado: empleado.id_empleado,
+          dni: empleado.dni,
+        }
+      : null,
   };
 }
-
-
 export async function actualizarPassword(idUsuario, password) {
   const contraseniaHash = await bcrypt.hash(password, 10);
   return await usuarioRepository.actualizarPasswordUsuario(
     idUsuario,
+    contraseniaHash,
+  );
+}
+
+export async function actualizarPasswordPorEmail(email, password) {
+  const contraseniaHash = await bcrypt.hash(password, 10);
+  return await usuarioRepository.actualizarPasswordUsuarioPorEmail(
+    email,
     contraseniaHash,
   );
 }
