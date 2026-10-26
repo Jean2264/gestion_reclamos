@@ -2,7 +2,7 @@ import { Router } from "express";
 import { autenticar } from "../middleware/auth.middleware.js";
 import { autorizarRoles } from "../middleware/roles.middleware.js";
 import upload from "../middleware/upload.middleware.js";
-import * as reclamoController from "../controllers/reclamo. controller.js";
+import * as reclamoController from "../controllers/reclamo.controller.js";
 
 const router = Router();
 
