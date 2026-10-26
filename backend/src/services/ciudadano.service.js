@@ -34,7 +34,7 @@ export async function actualizarMiPerfil(idCiudadano, idUsuario, datos) {
   }
 
   // 3. Comprobar si el email pertenece a otra cuenta.
-  const usuarioExistente = await usuarioRepository.bucarUsuarioPorEmail(
+  const usuarioExistente = await usuarioRepository.buscarUsuarioPorEmail(
     datos.email.trim(),
   );
 
@@ -99,11 +99,6 @@ export async function actualizarMiPerfil(idCiudadano, idUsuario, datos) {
   }
 }
 
-
-
-
-
-
 // Alta de ciudadano desde el panel administrativo
 export async function crearCiudadanoDesdePanel(datos) {
   // 1. Validar los datos personales del ciudadano.
@@ -114,10 +109,7 @@ export async function crearCiudadanoDesdePanel(datos) {
   const dni = String(datos.dni ?? "").trim();
 
   // 3. Validar el email.
-  if (
-    typeof email !== "string" ||
-    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-  ) {
+  if (typeof email !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     const error = new Error("El email no es válido");
     error.statusCode = 400;
     error.details = {
@@ -127,8 +119,7 @@ export async function crearCiudadanoDesdePanel(datos) {
   }
 
   // 4. Comprobar que el email no esté registrado.
-  const usuarioExistente =
-    await usuarioRepository.bucarUsuarioPorEmail(email);
+  const usuarioExistente = await usuarioRepository.buscarUsuarioPorEmail(email);
 
   if (usuarioExistente) {
     const error = new Error("Ese email ya está registrado");
@@ -196,9 +187,7 @@ export async function crearCiudadanoDesdePanel(datos) {
 
     // Contempla duplicados que aparezcan simultáneamente.
     if (error.code === "23505") {
-      const conflicto = new Error(
-        "El email o el DNI ya están registrados",
-      );
+      const conflicto = new Error("El email o el DNI ya están registrados");
       conflicto.statusCode = 409;
       throw conflicto;
     }

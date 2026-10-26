@@ -142,6 +142,12 @@ function ComplaintForm({ onMostrarResultado }) {
         (imagenComprimida.size / 1024 / 1024).toFixed(2),
         "MB",
       );
+
+      setImageErrors((prev) => {
+        const nuevosErrores = [...prev];
+        nuevosErrores[index] = "";
+        return nuevosErrores;
+      });
     } catch (error) {
       console.error("Error al comprimir la imagen:", error);
       setImageErrors((prev) => {
@@ -250,11 +256,6 @@ function ComplaintForm({ onMostrarResultado }) {
 
     if (!formData.descripcion.trim()) {
       nuevosErrores.descripcion = "La descripción del reclamo es obligatoria.";
-    }
-
-    if (formData.estadoTributario !== true) {
-      nuevosErrores.estadoTributario =
-        "Debés aceptar la declaración jurada para continuar.";
     }
 
     setErrors(nuevosErrores);
@@ -784,9 +785,6 @@ function ComplaintForm({ onMostrarResultado }) {
               momento de realizar el presente reclamo, mi estado tributario se
               encuentra al día.
             </span>
-            {errors.estadoTributario && (
-              <small className="field-error">{errors.estadoTributario}</small>
-            )}
           </label>
         </div>
 
