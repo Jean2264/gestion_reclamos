@@ -32,7 +32,7 @@ export async function registrarUsuario(datosRegistro) {
   } = datosRegistro;
 
   // 1. Verificar que el email no exista
-  const usuarioExiste = await usuarioRepository.bucarUsuarioPorEmail(email);
+  const usuarioExiste = await usuarioRepository.buscarUsuarioPorEmail(email);
 
   if (usuarioExiste) {
     throw crearError("El email ya está registrado", 409);
@@ -116,7 +116,7 @@ export async function registrarUsuario(datosRegistro) {
 
 export async function iniciarSesion(email, contrasenia) {
   // 1. Buscar usuario por email
-  const usuario = await usuarioRepository.bucarUsuarioPorEmail(email);
+  const usuario = await usuarioRepository.buscarUsuarioPorEmail(email);
 
   if (!usuario) {
     throw crearError("Email o contraseña incorrectos", 401);
