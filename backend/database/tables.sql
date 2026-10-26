@@ -32,7 +32,7 @@ CREATE TABLE usuario (
         REFERENCES rol_usuario(id_rol)
 );
 
-
+select * from  usuario
 -- =====================================================
 -- 3. CIUDADANOS
 -- =====================================================
@@ -56,7 +56,7 @@ CREATE TABLE ciudadano (
         REFERENCES usuario(id_usuario)
 );
 
-select * from ciudadano where codigo_postal= 'romina@gmail.com'
+select * from ciudadano where dni= '95237175'
 
 
 -- =====================================================
