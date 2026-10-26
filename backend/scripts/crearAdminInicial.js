@@ -1,4 +1,3 @@
-
 import bcrypt from "bcrypt";
 import pool from "../src/config/database.js";
 
@@ -26,7 +25,7 @@ async function crearAdminInicial() {
     const rolResult = await client.query(
       `SELECT id_rol
        FROM rol_usuario
-       WHERE nombre_rol = 'Administrador'`
+       WHERE nombre_rol = 'Administrador'`,
     );
 
     if (!rolResult.rows[0]) {
@@ -40,13 +39,11 @@ async function crearAdminInicial() {
        LEFT JOIN empleado_municipal em
          ON em.id_usuario = u.id_usuario
        WHERE u.email = $1 OR em.dni = $2`,
-      [admin.email, admin.dni]
+      [admin.email, admin.dni],
     );
 
     if (existente.rowCount > 0) {
-      throw new Error(
-        "Ya existe un usuario con ese email o DNI."
-      );
+      throw new Error("Ya existe un usuario con ese email o DNI.");
     }
 
     const hash = await bcrypt.hash(admin.contrasenia, 10);
@@ -56,11 +53,7 @@ async function crearAdminInicial() {
       `INSERT INTO usuario (email, contrasenia, id_rol)
        VALUES ($1, $2, $3)
        RETURNING id_usuario`,
-      [
-        admin.email,
-        hash,
-        rolResult.rows[0].id_rol,
-      ]
+      [admin.email, hash, rolResult.rows[0].id_rol],
     );
 
     const idUsuario = usuarioResult.rows[0].id_usuario;
@@ -82,7 +75,7 @@ async function crearAdminInicial() {
         admin.localidad,
         admin.codigoPostal,
         idUsuario,
-      ]
+      ],
     );
 
     await client.query("COMMIT");
@@ -99,5 +92,9 @@ async function crearAdminInicial() {
     await pool.end();
   }
 }
+//para ejecutar
+//node crear-admin-inicial.js
 
+//para el hasheo de contrasenia
+/**node --input-type=module -e "import bcrypt from 'bcrypt'; console.log(await bcrypt.hash('MiClaveSegura123!', 10));" */
 crearAdminInicial();
