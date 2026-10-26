@@ -97,4 +97,19 @@ async function crearAdminInicial() {
 
 //para el hasheo de contrasenia
 /**node --input-type=module -e "import bcrypt from 'bcrypt'; console.log(await bcrypt.hash('MiClaveSegura123!', 10));" */
+
+/**SELECT
+    u.id_usuario,
+    u.email,
+    u.contrasenia,
+    r.nombre_rol,
+    em.nombre,
+    em.apellido,
+    em.dni
+FROM usuario u
+INNER JOIN rol_usuario r
+    ON r.id_rol = u.id_rol
+INNER JOIN empleado_municipal em
+    ON em.id_usuario = u.id_usuario
+WHERE u.email = 'admin@municipalidad.local'; */
 crearAdminInicial();
