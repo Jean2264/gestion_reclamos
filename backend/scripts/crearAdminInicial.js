@@ -93,7 +93,7 @@ async function crearAdminInicial() {
   }
 }
 //para ejecutar
-//node crear-admin-inicial.js
+//node .\scripts\crearAdminInicial.js
 
 //para el hasheo de contrasenia
 /**node --input-type=module -e "import bcrypt from 'bcrypt'; console.log(await bcrypt.hash('MiClaveSegura123!', 10));" */
