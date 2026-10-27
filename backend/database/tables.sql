@@ -160,6 +160,9 @@ values(
 
 select * from estado_reclamo
 
+
+update estado_reclamo set nombre_estado= 'en proceso' where id_estado='4'
+
 -- =====================================================
 -- 7. RECLAMOS
 -- =====================================================
@@ -201,7 +204,7 @@ ALTER TABLE reclamo
 DROP CONSTRAINT reclamo_id_ciudadano_key;
 
 update reclamo
-set id_estado= '2' where id_reclamo='6'
+set id_estado= '4' where id_reclamo='10'
 select * from reclamo
 -- =====================================================
 -- 8. HISTORIAL DE RECLAMOS
