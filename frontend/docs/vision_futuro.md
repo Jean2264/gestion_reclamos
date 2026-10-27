@@ -54,3 +54,7 @@ ALTER TABLE usuario
 ADD COLUMN debe_cambiar_contrasenia BOOLEAN NOT NULL DEFAULT FALSE;
 
 ### Es para el tema de primer login
+
+## Agregar estado_reclamo = en proceso (asi como lo puse)
+
+nos olvidamos de vuelta ajajaj

@@ -155,7 +155,8 @@ values(
 'Nuevo'
 ),
 ('asignado'),
-('finalizado');
+('finalizado'),
+('proceso');
 
 select * from estado_reclamo
 

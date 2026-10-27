@@ -107,7 +107,7 @@ export async function obtenerMisReclamos({
 
   if (estado) {
     valores.push(estado);
-    condiciones.push(`e.nombre_estado = $${valores.length}`);
+    condiciones.push(`LOWER(e.nombre_estado) = LOWER($${valores.length})`);
   }
 
   if (desde) {
@@ -158,7 +158,7 @@ export async function contarMisReclamos({ idCiudadano, estado, desde, hasta }) {
 
   if (estado) {
     valores.push(estado);
-    condiciones.push(`e.nombre_estado = $${valores.length}`);
+    condiciones.push(`LOWER(e.nombre_estado) = LOWER($${valores.length})`);
   }
 
   if (desde) {
