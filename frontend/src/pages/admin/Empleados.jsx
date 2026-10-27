@@ -2,6 +2,7 @@ import "./Empleados.css";
 import DataTable from "../../components/common/DataTable";
 import SearchBar from "../../components/common/SearchBar";
 import EmpleadoModal from "../../components/empleado-panel/EmpleadoModal";
+import * as empleadoService from "../../services/empleado.service.js";
 import { useState } from "react";
 
 function Empleados() {
@@ -13,6 +14,14 @@ function Empleados() {
 
   function handleCloseEmpleadoModal() {
     setIsEmpleadoModalOpen(false);
+  }
+
+  async function handleCrearEmpleado(datosEmpleado) {
+    const empleadoCreado = await empleadoService.crearEmpleado(datosEmpleado);
+
+    // Devolver el resultado para que el componente padre
+    // pueda actualizar la tabla.
+    return empleadoCreado;
   }
 
   return (
@@ -32,6 +41,7 @@ function Empleados() {
         <EmpleadoModal
           title="Nuevo empleado"
           onClose={handleCloseEmpleadoModal}
+          onSave={handleCrearEmpleado}
         />
       )}
     </section>
