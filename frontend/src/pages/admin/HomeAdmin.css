@@ -35,13 +35,19 @@
   align-items: center;
 }
 
-.home-admin-search-header button {
+.all {
   padding: 8px 12px;
   border: none;
   border-radius: 8px;
   background: #0069ba;
   color: #ffffff;
   cursor: pointer;
+}
+
+.home-admin-header-section {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
 }
 
 .data-table button {

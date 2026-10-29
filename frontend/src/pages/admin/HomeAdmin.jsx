@@ -127,7 +127,7 @@ function HomeAdmin() {
     <div className="home-admin">
       <section className="home-admin-cards">
         <ReclamoCard
-          title="Reclamos entrantes"
+          title="Reclamos nuevos"
           description="Nuevos reclamos que todavía no fueron revisados."
           count={12}
           icon="bi bi-inbox"
@@ -135,8 +135,8 @@ function HomeAdmin() {
         />
 
         <ReclamoCard
-          title="Reclamos en revisión"
-          description="Reclamos que están siendo analizados por el municipio."
+          title="Reclamos asignados"
+          description="Reclamos que están asignados a las áreas correspondientes."
           count={8}
           icon="bi bi-search"
           onViewDetails={() => handleViewDetails("revision")}
@@ -156,19 +156,18 @@ function HomeAdmin() {
           <h2>
             {selectedStatus ? `Reclamos ${selectedStatus}` : "Buscar reclamos"}
           </h2>
-
-          {selectedStatus && (
-            <button type="button" onClick={handleShowAll}>
-              Mostrar todos
-            </button>
-          )}
         </div>
 
-        <SearchBar
-          value={search}
-          onChange={setSearch}
-          placeholder="Buscar por código, asunto o ciudadano..."
-        />
+        <div className="home-admin-header-section">
+          <SearchBar
+            value={search}
+            onChange={setSearch}
+            placeholder="Buscar por código, asunto o ciudadano..."
+          />
+          <button className="all" type="button" onClick={handleShowAll}>
+            Mostrar todos
+          </button>
+        </div>
       </section>
 
       <DataTable

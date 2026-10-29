@@ -1,3 +1,7 @@
+/* =========================
+   OVERLAY
+   ========================= */
+
 .complaint-modal-overlay {
   position: fixed;
   inset: 0;
@@ -243,9 +247,22 @@
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
 }
 
+.complaint-modal-field select:disabled {
+  background: #f8fafc;
+
+  color: #94a3b8;
+
+  cursor: not-allowed;
+}
+
+/* =========================
+   ACCIONES DEL ESTADO
+   ========================= */
+
 .complaint-area-actions {
   display: flex;
   align-items: center;
+
   gap: 1rem;
 
   width: 100%;
@@ -253,6 +270,7 @@
 
 .complaint-area-actions select {
   flex: 1;
+
   min-width: 0;
 }
 
@@ -277,28 +295,50 @@
     transform 0.2s ease;
 }
 
-.complaint-area-save:hover {
+.complaint-area-save:hover:not(:disabled) {
   background: #16a34a;
+
   transform: translateY(-1px);
+}
+
+.complaint-area-save:disabled {
+  opacity: 0.6;
+
+  cursor: not-allowed;
+}
+
+/* =========================
+   MENSAJE DE CAMBIO DE ESTADO
+   ========================= */
+
+.complaint-modal-status-hint {
+  margin: 0;
+
+  color: #64748b;
+
+  font-size: 12px;
+  line-height: 1.6;
+
+  overflow-wrap: anywhere;
+}
+
+.complaint-modal-status-hint strong {
+  color: #334155;
+  font-weight: 600;
+}
+
+.complaint-modal-error {
+  margin: 0;
+
+  color: #dc2626;
+
+  font-size: 13px;
+  line-height: 1.5;
 }
 
 /* =========================
    IMÁGENES
    ========================= */
-
-.complaint-modal-images {
-  display: flex;
-  flex-direction: column;
-
-  gap: 8px;
-}
-
-.complaint-modal-images > span {
-  color: #94a3b8;
-
-  font-size: 13px;
-  font-weight: 500;
-}
 
 .complaint-modal-images-grid {
   display: grid;
@@ -306,6 +346,18 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
 
   gap: 12px;
+}
+
+.complaint-modal-images-grid a {
+  display: block;
+
+  min-width: 0;
+
+  overflow: hidden;
+
+  border-radius: 14px;
+
+  text-decoration: none;
 }
 
 .complaint-modal-images-grid img {
@@ -318,6 +370,14 @@
 
   border: 1px solid #dbeafe;
   border-radius: 14px;
+
+  box-sizing: border-box;
+
+  transition: transform 0.2s ease;
+}
+
+.complaint-modal-images-grid a:hover img {
+  transform: scale(1.03);
 }
 
 /* =========================
@@ -464,6 +524,19 @@
 
   .complaint-modal-images-grid {
     grid-template-columns: 1fr;
+  }
+
+  .complaint-area-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .complaint-area-actions select {
+    width: 100%;
+  }
+
+  .complaint-area-save {
+    width: 100%;
   }
 
   .complaint-modal-footer {
