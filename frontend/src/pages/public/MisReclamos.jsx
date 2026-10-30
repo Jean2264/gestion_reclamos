@@ -3,7 +3,9 @@ import { useEffect, useState } from "react";
 import { obtenerMisReclamos } from "../../services/reclamo.service.js";
 
 import "./MisReclamos.css";
+
 import Header from "../../components/common/Header";
+
 import Footer from "../../components/common/Footer";
 
 const LIMITE_POR_PAGINA = 10;
@@ -247,6 +249,7 @@ function MisReclamos() {
   return (
     <>
       <Header />
+
       <main className="mis-reclamos">
         <header className="mis-reclamos-header">
           <div className="mis-reclamos-titulo">
@@ -263,15 +266,35 @@ function MisReclamos() {
             </div>
           </div>
 
-          <div className="mis-reclamos-total">
+          <div
+            className="mis-reclamos-total"
+            onClick={() => {
+              document.getElementById("listado-reclamos")?.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+              });
+            }}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+
+                document.getElementById("listado-reclamos")?.scrollIntoView({
+                  behavior: "smooth",
+                  block: "start",
+                });
+              }
+            }}
+            aria-label="Ir al listado de reclamos"
+          >
             <span className="mis-reclamos-total-icono">
               <i className="bi bi-folder2-open"></i>
             </span>
 
             <div>
               <strong>{paginacion.total}</strong>
-
-              <span>{paginacion.total === 1 ? "reclamo" : "reclamos"}</span>
+              <span>reclamos en total</span>
             </div>
           </div>
         </header>
@@ -363,7 +386,7 @@ function MisReclamos() {
           </form>
         </section>
 
-        <section className="mis-reclamos-tabla-seccion">
+        <section id="listado-reclamos" className="mis-reclamos-tabla-seccion">
           <div className="mis-reclamos-tabla-header">
             <div>
               <h2>Listado de reclamos</h2>
@@ -545,6 +568,7 @@ function MisReclamos() {
           )}
         </section>
       </main>
+
       <Footer />
     </>
   );

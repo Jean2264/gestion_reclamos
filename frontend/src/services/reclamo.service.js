@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000/api";
+const API_URL = "http://192.168.100.10:3000/api";
 
 // Obtener las áreas de gestión.
 export async function obtenerAreas() {

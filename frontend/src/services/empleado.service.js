@@ -1,4 +1,5 @@
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+const API_URL =
+  import.meta.env.VITE_API_URL || "http://192.168.100.10:3000/api";
 
 export async function crearEmpleado(datosEmpleado) {
   const response = await fetch(`${API_URL}/empleados`, {

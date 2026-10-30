@@ -58,3 +58,35 @@ ADD COLUMN debe_cambiar_contrasenia BOOLEAN NOT NULL DEFAULT FALSE;
 ## Agregar estado_reclamo = en proceso (asi como lo puse)
 
 nos olvidamos de vuelta ajajaj
+
+# Para ejecutar
+
+npm run dev -- --host 0.0.0.0
+
+````
+¿Qué hace --host 0.0.0.0?
+
+Le indica a Vite que escuche conexiones por las interfaces de red de tu computadora, en lugar de aceptar solamente conexiones locales.
+
+Sin esa configuración, es posible que el celular no pueda acceder al frontend.```
+````
+
+## Resultado ejemplo:
+
+VITE ready
+
+Local: http://localhost:5173/
+Network: http://192.168.1.50:5173/
+
+## Los profesores deberan usar o sea el cliente es el que dice NetWork
+
+¿Tengo que cambiar algo en el proyecto?
+Si querés dejarlo configurado permanentemente durante el desarrollo, podés modificar el script de package.json:
+
+````js
+{
+  "scripts": {
+    "dev": "vite --host 0.0.0.0"
+  }
+}```
+````

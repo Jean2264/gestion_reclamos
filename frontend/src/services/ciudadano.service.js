@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000/api";
+const API_URL = "http://192.168.100.10:3000/api";
 
 export async function miPerfil() {
   const response = await fetch(`${API_URL}/ciudadanos/me`, {
@@ -39,7 +39,6 @@ export async function actualizarMiPerfil(datosPerfil) {
   return data;
 }
 
-
 //crear desde el apartado administrativo
 
 export async function crearCiudadano(datosCiudadano) {
@@ -56,7 +55,7 @@ export async function crearCiudadano(datosCiudadano) {
 
   if (!response.ok) {
     const error = new Error(
-      data.message || "No se pudo registrar al ciudadano."
+      data.message || "No se pudo registrar al ciudadano.",
     );
 
     error.status = response.status;
