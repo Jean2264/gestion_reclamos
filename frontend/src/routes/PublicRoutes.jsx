@@ -10,6 +10,7 @@ function PublicRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Welcome />} />
+      <Route path="/welcome" element={<Welcome />} />
       <Route element={<ProtectedRoute />}>
         <Route path="/reclamo" element={<Home />} />
         <Route path="/perfil" element={<MiPerfil />} />

@@ -3,7 +3,7 @@ import { Navigate, Outlet } from "react-router-dom";
 
 import { AuthContext } from "../context/AuthProvider";
 
-function ProtectedRoute({ rolRequerido, redireccion = "/" }) {
+function ProtectedRoute({ rolRequerido, rolesPermitidos, redireccion = "/" }) {
   const { usuario, cargando } = useContext(AuthContext);
 
   if (cargando) {
@@ -16,7 +16,13 @@ function ProtectedRoute({ rolRequerido, redireccion = "/" }) {
 
   const rol = usuario.usuario?.nombre_rol;
 
+  // Comprobar un rol específico.
   if (rolRequerido && rol !== rolRequerido) {
+    return <Navigate to={redireccion} replace />;
+  }
+
+  // Comprobar si el rol está incluido en la lista permitida.
+  if (rolesPermitidos && !rolesPermitidos.includes(rol)) {
     return <Navigate to={redireccion} replace />;
   }
 

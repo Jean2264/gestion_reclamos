@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 
 import muniImage from "../../assets/escudo.png";
@@ -25,7 +26,10 @@ function Header() {
     <>
       <header className="header">
         <div className="header-logo">
-          <img className="img" src={muniImage} alt="Logo del municipio" />
+          <Link to="/">
+            {" "}
+            <img className="img" src={muniImage} alt="Logo del municipio" />
+          </Link>
         </div>
 
         {isHome && (

@@ -1,8 +1,12 @@
+import { useContext } from "react";
 import { NavLink } from "react-router-dom";
+
+import { AuthContext } from "../../context/AuthProvider";
 
 import "./AdminSidebar.css";
 
 function AdminSidebar() {
+  const { usuario } = useContext(AuthContext);
   return (
     <aside className="admin-sidebar">
       <div className="admin-sidebar-brand">
@@ -52,13 +56,15 @@ function AdminSidebar() {
           </li>
 
           <li>
-            <NavLink
-              to="/admin/empleados"
-              className={({ isActive }) => (isActive ? "active" : "")}
-            >
-              <i className="bi bi-person-badge"></i>
-              <span>Empleados</span>
-            </NavLink>
+            {usuario?.usuario?.nombre_rol === "Administrador" && (
+              <NavLink
+                to="/admin/empleados"
+                className={({ isActive }) => (isActive ? "active" : "")}
+              >
+                <i className="bi bi-person-badge"></i>
+                <span>Empleados</span>
+              </NavLink>
+            )}
           </li>
         </ul>
       </nav>

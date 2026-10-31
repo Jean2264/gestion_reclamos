@@ -11,25 +11,42 @@ import ProtectedRoute from "./ProtectedRoute";
 function AdminRoutes() {
   return (
     <Routes>
+      {/* Inicio de sesión administrativo */}
       <Route path="/login-admin" element={<LoginAdmin />} />
 
+      {/* Panel accesible para administradores y empleados */}
       <Route
         element={
           <ProtectedRoute
-            rolRequerido="Administrador"
+            rolesPermitidos={["Administrador", "Empleado"]}
             redireccion="/login-admin"
           />
         }
       >
         <Route path="/admin" element={<AdminLayout />}>
+          {/* Inicio del panel */}
           <Route index element={<HomeAdmin />} />
-          <Route path="empleados" element={<Empleados />} />
+
+          {/* Solo el administrador puede acceder a Empleados */}
+          <Route
+            element={
+              <ProtectedRoute
+                rolRequerido="Administrador"
+                redireccion="/admin"
+              />
+            }
+          >
+            <Route path="empleados" element={<Empleados />} />
+          </Route>
+
+          {/* Secciones compartidas */}
           <Route path="ciudadanos" element={<Ciudadanos />} />
           <Route path="nuevo-reclamo" element={<NuevoReclamo />} />
         </Route>
       </Route>
 
-      <Route path="/admin/*" element={<Navigate to="/login-admin" replace />} />
+      {/* Rutas administrativas no reconocidas */}
+      <Route path="/admin/*" element={<Navigate to="/admin" replace />} />
     </Routes>
   );
 }

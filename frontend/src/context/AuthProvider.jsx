@@ -2,7 +2,7 @@ import { createContext, useState, useEffect } from "react";
 import * as usuarioService from "../services/usuario.service.js";
 
 const ADMIN_SESSION_KEY = "admin_session_active";
-const ADMIN_ROLE = "Administrador";
+const ROLES_ADMINISTRATIVOS = ["Administrador", "Empleado"];
 export const AuthContext = createContext();
 
 function AuthProvider({ children }) {
@@ -25,7 +25,9 @@ function AuthProvider({ children }) {
   async function iniciarSesionAdmin(dni, contrasenia) {
     const data = await usuarioService.iniciarSesionAdmin(dni, contrasenia);
 
-    if (data.data?.usuario?.nombre_rol !== ADMIN_ROLE) {
+    const rol = data.data?.usuario?.nombre_rol;
+
+    if (!ROLES_ADMINISTRATIVOS.includes(rol)) {
       await usuarioService.cerrarSesion();
 
       throw new Error("No tenés permisos para acceder al panel.");
@@ -36,6 +38,7 @@ function AuthProvider({ children }) {
 
     return data;
   }
+
   async function registrarUsuario(datosRegistro) {
     const data = await usuarioService.registrarUsuario(datosRegistro);
 
@@ -52,7 +55,9 @@ function AuthProvider({ children }) {
 
       const rol = usuarioActual?.usuario?.nombre_rol;
 
-      if (rol === ADMIN_ROLE) {
+      // Si es un usuario administrativo, comprobamos que haya iniciado
+      // sesión desde el acceso administrativo.
+      if (ROLES_ADMINISTRATIVOS.includes(rol)) {
         const sesionAdministrativaActiva =
           sessionStorage.getItem(ADMIN_SESSION_KEY) === "true";
 

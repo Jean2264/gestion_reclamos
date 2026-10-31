@@ -14,7 +14,6 @@ function CitizenPanel({ isOpen, onClose }) {
   }
   const inicial = usuario?.ciudadano?.nombre?.charAt(0).toUpperCase();
   async function handleCerrarSesion() {
-    console.log("CLICK EN CERRAR SESIÓN");
     try {
       await cerrarSesion();
 
