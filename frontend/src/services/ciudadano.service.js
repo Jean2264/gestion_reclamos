@@ -1,4 +1,6 @@
-const API_URL = "http://192.168.100.10:3000/api";
+const API_URL = "http://localhost:3000/api";
+
+//const API_URL = "http://192.168.100.10:3000/api";
 
 export async function miPerfil() {
   const response = await fetch(`${API_URL}/ciudadanos/me`, {

@@ -1,0 +1,176 @@
+/* ========================================
+   CONTENEDOR
+======================================== */
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+
+  min-width: 0;
+}
+
+/* ========================================
+   NÚMEROS DE PÁGINA
+======================================== */
+
+.pagination-pages {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+/* ========================================
+   BOTONES
+======================================== */
+
+.pagination-page,
+.pagination-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  width: 35px;
+  height: 35px;
+  padding: 0;
+
+  border: 1px solid transparent;
+  border-radius: 10px;
+
+  background: transparent;
+  color: #64748b;
+
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+/* ========================================
+   HOVER
+======================================== */
+
+.pagination-page:hover:not(:disabled),
+.pagination-arrow:hover:not(:disabled) {
+  background: #eff6ff;
+  border-color: #dbeafe;
+  color: #2563eb;
+}
+
+.pagination-page:active:not(:disabled),
+.pagination-arrow:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+/* ========================================
+   PÁGINA ACTUAL
+======================================== */
+
+.pagination-page.active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+
+  font-weight: 700;
+
+  box-shadow: 0 3px 8px rgba(37, 99, 235, 0.18);
+}
+
+.pagination-page.active:hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+}
+
+/* ========================================
+   FLECHAS
+======================================== */
+
+.pagination-arrow {
+  background: #ffffff;
+  border-color: #e2e8f0;
+  color: #475569;
+}
+
+.pagination-arrow i {
+  font-size: 12px;
+}
+
+/* Flechas deshabilitadas */
+
+.pagination-arrow:disabled {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  color: #cbd5e1;
+
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* ========================================
+   PUNTOS SUSPENSIVOS
+======================================== */
+
+.pagination-dots {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  width: 22px;
+  height: 35px;
+
+  color: #94a3b8;
+  font-size: 14px;
+  font-weight: 600;
+
+  user-select: none;
+}
+
+/* ========================================
+   ACCESIBILIDAD
+======================================== */
+
+.pagination-page:focus-visible,
+.pagination-arrow:focus-visible {
+  outline: 2px solid #60a5fa;
+  outline-offset: 2px;
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 600px) {
+  .pagination {
+    gap: 4px;
+  }
+
+  .pagination-pages {
+    gap: 2px;
+  }
+
+  .pagination-page,
+  .pagination-arrow {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+  }
+
+  .pagination-dots {
+    width: 16px;
+    height: 32px;
+  }
+}

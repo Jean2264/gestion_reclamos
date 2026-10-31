@@ -169,3 +169,19 @@ export async function crearEmpleadoDesdePanel(datos) {
     client.release();
   }
 }
+
+export async function getAllEmpleados(search, page = 1, limit = 20) {
+  const empleados = await empleadoRepository.getAllEmpleados(
+    search,
+    page,
+    limit,
+  );
+
+  return empleados;
+}
+
+export async function fetchEmpleado(id) {
+  const empleado = await empleadoRepository.fetchEmpleadoById(id);
+
+  return empleado;
+}

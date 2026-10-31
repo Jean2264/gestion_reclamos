@@ -1,5 +1,65 @@
-const API_URL =
-  import.meta.env.VITE_API_URL || "http://192.168.100.10:3000/api";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+
+// =====================================================
+// OBTENER EMPLEADOS CON PAGINACIÓN
+// =====================================================
+
+// Obtener empleados con búsqueda y paginación.
+export async function getEmpleados(search = "", page = 1, limit = 20) {
+  const params = new URLSearchParams({
+    search,
+    page: String(page),
+    limit: String(limit),
+  });
+
+  const response = await fetch(`${API_URL}/empleados?${params.toString()}`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  const resultado = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    const error = new Error(
+      resultado?.message || "No se pudo obtener la lista de empleados.",
+    );
+
+    error.status = response.status;
+    throw error;
+  }
+
+  return resultado;
+}
+
+// Obtener los datos completos de un empleado por su ID.
+export async function fetchEmpleadoById(id_empleado) {
+  const response = await fetch(`${API_URL}/empleados/buscar`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      id_empleado: Number(id_empleado),
+    }),
+  });
+
+  const resultado = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    const error = new Error(
+      resultado?.message || "No se pudo obtener el empleado.",
+    );
+
+    error.status = response.status;
+    throw error;
+  }
+
+  return resultado.empleado;
+}
+// =====================================================
+// CREAR EMPLEADO
+// =====================================================
 
 export async function crearEmpleado(datosEmpleado) {
   const response = await fetch(`${API_URL}/empleados`, {
