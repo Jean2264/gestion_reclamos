@@ -331,7 +331,7 @@ function Empleados() {
           <span>{error}</span>
 
           <button type="button" onClick={cargarEmpleados}>
-            Reintentar
+            Volver
           </button>
         </div>
       )}

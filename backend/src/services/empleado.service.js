@@ -409,7 +409,7 @@ export async function desactivarEmpleadoDesdePanel(idEmpleado) {
 
   // Proteger al administrador semilla.
   if (id === ID_ADMIN_SEMILLA) {
-    const error = new Error("No se puede eliminar al administrador semilla.");
+    const error = new Error("No se puede eliminar al administrador inicial.");
     error.statusCode = 403;
     throw error;
   }

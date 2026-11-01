@@ -185,10 +185,3 @@ export async function contarMisReclamos({ idCiudadano, estado, desde, hasta }) {
 
   return resultado.rows[0].total;
 }
-
-
-export async function selectReclamos() {
-  
-
-  
-}
