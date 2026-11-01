@@ -6,6 +6,7 @@ import DataTable from "../../components/common/DataTable";
 import SearchBar from "../../components/common/SearchBar";
 import Pagination from "../../components/common/Pagination.jsx";
 import EmpleadoModal from "../../components/empleado-panel/EmpleadoModal";
+import ConfirmModal from "../../components/common/ConfirmModal";
 
 import * as empleadoService from "../../services/empleado.service.js";
 
@@ -14,6 +15,36 @@ function Empleados() {
   const [isEmpleadoModalOpen, setIsEmpleadoModalOpen] = useState(false);
   const [selectedEmpleadoId, setSelectedEmpleadoId] = useState(null);
   const [empleadoModalMode, setEmpleadoModalMode] = useState("create");
+  // Modal de confirmación para eliminar
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [empleadoAEliminar, setEmpleadoAEliminar] = useState(null);
+  // Abrir confirmación de eliminación
+  function handleOpenDeleteModal(empleado) {
+    setEmpleadoAEliminar(empleado);
+    setIsConfirmModalOpen(true);
+  }
+
+  // Cancelar eliminación
+  function handleCancelDelete() {
+    setIsConfirmModalOpen(false);
+    setEmpleadoAEliminar(null);
+  }
+
+  // Confirmar eliminación
+  async function handleConfirmDelete() {
+    if (!empleadoAEliminar) return;
+
+    // Todavía no ejecutamos la eliminación en el backend.
+    // Primero vamos a conectar el servicio de eliminación lógica.
+
+    console.log(
+      "Empleado seleccionado para eliminar:",
+      empleadoAEliminar.id_empleado,
+    );
+
+    setIsConfirmModalOpen(false);
+    setEmpleadoAEliminar(null);
+  }
 
   // Búsqueda
   const [search, setSearch] = useState("");
@@ -194,11 +225,7 @@ function Empleados() {
             className="empleado-action-btn delete"
             title="Eliminar empleado"
             aria-label={`Eliminar empleado ${empleado.nombre} ${empleado.apellido}`}
-            onClick={() => {
-              setSelectedEmpleadoId(empleado.id_empleado);
-              // Aquí abriremos el modal de confirmación.
-              // No se elimina ningún registro todavía.
-            }}
+            onClick={() => handleOpenDeleteModal(empleado)}
           >
             <i className="bi bi-trash3"></i>
           </button>
@@ -352,6 +379,18 @@ function Empleados() {
           onSave={handleCrearEmpleado}
         />
       )}
+      {/* Modal de confirmación de eliminación */}
+      <ConfirmModal
+        isOpen={isConfirmModalOpen}
+        title="Eliminar empleado"
+        message={
+          empleadoAEliminar
+            ? `¿Estás seguro de que querés eliminar a ${empleadoAEliminar.nombre} ${empleadoAEliminar.apellido}?`
+            : "¿Estás seguro de que querés eliminar este empleado?"
+        }
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+      />
     </section>
   );
 }

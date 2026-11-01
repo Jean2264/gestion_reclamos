@@ -1,0 +1,316 @@
+/* ==============================
+   OVERLAY
+============================== */
+
+.confirm-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(23, 32, 51, 0.35);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+
+  animation: confirm-overlay-appear 0.2s ease;
+}
+
+/* ==============================
+   MODAL
+============================== */
+
+.confirm-modal-overlay .confirm-modal {
+  position: relative;
+
+  width: 100%;
+  max-width: 400px;
+  box-sizing: border-box;
+
+  padding: 28px;
+
+  background: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border, #e5e7eb);
+  border-radius: var(--radius-lg, 16px);
+
+  box-shadow: 0 20px 60px rgba(23, 32, 51, 0.2);
+
+  text-align: center;
+
+  animation: confirm-modal-appear 0.25s ease;
+}
+
+/* ==============================
+   ICON
+============================== */
+
+.confirm-modal-overlay .confirm-modal-icon {
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+
+  margin: 0 auto 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #fef2f2;
+  color: var(--color-danger, #dc2626);
+
+  font-size: 22px;
+}
+
+.confirm-modal-overlay .confirm-modal-icon i {
+  display: block;
+  line-height: 1;
+}
+
+/* ==============================
+   CONTENT
+============================== */
+
+.confirm-modal-overlay .confirm-modal-content {
+  width: 100%;
+  min-width: 0;
+}
+
+.confirm-modal-overlay .confirm-modal-content h2 {
+  margin: 0 0 8px;
+  padding: 0;
+
+  color: var(--color-text, #1f2937);
+
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.confirm-modal-overlay .confirm-modal-content p {
+  margin: 0;
+  padding: 0;
+
+  color: var(--color-text-secondary, #6b7280);
+
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.6;
+
+  overflow-wrap: anywhere;
+}
+
+/* ==============================
+   ACTIONS
+============================== */
+
+.confirm-modal-overlay .confirm-modal-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+
+  gap: 10px;
+
+  margin-top: 24px;
+}
+
+/* ==============================
+   BUTTONS
+   Se aíslan los estilos del modal
+   para evitar conflictos globales.
+============================== */
+
+.confirm-modal-overlay .confirm-modal-cancel,
+.confirm-modal-overlay .confirm-modal-confirm {
+  appearance: none;
+  -webkit-appearance: none;
+
+  box-sizing: border-box;
+
+  min-height: 40px;
+  padding: 0 16px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm, 8px);
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+
+  white-space: nowrap;
+  text-decoration: none;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+/* Cancelar */
+
+.confirm-modal-overlay .confirm-modal-cancel {
+  background: var(--color-surface, #ffffff);
+  border-color: var(--color-border, #d1d5db);
+
+  color: var(--color-text, #374151);
+}
+
+.confirm-modal-overlay .confirm-modal-cancel:hover:not(:disabled) {
+  background: var(--color-background, #f3f4f6);
+  border-color: #cbd5e1;
+}
+
+.confirm-modal-overlay .confirm-modal-cancel:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+/* Confirmar eliminación */
+
+.confirm-modal-overlay .confirm-modal-confirm {
+  background: var(--color-danger, #dc2626);
+  border-color: var(--color-danger, #dc2626);
+
+  color: #ffffff;
+}
+
+.confirm-modal-overlay .confirm-modal-confirm:hover:not(:disabled) {
+  background: #b91c1c;
+  border-color: #b91c1c;
+
+  box-shadow: 0 4px 12px rgba(185, 28, 28, 0.2);
+
+  transform: translateY(-1px);
+}
+
+.confirm-modal-overlay .confirm-modal-confirm:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.confirm-modal-overlay .confirm-modal-confirm i {
+  display: block;
+  font-size: 15px;
+  line-height: 1;
+}
+
+/* Foco accesible */
+
+.confirm-modal-overlay .confirm-modal-cancel:focus-visible,
+.confirm-modal-overlay .confirm-modal-confirm:focus-visible {
+  outline: 3px solid rgba(59, 130, 246, 0.45);
+  outline-offset: 3px;
+}
+
+/* Botones deshabilitados */
+
+.confirm-modal-overlay .confirm-modal-cancel:disabled,
+.confirm-modal-overlay .confirm-modal-confirm:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ==============================
+   LOADING
+============================== */
+
+.confirm-modal-overlay .confirm-modal-spinner {
+  width: 15px;
+  height: 15px;
+
+  display: inline-block;
+  flex-shrink: 0;
+
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+
+  animation: confirm-spinner 0.7s linear infinite;
+}
+
+/* ==============================
+   ANIMATIONS
+============================== */
+
+@keyframes confirm-overlay-appear {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes confirm-modal-appear {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes confirm-spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ==============================
+   RESPONSIVE
+============================== */
+
+@media (max-width: 480px) {
+  .confirm-modal-overlay {
+    padding: 16px;
+  }
+
+  .confirm-modal-overlay .confirm-modal {
+    max-width: 100%;
+    padding: 24px 20px;
+  }
+
+  .confirm-modal-overlay .confirm-modal-actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .confirm-modal-overlay .confirm-modal-cancel,
+  .confirm-modal-overlay .confirm-modal-confirm {
+    width: 100%;
+  }
+}
+
+/* Respeta la preferencia de movimiento reducido */
+
+@media (prefers-reduced-motion: reduce) {
+  .confirm-modal-overlay,
+  .confirm-modal-overlay .confirm-modal,
+  .confirm-modal-overlay .confirm-modal-cancel,
+  .confirm-modal-overlay .confirm-modal-confirm,
+  .confirm-modal-overlay .confirm-modal-spinner {
+    animation: none;
+    transition: none;
+  }
+}
