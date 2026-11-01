@@ -53,7 +53,7 @@ function Empleados() {
         err.status === 401
           ? "Tu sesión no está autenticada. Iniciá sesión nuevamente."
           : err.status === 403
-            ? "No tenés permisos para desactivar empleados."
+            ? err.message || "No tenés permisos para realizar esta acción."
             : err.message || "No se pudo desactivar el empleado.",
       );
 

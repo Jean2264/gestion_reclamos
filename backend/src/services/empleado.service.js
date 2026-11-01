@@ -394,16 +394,27 @@ export async function editarEmpleadoDesdePanel(idEmpleado, datos) {
     client.release();
   }
 }
-// Desactivar empleado desde el panel administrativo.
+// Desactivar empleado desde el panel administrativo.\
+
 export async function desactivarEmpleadoDesdePanel(idEmpleado) {
+  const ID_ADMIN_SEMILLA = 1;
   const id = Number(idEmpleado);
 
+  // Validar el ID del empleado.
   if (!Number.isInteger(id) || id <= 0) {
     const error = new Error("El ID del empleado no es válido");
     error.statusCode = 400;
     throw error;
   }
 
+  // Proteger al administrador semilla.
+  if (id === ID_ADMIN_SEMILLA) {
+    const error = new Error("No se puede eliminar al administrador semilla.");
+    error.statusCode = 403;
+    throw error;
+  }
+
+  // Desactivar al empleado.
   const empleado = await empleadoRepository.desactivarEmpleado(id);
 
   if (!empleado) {
