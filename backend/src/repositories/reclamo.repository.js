@@ -248,7 +248,7 @@ export async function obtenerReclamosAdmin({
   limite = 10,
 }) {
   const valores = [];
-  const condiciones = [];
+  const condiciones = ["LOWER(TRIM(e.nombre_estado)) <> 'finalizado'"];
 
   // Filtro por identificador del estado.
   if (idEstado !== null && idEstado !== undefined && idEstado !== "") {

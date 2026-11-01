@@ -1,27 +1,99 @@
-import * as reclamoService from "../services/reclamo.service.js";
+import {
+  areasGestion,
+  listarEstadosReclamo,
+  CrearReclamoCiudadano,
+  listarReclamosCiudadano,
+  obtenerResumenAdmin,
+  listarReclamosAdmin,
+  obtenerDetalleAdmin,
+  cambiarEstadoReclamo,
+  cambiarAreaReclamo,
+} from "../services/reclamo.service.js";
+
+// =====================================================
+// UTILIDADES
+// =====================================================
+
+function responderError(res, error, mensajePredeterminado) {
+  console.error(mensajePredeterminado, error);
+
+  const mensaje = error.message || mensajePredeterminado;
+
+  if (
+    mensaje.includes("inválido") ||
+    mensaje.includes("no existe") ||
+    mensaje.includes("ya se encuentra") ||
+    mensaje.includes("ya está") ||
+    mensaje.includes("no puede ser") ||
+    mensaje.includes("no es válida") ||
+    mensaje.includes("posterior")
+  ) {
+    return res.status(400).json({ mensaje });
+  }
+
+  if (mensaje.includes("No se encontró")) {
+    return res.status(404).json({ mensaje });
+  }
+
+  return res.status(500).json({
+    mensaje: mensajePredeterminado,
+  });
+}
+
+// =====================================================
+// OBTENER ÁREAS DE GESTIÓN
+// GET /api/reclamos/areas
+// =====================================================
 
 export async function obtenerAreas(req, res) {
   try {
-    const areas = await reclamoService.areasGestion();
+    const areas = await areasGestion();
 
-    return res.status(200).json(areas);
-  } catch (error) {
-    console.error("Error al obtener las áreas:", error);
-
-    return res.status(500).json({
-      mensaje: "Error al obtener las áreas de gestión.",
+    return res.status(200).json({
+      data: areas,
     });
+  } catch (error) {
+    return responderError(
+      res,
+      error,
+      "No se pudieron obtener las áreas de gestión.",
+    );
   }
 }
 
+// =====================================================
+// OBTENER ESTADOS
+// GET /api/reclamos/estados
+// =====================================================
+
+export async function obtenerEstados(req, res) {
+  try {
+    const estados = await listarEstadosReclamo();
+
+    return res.status(200).json({
+      data: estados,
+    });
+  } catch (error) {
+    return responderError(
+      res,
+      error,
+      "No se pudieron obtener los estados de los reclamos.",
+    );
+  }
+}
+
+// =====================================================
+// CREAR RECLAMO DE CIUDADANO
+// POST /api/reclamos
+// =====================================================
+
 export async function crearReclamoCiudadano(req, res) {
   try {
-    // El ID debe proceder del usuario autenticado.
-    const idCiudadano = req.usuario.idCiudadano;
+    const idCiudadano = req.usuario?.idCiudadano;
 
     if (!idCiudadano) {
-      return res.status(403).json({
-        mensaje: "No se encontró un ciudadano asociado a la sesión.",
+      return res.status(401).json({
+        mensaje: "No se pudo identificar al ciudadano autenticado.",
       });
     }
 
@@ -38,10 +110,6 @@ export async function crearReclamoCiudadano(req, res) {
       idArea,
     } = req.body;
 
-    const imagenes = (req.files ?? []).map((archivo) => ({
-      imagenUrl: `/uploads/${archivo.filename}`,
-    }));
-
     const datosReclamo = {
       numeroPartida,
       calle,
@@ -52,49 +120,34 @@ export async function crearReclamoCiudadano(req, res) {
       codigoPostal,
       detalle,
       estadoTributario,
-      idCiudadano,
-      idArea: Number(idArea),
+      idArea: idArea ? Number(idArea) : null,
     };
 
-    const nuevoReclamo = await reclamoService.CrearReclamoCiudadano(
+    // Conservamos la estructura de archivos de Multer.
+    const imagenes = req.files || [];
+
+    const resultado = await CrearReclamoCiudadano(
       datosReclamo,
       imagenes,
       idCiudadano,
     );
 
     return res.status(201).json({
-      mensaje: "El reclamo se registró correctamente.",
-      reclamo: {
-        idReclamo: nuevoReclamo.id_reclamo,
-        codigoReclamo: nuevoReclamo.codigo_reclamo,
-        fechaRegistro: nuevoReclamo.fecha_alta,
-        estado: "Nuevo",
-        numeroPartida: nuevoReclamo.numero_partida,
-        calle: nuevoReclamo.calle,
-        altura: nuevoReclamo.altura,
-        calleUno: nuevoReclamo.calle_uno,
-        calleDos: nuevoReclamo.calle_dos,
-        localidad: nuevoReclamo.localidad,
-        codigoPostal: nuevoReclamo.codigo_postal,
-        detalle: nuevoReclamo.detalle_reclamo,
-        estadoTributario: nuevoReclamo.estado_tributario,
-        idArea: nuevoReclamo.id_area,
-      },
+      mensaje: "Reclamo registrado correctamente.",
+      data: resultado,
     });
   } catch (error) {
-    console.error("Error al crear el reclamo:", error);
-
-    return res.status(500).json({
-      mensaje: "No se pudo registrar el reclamo.",
-    });
+    return responderError(res, error, "No se pudo registrar el reclamo.");
   }
 }
 
-export async function obtenerMisReclamos(req, res, next) {
-  try {
-    const { estado, desde, hasta, pagina = "1", limite = "10" } = req.query;
+// =====================================================
+// LISTAR RECLAMOS DEL CIUDADANO
+// GET /api/reclamos/mis-reclamos
+// =====================================================
 
-    // El ID proviene del JWT validado por el middleware.
+export async function obtenerMisReclamos(req, res) {
+  try {
     const idCiudadano = req.usuario?.idCiudadano;
 
     if (!idCiudadano) {
@@ -103,7 +156,15 @@ export async function obtenerMisReclamos(req, res, next) {
       });
     }
 
-    const resultado = await reclamoService.listarReclamosCiudadano({
+    const {
+      estado = "",
+      desde = "",
+      hasta = "",
+      pagina = 1,
+      limite = 10,
+    } = req.query;
+
+    const resultado = await listarReclamosCiudadano({
       idCiudadano,
       estado,
       desde,
@@ -117,16 +178,153 @@ export async function obtenerMisReclamos(req, res, next) {
       paginacion: resultado.paginacion,
     });
   } catch (error) {
-    if (
-      error.message.includes("fecha") ||
-      error.message.includes("página") ||
-      error.message.includes("registros por página")
-    ) {
+    return responderError(
+      res,
+      error,
+      "No se pudieron obtener los reclamos del ciudadano.",
+    );
+  }
+}
+
+// =====================================================
+// ADMINISTRACIÓN: RESUMEN DE ESTADOS
+// GET /api/reclamos/admin/resumen
+// =====================================================
+
+export async function obtenerResumenReclamosAdmin(req, res) {
+  try {
+    const resultado = await obtenerResumenAdmin();
+
+    return res.status(200).json({
+      data: resultado,
+    });
+  } catch (error) {
+    return responderError(
+      res,
+      error,
+      "No se pudo obtener el resumen de reclamos.",
+    );
+  }
+}
+
+// =====================================================
+// ADMINISTRACIÓN: LISTAR RECLAMOS
+// GET /api/reclamos/admin
+// =====================================================
+
+export async function obtenerReclamosAdmin(req, res) {
+  try {
+    const {
+      estado = "",
+      idEstado = "",
+      buscar = "",
+      pagina = 1,
+      limite = 10,
+    } = req.query;
+
+    const resultado = await listarReclamosAdmin({
+      estado,
+      idEstado,
+      buscar,
+      pagina,
+      limite,
+    });
+
+    return res.status(200).json(resultado);
+  } catch (error) {
+    return responderError(res, error, "No se pudieron obtener los reclamos.");
+  }
+}
+
+// =====================================================
+// ADMINISTRACIÓN: INSPECCIONAR RECLAMO
+// GET /api/reclamos/admin/:id
+// =====================================================
+
+export async function obtenerDetalleReclamoAdmin(req, res) {
+  try {
+    const { id } = req.params;
+
+    const resultado = await obtenerDetalleAdmin(id);
+
+    return res.status(200).json(resultado);
+  } catch (error) {
+    return responderError(
+      res,
+      error,
+      "No se pudo obtener el detalle del reclamo.",
+    );
+  }
+}
+
+// =====================================================
+// ADMINISTRACIÓN: CAMBIAR ESTADO
+// PATCH /api/reclamos/admin/:id/estado
+// =====================================================
+
+export async function actualizarEstadoAdmin(req, res) {
+  try {
+    const { id } = req.params;
+
+    const { id_estado, resolucion = null } = req.body;
+
+    if (id_estado === undefined || id_estado === null || id_estado === "") {
       return res.status(400).json({
-        mensaje: error.message,
+        mensaje: "El campo id_estado es obligatorio.",
       });
     }
 
-    return next(error);
+    /*
+     * El middleware de autenticación debe proporcionar req.usuario.
+     * La asociación entre usuario autenticado e id_empleado depende
+     * de cómo esté implementada actualmente tu autenticación.
+     */
+    const idEmpleado = req.usuario?.idEmpleado ?? null;
+
+    const resultado = await cambiarEstadoReclamo({
+      idReclamo: id,
+      idEstado: id_estado,
+      resolucion,
+      idEmpleado,
+    });
+
+    return res.status(200).json(resultado);
+  } catch (error) {
+    return responderError(
+      res,
+      error,
+      "No se pudo actualizar el estado del reclamo.",
+    );
+  }
+}
+
+// =====================================================
+// ADMINISTRACIÓN: CAMBIAR ÁREA
+// PATCH /api/reclamos/admin/:id/area
+// =====================================================
+
+export async function actualizarAreaAdmin(req, res) {
+  try {
+    const { id } = req.params;
+    const { id_area } = req.body;
+
+    if (id_area === undefined || id_area === null || id_area === "") {
+      return res.status(400).json({
+        mensaje: "El campo id_area es obligatorio.",
+      });
+    }
+
+    const resultado = await cambiarAreaReclamo({
+      idReclamo: id,
+      idArea: id_area,
+    });
+
+    return res.status(200).json(resultado);
+  } catch (error) {
+    return responderError(
+      res,
+      error,
+      "No se pudo actualizar el área del reclamo.",
+    );
   }
 }
