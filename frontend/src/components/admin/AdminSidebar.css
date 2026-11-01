@@ -228,3 +228,92 @@
     padding: 1rem;
   }
 }
+
+/* Separación entre el perfil y el cierre de sesión */
+.admin-sidebar-user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Enlace para administrar el perfil */
+.admin-profile-link {
+  display: inline-flex;
+  align-items: center;
+
+  min-height: 38px;
+  margin-top: 4px;
+  padding: 6px 0;
+
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #64748b;
+
+  text-decoration: none;
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.admin-profile-link:hover {
+  color: #2563eb;
+}
+
+.admin-profile-link.active {
+  color: #2563eb;
+  font-weight: 600;
+}
+
+/* Línea divisoria exclusiva del cierre de sesión */
+.admin-logout-container {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #e2e8f0;
+}
+
+/* Botón de cerrar sesión */
+.admin-logout-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 8px;
+
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+
+  color: #64748b;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.admin-logout-link i {
+  width: 20px;
+  font-size: 17px;
+  text-align: center;
+}
+
+.admin-logout-link:hover {
+  color: #dc2626;
+  background-color: #fef2f2;
+}
+
+.admin-logout-link:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}

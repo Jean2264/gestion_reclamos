@@ -1,12 +1,22 @@
 import { useContext } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 import { AuthContext } from "../../context/AuthProvider";
 
 import "./AdminSidebar.css";
 
 function AdminSidebar() {
-  const { usuario } = useContext(AuthContext);
+  const { usuario, cerrarSesion } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const handleLogout = async () => {
+    try {
+      await cerrarSesion();
+      navigate("/login-admin", { replace: true });
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+    }
+  };
+
   return (
     <aside className="admin-sidebar">
       <div className="admin-sidebar-brand">
@@ -87,6 +97,17 @@ function AdminSidebar() {
               Administrar mi perfil
             </NavLink>
           </div>
+        </div>
+
+        <div className="admin-logout-container">
+          <button
+            type="button"
+            className="admin-logout-link"
+            onClick={handleLogout}
+          >
+            <i className="bi bi-box-arrow-left"></i>
+            <span>Cerrar sesión</span>
+          </button>
         </div>
       </div>
     </aside>
