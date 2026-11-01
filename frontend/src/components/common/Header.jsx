@@ -26,7 +26,7 @@ function Header() {
     <>
       <header className="header">
         <div className="header-logo">
-          <Link to="/">
+          <Link to="/reclamo">
             {" "}
             <img className="img" src={muniImage} alt="Logo del municipio" />
           </Link>
