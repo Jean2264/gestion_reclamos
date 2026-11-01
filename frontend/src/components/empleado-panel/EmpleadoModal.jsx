@@ -1,11 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./EmpleadoModal.css";
+import { fetchEmpleadoById } from "../../services/empleado.service.js";
 
 const CODIGOS_POSTALES = {
   "alejandro-korn": "1864",
   "san-vicente": "1865",
   domselaar: "1984",
 };
+
+const LOCALIDADES = [
+  { value: "alejandro-korn", label: "Alejandro Korn" },
+  { value: "san-vicente", label: "San Vicente" },
+  { value: "domselaar", label: "Domselaar" },
+];
 
 const ROLES = [
   { id_rol: 1, nombre_rol: "Administrador" },
@@ -25,16 +32,137 @@ const FORMULARIO_INICIAL = {
   id_rol: "2",
 };
 
-function EmpleadoModal({ title = "Nuevo empleado", onClose, onSave }) {
+function normalizarLocalidad(localidad) {
+  if (!localidad) return "";
+
+  const valor = String(localidad).trim().toLowerCase();
+
+  const equivalencias = {
+    "alejandro korn": "alejandro-korn",
+    "alejandro-korn": "alejandro-korn",
+    "san vicente": "san-vicente",
+    "san-vicente": "san-vicente",
+    domselaar: "domselaar",
+  };
+
+  return equivalencias[valor] ?? "";
+}
+
+function normalizarEmpleado(empleado) {
+  const localidad = normalizarLocalidad(
+    empleado.localidad ?? empleado.nombre_localidad,
+  );
+
+  return {
+    dni: String(empleado.dni ?? ""),
+    apellido: empleado.apellido ?? "",
+    nombre: empleado.nombre ?? "",
+    telefono: empleado.telefono ?? "",
+    email: empleado.email ?? "",
+    calle: empleado.calle ?? "",
+    numero: String(empleado.numero ?? ""),
+    localidad,
+    codigoPostal:
+      empleado.codigoPostal ??
+      empleado.codigo_postal ??
+      CODIGOS_POSTALES[localidad] ??
+      "",
+    id_rol: String(empleado.id_rol ?? empleado.idRol ?? "2"),
+  };
+}
+
+function EmpleadoModal({
+  title = "Nuevo empleado",
+  mode = "create",
+  empleadoId = null,
+  onClose,
+  onSave,
+}) {
+  const esCreacion = mode === "create";
+  const esVisualizacion = mode === "view";
+  const esEdicion = mode === "edit";
+
   const [formData, setFormData] = useState(FORMULARIO_INICIAL);
   const [errors, setErrors] = useState({});
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [generalError, setGeneralError] = useState("");
   const [generalSuccess, setGeneralSuccess] = useState("");
 
+  // Cargar los datos cuando se abre el modal para ver o editar.
+  useEffect(() => {
+    let cancelado = false;
+
+    async function cargarEmpleado() {
+      if (esCreacion) {
+        setFormData(FORMULARIO_INICIAL);
+        setErrors({});
+        setIsSubmitted(false);
+        setGeneralError("");
+        setGeneralSuccess("");
+        setIsLoading(false);
+        return;
+      }
+
+      if (!empleadoId) {
+        setGeneralError("No se recibió el ID del empleado.");
+        return;
+      }
+
+      setIsLoading(true);
+      setGeneralError("");
+      setGeneralSuccess("");
+      setErrors({});
+      setIsSubmitted(false);
+      setFormData(FORMULARIO_INICIAL);
+
+      try {
+        const empleado = await fetchEmpleadoById(empleadoId);
+
+        if (cancelado) return;
+
+        if (!empleado) {
+          throw new Error("No se encontraron los datos del empleado.");
+        }
+
+        setFormData(normalizarEmpleado(empleado));
+      } catch (error) {
+        if (cancelado) return;
+
+        console.error("Error al cargar el empleado:", error);
+
+        if (error.status === 401) {
+          setGeneralError(
+            "Tu sesión no está autenticada. Iniciá sesión nuevamente.",
+          );
+        } else if (error.status === 403) {
+          setGeneralError(
+            "No tenés permisos para consultar los datos del empleado.",
+          );
+        } else {
+          setGeneralError(
+            error.message || "No se pudieron cargar los datos del empleado.",
+          );
+        }
+      } finally {
+        if (!cancelado) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    cargarEmpleado();
+
+    return () => {
+      cancelado = true;
+    };
+  }, [mode, empleadoId, esCreacion]);
+
   function handleChange(e) {
     const { name, value } = e.target;
+
+    if (esVisualizacion || isLoading || isSaving) return;
 
     setFormData((prev) => {
       const nuevosDatos = {
@@ -71,6 +199,7 @@ function EmpleadoModal({ title = "Nuevo empleado", onClose, onSave }) {
     const numero = formData.numero.trim();
 
     const patronNombre = /^[\p{L}\p{M}]+(?:[ '\u2019-][\p{L}\p{M}]+)*$/u;
+
     const patronEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const telefonoNormalizado = telefono.replace(/[\s()+.-]/g, "");
 
@@ -155,11 +284,18 @@ function EmpleadoModal({ title = "Nuevo empleado", onClose, onSave }) {
   async function handleSubmit(e) {
     e.preventDefault();
 
-    if (isSaving) return;
+    if (isSaving || isLoading || esVisualizacion) return;
 
     setIsSubmitted(true);
     setGeneralError("");
     setGeneralSuccess("");
+
+    // Evita crear un empleado nuevo desde el formulario de edición.
+    // La actualización se conectará cuando implementemos su endpoint.
+    if (esEdicion) {
+      setGeneralError("La edición todavía no está conectada al backend.");
+      return;
+    }
 
     if (!validarFormulario()) {
       setGeneralError("Revisá los campos marcados antes de continuar.");
@@ -167,9 +303,7 @@ function EmpleadoModal({ title = "Nuevo empleado", onClose, onSave }) {
     }
 
     if (typeof onSave !== "function") {
-      setGeneralError(
-        "El formulario está validado, pero todavía no está conectado al backend.",
-      );
+      setGeneralError("El formulario todavía no está conectado al backend.");
       return;
     }
 
@@ -196,10 +330,19 @@ function EmpleadoModal({ title = "Nuevo empleado", onClose, onSave }) {
       setErrors({});
       setIsSubmitted(false);
     } catch (error) {
+      console.error("Error al guardar el empleado:", error);
+
       setGeneralError(
         error?.message ||
           "No se pudo registrar el empleado. Intentá nuevamente.",
       );
+
+      if (error?.errors && typeof error.errors === "object") {
+        setErrors((prev) => ({
+          ...prev,
+          ...error.errors,
+        }));
+      }
     } finally {
       setIsSaving(false);
     }
@@ -214,11 +357,20 @@ function EmpleadoModal({ title = "Nuevo empleado", onClose, onSave }) {
     if (!errors[name]) return null;
 
     return (
-      <span className="empleado-field-error" role="alert">
+      <span
+        className="empleado-field-error"
+        role="alert"
+        id={`empleado-error-${name}`}
+      >
         {errors[name]}
       </span>
     );
   }
+
+  const camposBloqueados = esVisualizacion || isLoading || isSaving;
+
+  const claseInput = (name) =>
+    `empleado-input ${errors[name] ? "is-invalid" : ""}`;
 
   return (
     <div className="empleado-modal-overlay" onClick={handleClose}>
@@ -232,7 +384,16 @@ function EmpleadoModal({ title = "Nuevo empleado", onClose, onSave }) {
         <header className="empleado-modal-header">
           <div className="empleado-modal-title">
             <div className="empleado-modal-title-icon">
-              <i className="bi bi-person-plus" aria-hidden="true" />
+              <i
+                className={`bi ${
+                  esVisualizacion
+                    ? "bi-person"
+                    : esEdicion
+                      ? "bi-person-gear"
+                      : "bi-person-plus"
+                }`}
+                aria-hidden="true"
+              />
             </div>
 
             <span id="empleado-modal-title">{title}</span>
@@ -249,284 +410,343 @@ function EmpleadoModal({ title = "Nuevo empleado", onClose, onSave }) {
           </button>
         </header>
 
-        <form
-          id="empleado-form"
-          className="empleado-modal-content"
-          onSubmit={handleSubmit}
-          noValidate
-        >
-          <section className="empleado-modal-section">
-            <h3>Información personal</h3>
-
-            <label className="empleado-label">
-              <span>
-                DNI <span className="span-required">*</span>
-              </span>
-
-              <input
-                className={`empleado-input ${errors.dni ? "is-invalid" : ""}`}
-                name="dni"
-                type="text"
-                inputMode="numeric"
-                autoComplete="off"
-                placeholder="Ej.: 12345678"
-                value={formData.dni}
-                onChange={handleChange}
-                maxLength={8}
-                aria-invalid={Boolean(errors.dni)}
-                aria-describedby={errors.dni ? "empleado-error-dni" : undefined}
+        {isLoading ? (
+          <div className="empleado-modal-content">
+            <div className="empleados-loading">
+              <span
+                className="spinner-border spinner-border-sm"
+                aria-hidden="true"
               />
-
-              {renderError("dni")}
-            </label>
-
-            <div className="empleado-modal-row">
-              <label className="empleado-label">
-                <span>
-                  Apellido <span className="span-required">*</span>
-                </span>
-
-                <input
-                  className={`empleado-input ${errors.apellido ? "is-invalid" : ""}`}
-                  name="apellido"
-                  type="text"
-                  autoComplete="family-name"
-                  maxLength={100}
-                  value={formData.apellido}
-                  onChange={handleChange}
-                  aria-invalid={Boolean(errors.apellido)}
-                />
-
-                {renderError("apellido")}
-              </label>
-
-              <label className="empleado-label">
-                <span>
-                  Nombre <span className="span-required">*</span>
-                </span>
-
-                <input
-                  className={`empleado-input ${errors.nombre ? "is-invalid" : ""}`}
-                  name="nombre"
-                  type="text"
-                  autoComplete="given-name"
-                  maxLength={100}
-                  value={formData.nombre}
-                  onChange={handleChange}
-                  aria-invalid={Boolean(errors.nombre)}
-                />
-
-                {renderError("nombre")}
-              </label>
+              <span>Cargando datos del empleado...</span>
             </div>
+          </div>
+        ) : (
+          <form
+            id="empleado-form"
+            className="empleado-modal-content"
+            onSubmit={handleSubmit}
+            noValidate
+          >
+            <section className="empleado-modal-section">
+              <h3>Información personal</h3>
 
-            <label className="empleado-label">
-              <span>
-                Teléfono <span className="span-required">*</span>
-              </span>
+              <label className="empleado-label">
+                <span>
+                  DNI{" "}
+                  {!esVisualizacion && <span className="span-required">*</span>}
+                </span>
 
-              <input
-                className={`empleado-input ${errors.telefono ? "is-invalid" : ""}`}
-                name="telefono"
-                type="tel"
-                autoComplete="tel"
-                placeholder="Ej.: 11 1234-5678"
-                maxLength={30}
-                value={formData.telefono}
-                onChange={handleChange}
-                aria-invalid={Boolean(errors.telefono)}
-              />
-
-              {renderError("telefono")}
-            </label>
-
-            <label className="empleado-label">
-              <span>
-                Correo electrónico <span className="span-required">*</span>
-              </span>
-
-              <input
-                className={`empleado-input ${errors.email ? "is-invalid" : ""}`}
-                name="email"
-                type="email"
-                autoComplete="email"
-                placeholder="nombre@ejemplo.com"
-                maxLength={50}
-                value={formData.email}
-                onChange={handleChange}
-                aria-invalid={Boolean(errors.email)}
-              />
-
-              {renderError("email")}
-            </label>
-
-            <label className="empleado-label">
-              <span>
-                Rol de usuario <span className="span-required">*</span>
-              </span>
-
-              <div className="select-wrapper">
-                <select
-                  className={`empleado-input ${errors.id_rol ? "is-invalid" : ""}`}
-                  name="id_rol"
-                  value={formData.id_rol}
+                <input
+                  className={claseInput("dni")}
+                  name="dni"
+                  type="text"
+                  inputMode="numeric"
+                  autoComplete="off"
+                  placeholder="Ej.: 12345678"
+                  value={formData.dni}
                   onChange={handleChange}
-                  aria-invalid={Boolean(errors.id_rol)}
-                >
-                  {ROLES.map((rol) => (
-                    <option key={rol.id_rol} value={String(rol.id_rol)}>
-                      {rol.nombre_rol}
-                    </option>
-                  ))}
-                </select>
+                  maxLength={8}
+                  readOnly={!esCreacion || camposBloqueados}
+                  aria-invalid={Boolean(errors.dni)}
+                  aria-describedby={
+                    errors.dni ? "empleado-error-dni" : undefined
+                  }
+                />
 
-                <span className="select-arrow" aria-hidden="true" />
+                {renderError("dni")}
+              </label>
+
+              <div className="empleado-modal-row">
+                <label className="empleado-label">
+                  <span>
+                    Apellido{" "}
+                    {!esVisualizacion && (
+                      <span className="span-required">*</span>
+                    )}
+                  </span>
+
+                  <input
+                    className={claseInput("apellido")}
+                    name="apellido"
+                    type="text"
+                    autoComplete="family-name"
+                    maxLength={100}
+                    value={formData.apellido}
+                    onChange={handleChange}
+                    readOnly={camposBloqueados}
+                    aria-invalid={Boolean(errors.apellido)}
+                  />
+
+                  {renderError("apellido")}
+                </label>
+
+                <label className="empleado-label">
+                  <span>
+                    Nombre{" "}
+                    {!esVisualizacion && (
+                      <span className="span-required">*</span>
+                    )}
+                  </span>
+
+                  <input
+                    className={claseInput("nombre")}
+                    name="nombre"
+                    type="text"
+                    autoComplete="given-name"
+                    maxLength={100}
+                    value={formData.nombre}
+                    onChange={handleChange}
+                    readOnly={camposBloqueados}
+                    aria-invalid={Boolean(errors.nombre)}
+                  />
+
+                  {renderError("nombre")}
+                </label>
               </div>
 
-              {renderError("id_rol")}
-            </label>
-          </section>
-
-          <section className="empleado-modal-section">
-            <h3>Información de domicilio</h3>
-
-            <div className="empleado-modal-row">
               <label className="empleado-label">
                 <span>
-                  Calle <span className="span-required">*</span>
+                  Teléfono{" "}
+                  {!esVisualizacion && <span className="span-required">*</span>}
                 </span>
 
                 <input
-                  className={`empleado-input ${errors.calle ? "is-invalid" : ""}`}
-                  name="calle"
-                  type="text"
-                  autoComplete="street-address"
-                  maxLength={20}
-                  value={formData.calle}
+                  className={claseInput("telefono")}
+                  name="telefono"
+                  type="tel"
+                  autoComplete="tel"
+                  placeholder="Ej.: 11 1234-5678"
+                  maxLength={30}
+                  value={formData.telefono}
                   onChange={handleChange}
-                  aria-invalid={Boolean(errors.calle)}
+                  readOnly={camposBloqueados}
+                  aria-invalid={Boolean(errors.telefono)}
                 />
 
-                {renderError("calle")}
+                {renderError("telefono")}
               </label>
 
               <label className="empleado-label">
                 <span>
-                  Número <span className="span-required">*</span>
+                  Correo electrónico{" "}
+                  {!esVisualizacion && <span className="span-required">*</span>}
                 </span>
 
                 <input
-                  className={`empleado-input ${errors.numero ? "is-invalid" : ""}`}
-                  name="numero"
-                  type="text"
-                  autoComplete="off"
-                  maxLength={20}
-                  value={formData.numero}
+                  className={claseInput("email")}
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  placeholder="nombre@ejemplo.com"
+                  maxLength={50}
+                  value={formData.email}
                   onChange={handleChange}
-                  aria-invalid={Boolean(errors.numero)}
+                  readOnly={camposBloqueados}
+                  aria-invalid={Boolean(errors.email)}
                 />
 
-                {renderError("numero")}
+                {renderError("email")}
               </label>
-            </div>
 
-            <div className="empleado-modal-row">
               <label className="empleado-label">
                 <span>
-                  Localidad <span className="span-required">*</span>
+                  Rol de usuario{" "}
+                  {!esVisualizacion && <span className="span-required">*</span>}
                 </span>
 
                 <div className="select-wrapper">
                   <select
-                    className={`empleado-input ${errors.localidad ? "is-invalid" : ""}`}
-                    name="localidad"
-                    value={formData.localidad}
+                    className={claseInput("id_rol")}
+                    name="id_rol"
+                    value={formData.id_rol}
                     onChange={handleChange}
-                    aria-invalid={Boolean(errors.localidad)}
+                    disabled={camposBloqueados}
+                    aria-invalid={Boolean(errors.id_rol)}
                   >
-                    <option value="">Seleccioná una localidad</option>
-                    <option value="alejandro-korn">Alejandro Korn</option>
-                    <option value="san-vicente">San Vicente</option>
-                    <option value="domselaar">Domselaar</option>
+                    {ROLES.map((rol) => (
+                      <option key={rol.id_rol} value={String(rol.id_rol)}>
+                        {rol.nombre_rol}
+                      </option>
+                    ))}
                   </select>
 
                   <span className="select-arrow" aria-hidden="true" />
                 </div>
 
-                {renderError("localidad")}
+                {renderError("id_rol")}
               </label>
+            </section>
 
-              <label className="empleado-label">
-                <span>
-                  Código postal <span className="span-required">*</span>
-                </span>
+            <section className="empleado-modal-section">
+              <h3>Información de domicilio</h3>
 
-                <input
-                  className={`empleado-input ${errors.codigoPostal ? "is-invalid" : ""}`}
-                  name="codigoPostal"
-                  type="text"
-                  value={formData.codigoPostal}
-                  readOnly
-                  autoComplete="postal-code"
-                  aria-invalid={Boolean(errors.codigoPostal)}
-                />
+              <div className="empleado-modal-row">
+                <label className="empleado-label">
+                  <span>
+                    Calle{" "}
+                    {!esVisualizacion && (
+                      <span className="span-required">*</span>
+                    )}
+                  </span>
 
-                {renderError("codigoPostal")}
-              </label>
-            </div>
-          </section>
+                  <input
+                    className={claseInput("calle")}
+                    name="calle"
+                    type="text"
+                    autoComplete="street-address"
+                    maxLength={20}
+                    value={formData.calle}
+                    onChange={handleChange}
+                    readOnly={camposBloqueados}
+                    aria-invalid={Boolean(errors.calle)}
+                  />
 
-          {generalError && (
-            <div
-              className="empleado-form-message empleado-form-error"
-              role="alert"
-            >
-              <i className="bi bi-exclamation-circle" aria-hidden="true" />
-              <span>{generalError}</span>
-            </div>
-          )}
+                  {renderError("calle")}
+                </label>
 
-          {generalSuccess && (
-            <div
-              className="empleado-form-message empleado-form-success"
-              role="status"
-            >
-              <i className="bi bi-check-circle" aria-hidden="true" />
-              <span>{generalSuccess}</span>
-            </div>
-          )}
+                <label className="empleado-label">
+                  <span>
+                    Número{" "}
+                    {!esVisualizacion && (
+                      <span className="span-required">*</span>
+                    )}
+                  </span>
 
-          {isSubmitted && Object.keys(errors).length > 0 && (
-            <p className="empleado-form-hint">
-              Los campos marcados necesitan tu atención.
-            </p>
-          )}
+                  <input
+                    className={claseInput("numero")}
+                    name="numero"
+                    type="text"
+                    autoComplete="off"
+                    maxLength={20}
+                    value={formData.numero}
+                    onChange={handleChange}
+                    readOnly={camposBloqueados}
+                    aria-invalid={Boolean(errors.numero)}
+                  />
 
-          <footer className="empleado-modal-footer">
-            <button
-              type="button"
-              className="btn-cancel"
-              onClick={handleClose}
-              disabled={isSaving}
-            >
-              Cancelar
-            </button>
+                  {renderError("numero")}
+                </label>
+              </div>
 
-            <button className="btn-action" type="submit" disabled={isSaving}>
-              {isSaving ? (
-                <>
-                  <span className="empleado-spinner" aria-hidden="true" />
-                  Guardando...
-                </>
-              ) : (
-                <>
-                  <i className="bi bi-person-plus" aria-hidden="true" />
-                  Guardar empleado
-                </>
-              )}
-            </button>
-          </footer>
-        </form>
+              <div className="empleado-modal-row">
+                <label className="empleado-label">
+                  <span>
+                    Localidad{" "}
+                    {!esVisualizacion && (
+                      <span className="span-required">*</span>
+                    )}
+                  </span>
+
+                  <div className="select-wrapper">
+                    <select
+                      className={claseInput("localidad")}
+                      name="localidad"
+                      value={formData.localidad}
+                      onChange={handleChange}
+                      disabled={camposBloqueados}
+                      aria-invalid={Boolean(errors.localidad)}
+                    >
+                      <option value="">Seleccioná una localidad</option>
+
+                      {LOCALIDADES.map((localidad) => (
+                        <option key={localidad.value} value={localidad.value}>
+                          {localidad.label}
+                        </option>
+                      ))}
+                    </select>
+
+                    <span className="select-arrow" aria-hidden="true" />
+                  </div>
+
+                  {renderError("localidad")}
+                </label>
+
+                <label className="empleado-label">
+                  <span>
+                    Código postal{" "}
+                    {!esVisualizacion && (
+                      <span className="span-required">*</span>
+                    )}
+                  </span>
+
+                  <input
+                    className={claseInput("codigoPostal")}
+                    name="codigoPostal"
+                    type="text"
+                    value={formData.codigoPostal}
+                    readOnly
+                    autoComplete="postal-code"
+                    aria-invalid={Boolean(errors.codigoPostal)}
+                  />
+
+                  {renderError("codigoPostal")}
+                </label>
+              </div>
+            </section>
+
+            {generalError && (
+              <div
+                className="empleado-form-message empleado-form-error"
+                role="alert"
+              >
+                <i className="bi bi-exclamation-circle" aria-hidden="true" />
+                <span>{generalError}</span>
+              </div>
+            )}
+
+            {generalSuccess && (
+              <div
+                className="empleado-form-message empleado-form-success"
+                role="status"
+              >
+                <i className="bi bi-check-circle" aria-hidden="true" />
+                <span>{generalSuccess}</span>
+              </div>
+            )}
+
+            {isSubmitted && Object.keys(errors).length > 0 && (
+              <p className="empleado-form-hint">
+                Los campos marcados necesitan tu atención.
+              </p>
+            )}
+
+            {!esVisualizacion && (
+              <footer className="empleado-modal-footer">
+                <button
+                  type="button"
+                  className="btn-cancel"
+                  onClick={handleClose}
+                  disabled={isSaving}
+                >
+                  Cancelar
+                </button>
+
+                <button
+                  className="btn-action"
+                  type="submit"
+                  disabled={isSaving}
+                >
+                  {isSaving ? (
+                    <>
+                      <span className="empleado-spinner" aria-hidden="true" />
+                      Guardando...
+                    </>
+                  ) : (
+                    <>
+                      <i
+                        className={`bi ${
+                          esEdicion ? "bi-check-lg" : "bi-person-plus"
+                        }`}
+                        aria-hidden="true"
+                      />
+                      {esEdicion ? "Guardar cambios" : "Guardar empleado"}
+                    </>
+                  )}
+                </button>
+              </footer>
+            )}
+          </form>
+        )}
       </section>
     </div>
   );
