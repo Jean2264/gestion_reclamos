@@ -34,18 +34,33 @@ function Empleados() {
   async function handleConfirmDelete() {
     if (!empleadoAEliminar) return;
 
-    // Todavía no ejecutamos la eliminación en el backend.
-    // Primero vamos a conectar el servicio de eliminación lógica.
+    const idEmpleado = empleadoAEliminar.id_empleado;
 
-    console.log(
-      "Empleado seleccionado para eliminar:",
-      empleadoAEliminar.id_empleado,
-    );
+    setError("");
 
-    setIsConfirmModalOpen(false);
-    setEmpleadoAEliminar(null);
+    try {
+      await empleadoService.desactivarEmpleado(idEmpleado);
+
+      setIsConfirmModalOpen(false);
+      setEmpleadoAEliminar(null);
+
+      // Actualizar la tabla para retirar al empleado desactivado.
+      await cargarEmpleados();
+    } catch (err) {
+      console.error("Error al desactivar el empleado:", err);
+
+      setError(
+        err.status === 401
+          ? "Tu sesión no está autenticada. Iniciá sesión nuevamente."
+          : err.status === 403
+            ? "No tenés permisos para desactivar empleados."
+            : err.message || "No se pudo desactivar el empleado.",
+      );
+
+      setIsConfirmModalOpen(false);
+      setEmpleadoAEliminar(null);
+    }
   }
-
   // Búsqueda
   const [search, setSearch] = useState("");
   const [searchApplied, setSearchApplied] = useState("");
@@ -151,20 +166,37 @@ function Empleados() {
   // Cerrar modal
   function handleCloseEmpleadoModal() {
     setIsEmpleadoModalOpen(false);
+    setSelectedEmpleadoId(null);
+    setEmpleadoModalMode("create");
   }
+  async function handleGuardarEmpleado(datosEmpleado) {
+    if (empleadoModalMode === "edit") {
+      if (!selectedEmpleadoId) {
+        throw new Error("No se identificó el empleado que querés editar.");
+      }
 
-  // Crear empleado
-  async function handleCrearEmpleado(datosEmpleado) {
+      const empleadoActualizado = await empleadoService.editarEmpleado(
+        selectedEmpleadoId,
+        datosEmpleado,
+      );
+
+      await cargarEmpleados();
+
+      return empleadoActualizado;
+    }
+
     const empleadoCreado = await empleadoService.crearEmpleado(datosEmpleado);
 
-    // Restablecer filtros para mostrar el listado actualizado.
+    // Volver al listado inicial para visualizar el nuevo registro.
     setSearch("");
     setSearchApplied("");
     setPage(1);
 
-    // La tabla se actualizará si cambian los filtros o la página.
-    // Si ya estaban en sus valores iniciales, se necesitará
-    // una actualización explícita al guardar el modal.
+    // Actualizar el listado incluso si los filtros ya estaban vacíos.
+    if (!searchApplied && page === 1) {
+      await cargarEmpleados();
+    }
+
     return empleadoCreado;
   }
 
@@ -376,7 +408,7 @@ function Empleados() {
           mode={empleadoModalMode}
           empleadoId={selectedEmpleadoId}
           onClose={handleCloseEmpleadoModal}
-          onSave={handleCrearEmpleado}
+          onSave={handleGuardarEmpleado}
         />
       )}
       {/* Modal de confirmación de eliminación */}

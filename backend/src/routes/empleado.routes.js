@@ -4,6 +4,8 @@ import {
   crearEmpleado,
   getEmpleados,
   fetchEmpleado,
+  editarEmpleado,
+  desactivarEmpleado,
 } from "../controllers/empleado.controller.js";
 
 import { autenticar } from "../middleware/auth.middleware.js";
@@ -19,5 +21,16 @@ router.post("/buscar", autenticar, autorizarRoles(1), fetchEmpleado);
 
 // Crear empleado desde el panel administrativo.
 router.post("/", autenticar, autorizarRoles(1), crearEmpleado);
+
+// Editar empleado.
+router.put("/:id_empleado", autenticar, autorizarRoles(1), editarEmpleado);
+
+// Desactivar empleado sin eliminarlo físicamente.
+router.patch(
+  "/:id_empleado/estado",
+  autenticar,
+  autorizarRoles(1),
+  desactivarEmpleado,
+);
 
 export default router;

@@ -85,3 +85,62 @@ export async function fetchEmpleado(req, res) {
     });
   }
 }
+
+// Editar empleado desde el panel administrativo.
+export async function editarEmpleado(req, res) {
+  try {
+    const { id_empleado } = req.params;
+
+    const empleado = await empleadoService.editarEmpleadoDesdePanel(
+      id_empleado,
+      req.body,
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Empleado actualizado correctamente",
+      data: empleado,
+    });
+  } catch (error) {
+    console.error("Error al editar empleado:", error);
+
+    const statusCode = error.statusCode || 500;
+
+    return res.status(statusCode).json({
+      success: false,
+      message:
+        statusCode === 500
+          ? "Ocurrió un error al actualizar el empleado"
+          : error.message,
+      errors: error.details || null,
+    });
+  }
+}
+
+// Desactivar empleado desde el panel administrativo.
+export async function desactivarEmpleado(req, res) {
+  try {
+    const { id_empleado } = req.params;
+
+    const empleado =
+      await empleadoService.desactivarEmpleadoDesdePanel(id_empleado);
+
+    return res.status(200).json({
+      success: true,
+      message: "Empleado desactivado correctamente",
+      data: empleado,
+    });
+  } catch (error) {
+    console.error("Error al desactivar empleado:", error);
+
+    const statusCode = error.statusCode || 500;
+
+    return res.status(statusCode).json({
+      success: false,
+      message:
+        statusCode === 500
+          ? "Ocurrió un error al desactivar el empleado"
+          : error.message,
+    });
+  }
+}

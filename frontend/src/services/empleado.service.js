@@ -97,3 +97,61 @@ export async function crearEmpleado(datosEmpleado) {
 
   return resultado.data;
 }
+
+// Actualizar un empleado existente.
+export async function editarEmpleado(idEmpleado, datosEmpleado) {
+  const response = await fetch(`${API_URL}/empleados/${idEmpleado}`, {
+    method: "PUT",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      nombre: datosEmpleado.nombre,
+      apellido: datosEmpleado.apellido,
+      telefono: datosEmpleado.telefono,
+      email: datosEmpleado.email,
+      id_rol: Number(datosEmpleado.id_rol),
+      calle: datosEmpleado.calle,
+      numero: datosEmpleado.numero,
+      localidad: datosEmpleado.localidad,
+      codigoPostal: datosEmpleado.codigoPostal ?? datosEmpleado.codigo_postal,
+    }),
+  });
+
+  const resultado = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    const error = new Error(
+      resultado?.message || "No se pudo actualizar el empleado.",
+    );
+
+    error.status = response.status;
+    error.errors = resultado?.errors ?? null;
+
+    throw error;
+  }
+
+  return resultado?.data ?? resultado?.empleado ?? resultado;
+}
+
+// Desactivar un empleado mediante eliminación lógica.
+export async function desactivarEmpleado(idEmpleado) {
+  const response = await fetch(`${API_URL}/empleados/${idEmpleado}/estado`, {
+    method: "PATCH",
+    credentials: "include",
+  });
+
+  const resultado = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    const error = new Error(
+      resultado?.message || "No se pudo desactivar el empleado.",
+    );
+
+    error.status = response.status;
+    throw error;
+  }
+
+  return resultado?.data ?? resultado?.empleado ?? resultado;
+}

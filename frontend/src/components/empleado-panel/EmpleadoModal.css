@@ -1,3 +1,7 @@
+/* =========================================
+   MODAL PRINCIPAL
+========================================= */
+
 .empleado-modal-overlay {
   position: fixed;
   inset: 0;
@@ -31,6 +35,10 @@
   box-sizing: border-box;
   overflow: hidden;
 }
+
+/* =========================================
+   ENCABEZADO
+========================================= */
 
 .empleado-modal-header {
   display: flex;
@@ -94,6 +102,10 @@
   background: #e2e8f0;
 }
 
+/* =========================================
+   CONTENIDO DEL FORMULARIO
+========================================= */
+
 .empleado-modal-content {
   display: flex;
   flex-direction: column;
@@ -130,6 +142,10 @@
   grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
   gap: 1rem;
 }
+
+/* =========================================
+   ETIQUETAS Y CAMPOS
+========================================= */
 
 .empleado-label {
   display: flex;
@@ -181,7 +197,8 @@
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
 }
 
-.empleado-input[readonly] {
+.empleado-input[readonly],
+.empleado-input:disabled {
   background: #f1f5f9;
   color: #475569;
   cursor: default;
@@ -211,6 +228,10 @@
   line-height: 1.4;
 }
 
+/* =========================================
+   SELECT
+========================================= */
+
 .select-wrapper {
   position: relative;
   width: 100%;
@@ -220,6 +241,10 @@
   appearance: none;
   padding-right: 2.5rem;
   cursor: pointer;
+}
+
+.select-wrapper select:disabled {
+  cursor: default;
 }
 
 .select-arrow {
@@ -236,6 +261,10 @@
   transform: translateY(-70%) rotate(45deg);
   pointer-events: none;
 }
+
+/* =========================================
+   MENSAJES DEL FORMULARIO
+========================================= */
 
 .empleado-form-message {
   display: flex;
@@ -262,12 +291,6 @@
   color: #b91c1c;
 }
 
-.empleado-form-success {
-  border-color: #bbf7d0;
-  background: #f0fdf4;
-  color: #166534;
-}
-
 .empleado-form-hint {
   margin: 0;
 
@@ -275,6 +298,10 @@
   font-size: 0.8rem;
   line-height: 1.5;
 }
+
+/* =========================================
+   PIE DEL FORMULARIO
+========================================= */
 
 .empleado-modal-footer {
   display: flex;
@@ -288,6 +315,10 @@
 
   border-top: 1px solid #e2e8f0;
 }
+
+/* =========================================
+   BOTONES
+========================================= */
 
 .btn-action,
 .btn-cancel {
@@ -342,6 +373,10 @@
   transform: none;
 }
 
+/* =========================================
+   INDICADOR DE CARGA
+========================================= */
+
 .empleado-spinner {
   width: 15px;
   height: 15px;
@@ -358,6 +393,177 @@
     transform: rotate(360deg);
   }
 }
+
+/* =========================================
+   PANTALLA DE RESULTADO
+========================================= */
+
+.empleado-modal-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+
+  width: 100%;
+  min-height: 340px;
+  padding: 2.5rem 2rem;
+
+  box-sizing: border-box;
+  text-align: center;
+
+  animation: empleado-result-appear 0.25s ease-out;
+}
+
+/* Ícono principal */
+
+.empleado-result-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 82px;
+  height: 82px;
+  flex-shrink: 0;
+
+  border-radius: 50%;
+  font-size: 2.5rem;
+}
+
+.empleado-result-success .empleado-result-icon {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.empleado-result-error .empleado-result-icon {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+/* Título */
+
+.empleado-result-title {
+  margin: 0;
+
+  color: #0f172a;
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+/* Descripción */
+
+.empleado-result-description {
+  max-width: 380px;
+  margin: 0;
+
+  color: #64748b;
+  font-size: 0.95rem;
+  line-height: 1.65;
+
+  overflow-wrap: anywhere;
+}
+
+/* Detalle del error */
+
+.empleado-result-error-detail {
+  width: 100%;
+  max-width: 400px;
+  padding: 0.85rem 1rem;
+
+  box-sizing: border-box;
+
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+
+  background: #fef2f2;
+  color: #b91c1c;
+
+  font-size: 0.85rem;
+  line-height: 1.5;
+
+  overflow-wrap: anywhere;
+}
+
+/* Acciones de la pantalla de error */
+
+.empleado-result-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.empleado-result-actions .btn-action,
+.empleado-result-actions .btn-cancel {
+  min-width: 145px;
+}
+
+/* Mensaje de cierre automático */
+
+.empleado-result-countdown {
+  margin: 0;
+
+  color: #94a3b8;
+  font-size: 0.8rem;
+}
+
+/* Barra visual de un segundo */
+
+.empleado-result-progress {
+  width: 100%;
+  max-width: 180px;
+  height: 4px;
+
+  overflow: hidden;
+  border-radius: 999px;
+
+  background: #e2e8f0;
+}
+
+.empleado-result-progress-bar {
+  width: 100%;
+  height: 100%;
+
+  border-radius: inherit;
+  background: #22c55e;
+
+  transform-origin: left;
+  animation: empleado-result-progress 1s linear forwards;
+}
+
+/* =========================================
+   ANIMACIONES
+========================================= */
+
+@keyframes empleado-result-appear {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes empleado-result-progress {
+  from {
+    transform: scaleX(1);
+  }
+
+  to {
+    transform: scaleX(0);
+  }
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
 
 @media (max-width: 560px) {
   .empleado-modal-overlay {
@@ -392,7 +598,34 @@
   .empleado-modal-footer button {
     width: 100%;
   }
+
+  .empleado-modal-result {
+    min-height: 300px;
+    padding: 2rem 1.25rem;
+  }
+
+  .empleado-result-icon {
+    width: 72px;
+    height: 72px;
+    font-size: 2.1rem;
+  }
+
+  .empleado-result-title {
+    font-size: 1.2rem;
+  }
+
+  .empleado-result-actions {
+    flex-direction: column;
+  }
+
+  .empleado-result-actions button {
+    width: 100%;
+  }
 }
+
+/* =========================================
+   ACCESIBILIDAD: MOVIMIENTO REDUCIDO
+========================================= */
 
 @media (prefers-reduced-motion: reduce) {
   .empleado-input,
@@ -404,5 +637,13 @@
 
   .empleado-spinner {
     animation-duration: 1.5s;
+  }
+
+  .empleado-modal-result {
+    animation: none;
+  }
+
+  .empleado-result-progress-bar {
+    animation: none;
   }
 }

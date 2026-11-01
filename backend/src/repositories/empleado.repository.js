@@ -222,3 +222,109 @@ export async function fetchEmpleadoById(id) {
 
   return result.rows[0];
 }
+
+// Actualizar datos personales del empleado.
+export async function actualizarEmpleado(idEmpleado, datosEmpleado, client) {
+  const { nombre, apellido, telefono, calle, numero, localidad, codigoPostal } =
+    datosEmpleado;
+
+  const result = await client.query(
+    `
+      UPDATE empleado_municipal
+      SET
+        nombre = $1,
+        apellido = $2,
+        telefono = $3,
+        calle = $4,
+        numero = $5,
+        localidad = $6,
+        codigo_postal = $7
+      WHERE id_empleado = $8
+        AND estado = TRUE
+      RETURNING
+        id_empleado,
+        id_usuario,
+        dni,
+        nombre,
+        apellido,
+        telefono,
+        calle,
+        numero,
+        localidad,
+        codigo_postal,
+        estado
+    `,
+    [
+      nombre,
+      apellido,
+      telefono,
+      calle,
+      numero,
+      localidad,
+      codigoPostal,
+      idEmpleado,
+    ],
+  );
+
+  return result.rows[0] ?? null;
+}
+
+// Actualizar email y rol del usuario asociado al empleado.
+export async function actualizarUsuarioEmpleado(
+  idUsuario,
+  { email, idRol },
+  client,
+) {
+  const result = await client.query(
+    `
+      UPDATE usuario
+      SET
+        email = $1,
+        id_rol = $2
+      WHERE id_usuario = $3
+      RETURNING
+        id_usuario,
+        email,
+        id_rol
+    `,
+    [email, idRol, idUsuario],
+  );
+
+  return result.rows[0] ?? null;
+}
+
+// Verificar si otro usuario ya tiene registrado ese email.
+export async function buscarEmailDeOtroUsuario(
+  email,
+  idUsuario,
+  client = pool,
+) {
+  const result = await client.query(
+    `
+      SELECT id_usuario
+      FROM usuario
+      WHERE LOWER(email) = LOWER($1)
+        AND id_usuario <> $2
+      LIMIT 1
+    `,
+    [email, idUsuario],
+  );
+
+  return result.rows[0] ?? null;
+}
+
+// Desactivación lógica del empleado.
+export async function desactivarEmpleado(idEmpleado) {
+  const result = await pool.query(
+    `
+      UPDATE empleado_municipal
+      SET estado = FALSE
+      WHERE id_empleado = $1
+        AND estado = TRUE
+      RETURNING id_empleado, dni, estado
+    `,
+    [idEmpleado],
+  );
+
+  return result.rows[0] ?? null;
+}
