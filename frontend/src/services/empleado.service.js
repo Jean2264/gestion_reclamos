@@ -155,3 +155,43 @@ export async function desactivarEmpleado(idEmpleado) {
 
   return resultado?.data ?? resultado?.empleado ?? resultado;
 }
+
+export async function miPerfilEmpleado() {
+  const response = await fetch(`${API_URL}/empleados/me`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    const error = new Error(data.message || "No se pudo obtener el perfil.");
+    error.status = response.status;
+    error.errors = data.errors;
+    throw error;
+  }
+
+  return data;
+}
+
+export async function actualizarMiPerfilEmpleado(datosPerfil) {
+  const response = await fetch(`${API_URL}/empleados/me`, {
+    method: "PUT",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(datosPerfil),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    const error = new Error(data.message || "No se pudo actualizar el perfil.");
+    error.status = response.status;
+    error.errors = data.errors;
+    throw error;
+  }
+
+  return data;
+}

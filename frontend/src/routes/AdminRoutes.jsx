@@ -7,6 +7,7 @@ import Ciudadanos from "../pages/admin/Ciudadanos";
 import NuevoReclamo from "../pages/admin/NuevoReclamo";
 import LoginAdmin from "../pages/admin/LoginAdmin";
 import ProtectedRoute from "./ProtectedRoute";
+import PerfilEmpleado from "../pages/admin/PerfilEmpleado";
 
 function AdminRoutes() {
   return (
@@ -42,6 +43,7 @@ function AdminRoutes() {
           {/* Secciones compartidas */}
           <Route path="ciudadanos" element={<Ciudadanos />} />
           <Route path="nuevo-reclamo" element={<NuevoReclamo />} />
+          <Route path="mi-perfil" element={<PerfilEmpleado />} />
         </Route>
       </Route>
 

@@ -29,7 +29,10 @@ export async function buscarEmpleadoPorUsuarioId(idUsuario) {
     `
       SELECT
         id_empleado,
-        dni
+        id_usuario,
+        dni,
+        nombre,
+        apellido
       FROM empleado_municipal
       WHERE id_usuario = $1
         AND estado = TRUE
@@ -39,7 +42,6 @@ export async function buscarEmpleadoPorUsuarioId(idUsuario) {
 
   return result.rows[0] ?? null;
 }
-
 export async function buscarEmpleadoPorEmail(email) {
   const result = await pool.query(
     `
@@ -327,4 +329,94 @@ export async function desactivarEmpleado(idEmpleado) {
   );
 
   return result.rows[0] ?? null;
+}
+
+// Obtener el perfil del empleado a partir del usuario autenticado.
+export async function obtenerPerfilPorIdUsuario(idUsuario, client = pool) {
+  const resultado = await client.query(
+    `
+      SELECT
+        e.id_empleado,
+        e.id_usuario,
+        e.nombre,
+        e.apellido,
+        e.dni,
+        e.telefono,
+        e.calle,
+        e.numero,
+        e.localidad,
+        e.codigo_postal,
+        u.email,
+        u.id_rol,
+        r.nombre_rol
+      FROM empleado_municipal e
+      INNER JOIN usuario u
+        ON u.id_usuario = e.id_usuario
+      INNER JOIN rol_usuario r
+        ON r.id_rol = u.id_rol
+      WHERE e.id_usuario = $1
+        AND e.estado = TRUE
+      LIMIT 1
+    `,
+    [idUsuario],
+  );
+
+  return resultado.rows[0] ?? null;
+}
+
+// Actualizar los datos personales y el domicilio del empleado.
+export async function actualizarPerfilPorIdUsuario(idUsuario, datos, client) {
+  const resultado = await client.query(
+    `
+      UPDATE empleado_municipal
+      SET
+        nombre = $1,
+        apellido = $2,
+        telefono = $3,
+        calle = $4,
+        numero = $5,
+        localidad = $6,
+        codigo_postal = $7
+      WHERE id_usuario = $8
+        AND estado = TRUE
+      RETURNING
+        id_empleado,
+        id_usuario,
+        nombre,
+        apellido,
+        dni,
+        telefono,
+        calle,
+        numero,
+        localidad,
+        codigo_postal
+    `,
+    [
+      datos.nombre,
+      datos.apellido,
+      datos.telefono,
+      datos.calle,
+      datos.numero,
+      datos.localidad,
+      datos.codigoPostal,
+      idUsuario,
+    ],
+  );
+
+  return resultado.rows[0] ?? null;
+}
+
+// Actualizar exclusivamente el correo del usuario.
+export async function actualizarEmailUsuario(idUsuario, email, client) {
+  const resultado = await client.query(
+    `
+      UPDATE usuario
+      SET email = $1
+      WHERE id_usuario = $2
+      RETURNING id_usuario, email, id_rol
+    `,
+    [email, idUsuario],
+  );
+
+  return resultado.rows[0] ?? null;
 }

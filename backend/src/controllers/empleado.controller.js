@@ -144,3 +144,53 @@ export async function desactivarEmpleado(req, res) {
     });
   }
 }
+
+// GET: consultar el perfil del empleado autenticado.
+export async function obtenerMiPerfilEmpleado(req, res) {
+  try {
+    const idUsuario = req.usuario?.idUsuario ?? req.usuario?.id_usuario;
+
+    const perfil = await empleadoService.obtenerMiPerfilEmpleado(idUsuario);
+
+    return res.status(200).json({
+      data: perfil,
+    });
+  } catch (error) {
+    console.error("Error al consultar el perfil del empleado:", error);
+
+    return res.status(error.statusCode || 500).json({
+      message:
+        error.statusCode && error.statusCode < 500
+          ? error.message
+          : "No se pudo obtener el perfil del empleado.",
+      errors: error.details ?? {},
+    });
+  }
+}
+
+// PUT: actualizar el perfil del empleado autenticado.
+export async function actualizarMiPerfilEmpleado(req, res) {
+  try {
+    const idUsuario = req.usuario?.idUsuario ?? req.usuario?.id_usuario;
+
+    const perfilActualizado = await empleadoService.actualizarMiPerfilEmpleado(
+      idUsuario,
+      req.body,
+    );
+
+    return res.status(200).json({
+      message: "Perfil actualizado correctamente.",
+      data: perfilActualizado,
+    });
+  } catch (error) {
+    console.error("Error al actualizar el perfil del empleado:", error);
+
+    return res.status(error.statusCode || 500).json({
+      message:
+        error.statusCode && error.statusCode < 500
+          ? error.message
+          : "No se pudo actualizar el perfil del empleado.",
+      errors: error.details ?? {},
+    });
+  }
+}

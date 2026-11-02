@@ -6,6 +6,8 @@ import {
   fetchEmpleado,
   editarEmpleado,
   desactivarEmpleado,
+  obtenerMiPerfilEmpleado,
+  actualizarMiPerfilEmpleado,
 } from "../controllers/empleado.controller.js";
 
 import { autenticar } from "../middleware/auth.middleware.js";
@@ -21,6 +23,11 @@ router.post("/buscar", autenticar, autorizarRoles(1), fetchEmpleado);
 
 // Crear empleado desde el panel administrativo.
 router.post("/", autenticar, autorizarRoles(1), crearEmpleado);
+
+// Perfil del empleado autenticado.
+router.get("/me", autenticar, autorizarRoles(2), obtenerMiPerfilEmpleado);
+
+router.put("/me", autenticar, autorizarRoles(2), actualizarMiPerfilEmpleado);
 
 // Editar empleado.
 router.put("/:id_empleado", autenticar, autorizarRoles(1), editarEmpleado);

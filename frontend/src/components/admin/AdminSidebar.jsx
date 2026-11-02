@@ -8,6 +8,17 @@ import "./AdminSidebar.css";
 function AdminSidebar() {
   const { usuario, cerrarSesion } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  const nombre = usuario?.empleado?.nombre ?? usuario?.ciudadano?.nombre ?? "";
+
+  const apellido =
+    usuario?.empleado?.apellido ?? usuario?.ciudadano?.apellido ?? "";
+
+  const nombreCompleto = `${nombre} ${apellido}`.trim();
+
+  const inicial = nombre.trim().charAt(0).toUpperCase() || "?";
+
+  const tipoUsuario = usuario?.usuario?.nombre_rol ?? "Usuario";
   const handleLogout = async () => {
     try {
       await cerrarSesion();
@@ -81,15 +92,18 @@ function AdminSidebar() {
 
       <div className="admin-sidebar-footer">
         <div className="admin-sidebar-user">
-          <div className="admin-sidebar-user-avatar">
-            <i className="bi bi-person"></i>
+          <div
+            className="admin-sidebar-user-avatar"
+            aria-label={`Inicial de ${nombreCompleto || "usuario"}`}
+          >
+            {inicial}
           </div>
 
           <div className="admin-sidebar-user-info">
-            <strong>Administrador</strong>
+            <strong>{tipoUsuario}</strong>
 
             <NavLink
-              to="/admin/perfil"
+              to="/admin/mi-perfil"
               className={({ isActive }) =>
                 isActive ? "admin-profile-link active" : "admin-profile-link"
               }

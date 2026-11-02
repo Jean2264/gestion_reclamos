@@ -264,7 +264,10 @@ export async function obtenerUsuarioActual(idUsuario, idCiudadano) {
     empleado: empleado
       ? {
           id_empleado: empleado.id_empleado,
+          id_usuario: empleado.id_usuario,
           dni: empleado.dni,
+          nombre: empleado.nombre,
+          apellido: empleado.apellido,
         }
       : null,
   };

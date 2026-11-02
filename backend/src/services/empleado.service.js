@@ -425,3 +425,197 @@ export async function desactivarEmpleadoDesdePanel(idEmpleado) {
 
   return empleado;
 }
+
+// Consultar el perfil del empleado autenticado.
+export async function obtenerMiPerfilEmpleado(idUsuario) {
+  const id = Number(idUsuario);
+
+  if (!Number.isInteger(id) || id <= 0) {
+    const error = new Error("El usuario autenticado no es válido.");
+    error.statusCode = 401;
+    throw error;
+  }
+
+  const perfil = await empleadoRepository.obtenerPerfilPorIdUsuario(id);
+
+  if (!perfil) {
+    const error = new Error("No se encontró un perfil de empleado activo.");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  return perfil;
+}
+
+// Actualizar el perfil del empleado autenticado.
+export async function actualizarMiPerfilEmpleado(idUsuario, datos) {
+  const id = Number(idUsuario);
+
+  if (!Number.isInteger(id) || id <= 0) {
+    const error = new Error("El usuario autenticado no es válido.");
+    error.statusCode = 401;
+    throw error;
+  }
+
+  const camposObligatorios = [
+    "nombre",
+    "apellido",
+    "telefono",
+    "email",
+    "calle",
+    "numero",
+    "localidad",
+    "codigoPostal",
+  ];
+
+  const detalles = {};
+
+  for (const campo of camposObligatorios) {
+    const valor = datos[campo];
+
+    if (valor === undefined || valor === null || String(valor).trim() === "") {
+      detalles[campo] = "Este campo es obligatorio.";
+    }
+  }
+
+  if (Object.keys(detalles).length > 0) {
+    const error = new Error("Revisá los campos obligatorios.");
+    error.statusCode = 400;
+    error.details = detalles;
+    throw error;
+  }
+
+  const nombre = String(datos.nombre).trim();
+  const apellido = String(datos.apellido).trim();
+  const telefono = String(datos.telefono).trim();
+  const email = String(datos.email).trim().toLowerCase();
+  const calle = String(datos.calle).trim();
+  const numero = String(datos.numero).trim();
+  const localidad = String(datos.localidad).trim().toLowerCase();
+  const codigoPostal = String(datos.codigoPostal).trim();
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    const error = new Error("El correo electrónico no es válido.");
+    error.statusCode = 400;
+    error.details = {
+      email: "Ingresá una dirección de correo válida.",
+    };
+    throw error;
+  }
+
+  const codigosPostales = {
+    "alejandro-korn": "1864",
+    "san-vicente": "1865",
+    domselaar: "1984",
+  };
+
+  if (
+    !Object.prototype.hasOwnProperty.call(codigosPostales, localidad) ||
+    codigosPostales[localidad] !== codigoPostal
+  ) {
+    const error = new Error("La localidad o el código postal no son válidos.");
+    error.statusCode = 400;
+    error.details = {
+      localidad: "Seleccioná una localidad válida.",
+      codigoPostal: "El código postal no coincide con la localidad.",
+    };
+    throw error;
+  }
+
+  const client = await pool.connect();
+  let transaccionIniciada = false;
+
+  try {
+    await client.query("BEGIN");
+    transaccionIniciada = true;
+
+    // Verificar que exista un perfil activo asociado al usuario.
+    const perfilActual = await empleadoRepository.obtenerPerfilPorIdUsuario(
+      id,
+      client,
+    );
+
+    if (!perfilActual) {
+      const error = new Error("No se encontró un perfil de empleado activo.");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    // Comprobar que el email no pertenezca a otra cuenta.
+    const emailExistente = await empleadoRepository.buscarEmailDeOtroUsuario(
+      email,
+      id,
+      client,
+    );
+
+    if (emailExistente) {
+      const error = new Error("Ese correo electrónico ya está registrado.");
+      error.statusCode = 409;
+      error.details = {
+        email: "Elegí otra dirección de correo.",
+      };
+      throw error;
+    }
+
+    const datosActualizacion = {
+      nombre,
+      apellido,
+      telefono,
+      calle,
+      numero,
+      localidad,
+      codigoPostal,
+    };
+
+    const empleadoActualizado =
+      await empleadoRepository.actualizarPerfilPorIdUsuario(
+        id,
+        datosActualizacion,
+        client,
+      );
+
+    if (!empleadoActualizado) {
+      const error = new Error("No se pudo actualizar el perfil.");
+      error.statusCode = 409;
+      throw error;
+    }
+
+    const usuarioActualizado = await empleadoRepository.actualizarEmailUsuario(
+      id,
+      email,
+      client,
+    );
+
+    if (!usuarioActualizado) {
+      const error = new Error("No se pudo actualizar el correo electrónico.");
+      error.statusCode = 409;
+      throw error;
+    }
+
+    await client.query("COMMIT");
+    transaccionIniciada = false;
+
+    return {
+      ...empleadoActualizado,
+      email: usuarioActualizado.email,
+      id_rol: usuarioActualizado.id_rol,
+    };
+  } catch (error) {
+    if (transaccionIniciada) {
+      await client.query("ROLLBACK");
+    }
+
+    if (error.code === "23505") {
+      const conflicto = new Error("Ese correo electrónico ya está registrado.");
+      conflicto.statusCode = 409;
+      conflicto.details = {
+        email: "Elegí otra dirección de correo.",
+      };
+      throw conflicto;
+    }
+
+    throw error;
+  } finally {
+    client.release();
+  }
+}
