@@ -141,6 +141,7 @@ VALUES
     );
 
 
+
 -- =====================================================
 -- 6. ESTADOS DE RECLAMO
 -- =====================================================
@@ -241,6 +242,4 @@ CREATE TABLE imagen_reclamo (
         FOREIGN KEY (id_reclamo)
         REFERENCES reclamo(id_reclamo)
 );
-
-
 

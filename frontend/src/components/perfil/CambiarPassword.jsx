@@ -105,9 +105,7 @@ function CambiarPassword({ onClose, origen = "perfil", email }) {
 
         resultado = await actualizarPasswordPorEmail(email, password);
       } else if (origen === "admin") {
-        throw new Error(
-          "La recuperación de contraseña administrativa todavía no está implementada.",
-        );
+        resultado = await actualizarPassword(password);
       } else {
         throw new Error("Origen de actualización de contraseña no válido.");
       }

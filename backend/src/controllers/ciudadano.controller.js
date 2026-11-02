@@ -127,3 +127,54 @@ export async function crear(req, res) {
     });
   }
 }
+
+export async function getCiudadanos(req, res) {
+  try {
+    const search = String(req.query.search ?? "").trim();
+    const page = Math.max(1, Number(req.query.page) || 1);
+    const limit = Math.min(100, Math.max(1, Number(req.query.limit) || 20));
+    const resultado = await ciudadanoService.getAllCiudadanos(
+      search,
+      page,
+      limit,
+    );
+
+    return res.status(200).json(resultado);
+  } catch (error) {
+    console.error("Error al obtener ciudadanos:", error);
+
+    return res.status(500).json({
+      message: "Error al obtener la lista de ciudadanos",
+    });
+  }
+}
+
+export async function fetchCiudadano(req, res) {
+  try {
+    const { id_ciudadano: idCiudadano } = req.body;
+
+    if (!Number.isInteger(Number(idCiudadano)) || Number(idCiudadano) <= 0) {
+      return res.status(400).json({
+        message: "El ID del ciudadano no es válido",
+      });
+    }
+
+    const ciudadano = await ciudadanoService.fetchCiudadano(
+      Number(idCiudadano),
+    );
+
+    if (!ciudadano) {
+      return res.status(404).json({
+        message: "Ciudadano no encontrado",
+      });
+    }
+
+    return res.status(200).json({ ciudadano });
+  } catch (error) {
+    console.error("Error al obtener el ciudadano:", error);
+
+    return res.status(500).json({
+      message: "Error al obtener los datos del ciudadano",
+    });
+  }
+}

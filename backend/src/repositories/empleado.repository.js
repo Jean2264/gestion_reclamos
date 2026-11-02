@@ -5,6 +5,8 @@ export async function buscarEmpleadoPorDni(dni) {
     `SELECT
         em.id_empleado,
         em.dni,
+        em.nombre,
+        em.apellido,
         
         u.id_usuario,
         u.email,

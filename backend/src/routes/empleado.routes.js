@@ -25,9 +25,9 @@ router.post("/buscar", autenticar, autorizarRoles(1), fetchEmpleado);
 router.post("/", autenticar, autorizarRoles(1), crearEmpleado);
 
 // Perfil del empleado autenticado.
-router.get("/me", autenticar, autorizarRoles(2), obtenerMiPerfilEmpleado);
+router.get("/me", autenticar, autorizarRoles(1, 2), obtenerMiPerfilEmpleado);
 
-router.put("/me", autenticar, autorizarRoles(2), actualizarMiPerfilEmpleado);
+router.put("/me", autenticar, autorizarRoles(1, 2), actualizarMiPerfilEmpleado);
 
 // Editar empleado.
 router.put("/:id_empleado", autenticar, autorizarRoles(1), editarEmpleado);

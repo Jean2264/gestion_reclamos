@@ -15,6 +15,25 @@ export async function miPerfil(idCiudadano) {
   return ciudadano;
 }
 
+export async function getAllCiudadanos(search, page, limit) {
+  const resultado = await ciudadanoRepository.getAllCiudadanos(
+    search,
+    page,
+    limit,
+  );
+
+  return {
+    ...resultado,
+    page,
+    limit,
+    totalPages: Math.ceil(resultado.totalRecords / limit),
+  };
+}
+
+export async function fetchCiudadano(idCiudadano) {
+  return ciudadanoRepository.fetchCiudadanoById(idCiudadano);
+}
+
 //Actualizar perfil
 export async function actualizarMiPerfil(idCiudadano, idUsuario, datos) {
   // 1. Validar los datos recibidos.

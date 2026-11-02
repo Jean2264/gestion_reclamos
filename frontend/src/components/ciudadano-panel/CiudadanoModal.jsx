@@ -1,8 +1,11 @@
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import "./CiudadanoModal.css";
-//import { crearCiudadano } from "../../services/ciudadano.service";
+import {
+  crearCiudadano,
+  fetchCiudadanoById,
+} from "../../services/ciudadano.service.js";
 
 const CODIGOS_POSTALES = {
   "alejandro-korn": "1864",
@@ -28,6 +31,19 @@ const FORMULARIO_INICIAL = {
   localidad: "",
   codigoPostal: "",
 };
+
+function normalizarLocalidad(localidad) {
+  const valor = String(localidad ?? "").trim().toLowerCase();
+  const equivalencias = {
+    "alejandro korn": "alejandro-korn",
+    "alejandro-korn": "alejandro-korn",
+    "san vicente": "san-vicente",
+    "san-vicente": "san-vicente",
+    domselaar: "domselaar",
+  };
+
+  return equivalencias[valor] ?? valor;
+}
 
 function validarCampo(nombre, valor) {
   const texto = String(valor ?? "").trim();
@@ -121,12 +137,92 @@ function validarCampo(nombre, valor) {
   }
 }
 
-export default function CiudadanoModal({ onClose, onCreated }) {
+export default function CiudadanoModal({
+  onClose,
+  onCreated,
+  mode = "create",
+  ciudadanoId = null,
+}) {
+  const esVisualizacion = mode === "view";
   const [formData, setFormData] = useState(FORMULARIO_INICIAL);
   const [errores, setErrores] = useState({});
   const [errorGeneral, setErrorGeneral] = useState("");
   const [registrando, setRegistrando] = useState(false);
   const [intentoEnviar, setIntentoEnviar] = useState(false);
+  const [cargandoDetalle, setCargandoDetalle] = useState(esVisualizacion);
+
+  useEffect(() => {
+    let cancelado = false;
+
+    async function cargarCiudadano() {
+      if (!esVisualizacion) {
+        setFormData(FORMULARIO_INICIAL);
+        setCargandoDetalle(false);
+        setErrorGeneral("");
+        return;
+      }
+
+      if (!ciudadanoId) {
+        setErrorGeneral("No se recibió el ID del ciudadano.");
+        setCargandoDetalle(false);
+        return;
+      }
+
+      setCargandoDetalle(true);
+      setErrorGeneral("");
+
+      try {
+        const ciudadano = await fetchCiudadanoById(ciudadanoId);
+
+        if (cancelado) return;
+        if (!ciudadano) {
+          throw new Error("No se encontraron los datos del ciudadano.");
+        }
+
+        const localidad = normalizarLocalidad(ciudadano.localidad);
+        setFormData({
+          nombre: ciudadano.nombre ?? "",
+          apellido: ciudadano.apellido ?? "",
+          dni: String(ciudadano.dni ?? ""),
+          telefono: ciudadano.telefono ?? "",
+          email: ciudadano.email ?? "",
+          fechaNacimiento: String(
+            ciudadano.fecha_nacimiento ?? ciudadano.fechaNacimiento ?? "",
+          ).slice(0, 10),
+          calle: ciudadano.calle ?? "",
+          numero: String(ciudadano.numero ?? ""),
+          localidad,
+          codigoPostal:
+            ciudadano.codigo_postal ?? ciudadano.codigoPostal ?? "",
+        });
+      } catch (error) {
+        if (cancelado) return;
+        console.error("Error al cargar los datos del ciudadano:", error);
+
+        if (error.status === 401) {
+          setErrorGeneral(
+            "Tu sesión no está autenticada. Iniciá sesión nuevamente.",
+          );
+        } else if (error.status === 403) {
+          setErrorGeneral(
+            "No tenés permisos para consultar los datos del ciudadano.",
+          );
+        } else {
+          setErrorGeneral(
+            error.message || "No se pudieron cargar los datos del ciudadano.",
+          );
+        }
+      } finally {
+        if (!cancelado) setCargandoDetalle(false);
+      }
+    }
+
+    cargarCiudadano();
+
+    return () => {
+      cancelado = true;
+    };
+  }, [ciudadanoId, esVisualizacion]);
 
   const fechaMaxima = useMemo(() => {
     const hoy = new Date();
@@ -143,6 +239,8 @@ export default function CiudadanoModal({ onClose, onCreated }) {
   }, []);
 
   function handleChange(event) {
+    if (esVisualizacion) return;
+
     const { name, value } = event.target;
 
     setErrorGeneral("");
@@ -182,7 +280,7 @@ export default function CiudadanoModal({ onClose, onCreated }) {
   async function handleSubmit(event) {
     event.preventDefault();
 
-    if (registrando) return;
+    if (registrando || esVisualizacion) return;
 
     setIntentoEnviar(true);
     setErrorGeneral("");
@@ -252,8 +350,14 @@ export default function CiudadanoModal({ onClose, onCreated }) {
       >
         <header className="ciudadano-modal-header">
           <div>
-            <h2 id="titulo-alta-ciudadano">Registrar ciudadano</h2>
-            <p>Completá los datos para dar de alta al ciudadano.</p>
+            <h2 id="titulo-alta-ciudadano">
+              {esVisualizacion ? "Datos del ciudadano" : "Registrar ciudadano"}
+            </h2>
+            <p>
+              {esVisualizacion
+                ? "Información registrada del ciudadano."
+                : "Completá los datos para dar de alta al ciudadano."}
+            </p>
           </div>
 
           <button
@@ -273,11 +377,17 @@ export default function CiudadanoModal({ onClose, onCreated }) {
           noValidate
         >
           <div className="ciudadano-modal-body">
+            {cargandoDetalle && (
+              <p role="status">Cargando datos del ciudadano...</p>
+            )}
+
             <h3>Datos personales</h3>
 
             <div className="ciudadano-form-grid">
               <div className="ciudadano-form-group">
-                <label htmlFor="nombre">Nombre *</label>
+                <label htmlFor="nombre">
+                  Nombre{esVisualizacion ? "" : " *"}
+                </label>
                 <input
                   id="nombre"
                   name="nombre"
@@ -293,6 +403,7 @@ export default function CiudadanoModal({ onClose, onCreated }) {
                   autoComplete="given-name"
                   maxLength={100}
                   required
+                  readOnly={esVisualizacion}
                   aria-invalid={campoInvalido("nombre")}
                 />
                 {intentoEnviar && errores.nombre && (
@@ -301,7 +412,9 @@ export default function CiudadanoModal({ onClose, onCreated }) {
               </div>
 
               <div className="ciudadano-form-group">
-                <label htmlFor="apellido">Apellido *</label>
+                <label htmlFor="apellido">
+                  Apellido{esVisualizacion ? "" : " *"}
+                </label>
                 <input
                   id="apellido"
                   name="apellido"
@@ -317,6 +430,7 @@ export default function CiudadanoModal({ onClose, onCreated }) {
                   autoComplete="family-name"
                   maxLength={100}
                   required
+                  readOnly={esVisualizacion}
                   aria-invalid={campoInvalido("apellido")}
                 />
                 {intentoEnviar && errores.apellido && (
@@ -325,7 +439,7 @@ export default function CiudadanoModal({ onClose, onCreated }) {
               </div>
 
               <div className="ciudadano-form-group">
-                <label htmlFor="dni">DNI *</label>
+                <label htmlFor="dni">DNI{esVisualizacion ? "" : " *"}</label>
                 <input
                   id="dni"
                   name="dni"
@@ -344,6 +458,7 @@ export default function CiudadanoModal({ onClose, onCreated }) {
                   maxLength={8}
                   autoComplete="off"
                   required
+                  readOnly={esVisualizacion}
                   aria-invalid={campoInvalido("dni")}
                   placeholder="Ej.: 12345678"
                 />
@@ -353,7 +468,9 @@ export default function CiudadanoModal({ onClose, onCreated }) {
               </div>
 
               <div className="ciudadano-form-group">
-                <label htmlFor="telefono">Teléfono *</label>
+                <label htmlFor="telefono">
+                  Teléfono{esVisualizacion ? "" : " *"}
+                </label>
                 <input
                   id="telefono"
                   name="telefono"
@@ -363,6 +480,7 @@ export default function CiudadanoModal({ onClose, onCreated }) {
                   autoComplete="tel"
                   maxLength={20}
                   required
+                  readOnly={esVisualizacion}
                   aria-invalid={campoInvalido("telefono")}
                 />
                 {intentoEnviar && errores.telefono && (
@@ -373,7 +491,9 @@ export default function CiudadanoModal({ onClose, onCreated }) {
               </div>
 
               <div className="ciudadano-form-group">
-                <label htmlFor="email">Correo electrónico *</label>
+                <label htmlFor="email">
+                  Correo electrónico{esVisualizacion ? "" : " *"}
+                </label>
                 <input
                   id="email"
                   name="email"
@@ -383,6 +503,7 @@ export default function CiudadanoModal({ onClose, onCreated }) {
                   autoComplete="email"
                   maxLength={50}
                   required
+                  readOnly={esVisualizacion}
                   aria-invalid={campoInvalido("email")}
                 />
                 {intentoEnviar && errores.email && (
@@ -391,7 +512,9 @@ export default function CiudadanoModal({ onClose, onCreated }) {
               </div>
 
               <div className="ciudadano-form-group">
-                <label htmlFor="fechaNacimiento">Fecha de nacimiento *</label>
+                <label htmlFor="fechaNacimiento">
+                  Fecha de nacimiento{esVisualizacion ? "" : " *"}
+                </label>
                 <input
                   id="fechaNacimiento"
                   name="fechaNacimiento"
@@ -400,6 +523,7 @@ export default function CiudadanoModal({ onClose, onCreated }) {
                   onChange={handleChange}
                   max={fechaMaxima}
                   required
+                  disabled={esVisualizacion}
                   aria-invalid={campoInvalido("fechaNacimiento")}
                 />
                 {intentoEnviar && errores.fechaNacimiento && (
@@ -414,7 +538,9 @@ export default function CiudadanoModal({ onClose, onCreated }) {
 
             <div className="ciudadano-form-grid">
               <div className="ciudadano-form-group">
-                <label htmlFor="calle">Calle *</label>
+                <label htmlFor="calle">
+                  Calle{esVisualizacion ? "" : " *"}
+                </label>
                 <input
                   id="calle"
                   name="calle"
@@ -424,6 +550,7 @@ export default function CiudadanoModal({ onClose, onCreated }) {
                   autoComplete="address-line1"
                   maxLength={20}
                   required
+                  readOnly={esVisualizacion}
                   aria-invalid={campoInvalido("calle")}
                 />
                 {intentoEnviar && errores.calle && (
@@ -432,7 +559,9 @@ export default function CiudadanoModal({ onClose, onCreated }) {
               </div>
 
               <div className="ciudadano-form-group">
-                <label htmlFor="numero">Número *</label>
+                <label htmlFor="numero">
+                  Número{esVisualizacion ? "" : " *"}
+                </label>
                 <input
                   id="numero"
                   name="numero"
@@ -441,6 +570,7 @@ export default function CiudadanoModal({ onClose, onCreated }) {
                   onChange={handleChange}
                   maxLength={20}
                   required
+                  readOnly={esVisualizacion}
                   aria-invalid={campoInvalido("numero")}
                 />
                 {intentoEnviar && errores.numero && (
@@ -449,7 +579,9 @@ export default function CiudadanoModal({ onClose, onCreated }) {
               </div>
 
               <div className="ciudadano-form-group">
-                <label htmlFor="localidad">Localidad *</label>
+                <label htmlFor="localidad">
+                  Localidad{esVisualizacion ? "" : " *"}
+                </label>
                 
              
                <div className="select-wrapper">
@@ -460,9 +592,19 @@ export default function CiudadanoModal({ onClose, onCreated }) {
                   value={formData.localidad}
                   onChange={handleChange}
                   required
+                  disabled={esVisualizacion}
                   aria-invalid={campoInvalido("localidad")}
                 >
                   <option value="">Seleccioná una localidad</option>
+                  {esVisualizacion &&
+                    formData.localidad &&
+                    !LOCALIDADES.some(
+                      (localidad) => localidad.value === formData.localidad,
+                    ) && (
+                      <option value={formData.localidad}>
+                        {formData.localidad}
+                      </option>
+                    )}
                   {LOCALIDADES.map((localidad) => (
                     <option key={localidad.value} value={localidad.value}>
                       {localidad.label}
@@ -479,7 +621,9 @@ export default function CiudadanoModal({ onClose, onCreated }) {
               </div>
 
               <div className="ciudadano-form-group">
-                <label htmlFor="codigoPostal">Código postal *</label>
+                <label htmlFor="codigoPostal">
+                  Código postal{esVisualizacion ? "" : " *"}
+                </label>
                 <input
                   id="codigoPostal"
                   name="codigoPostal"
@@ -498,10 +642,12 @@ export default function CiudadanoModal({ onClose, onCreated }) {
               </div>
             </div>
 
-            <p className="ciudadano-modal-help">
-              La contraseña inicial del ciudadano será su DNI. Podrá cambiarla
-              después de ingresar al sistema.
-            </p>
+            {!esVisualizacion && (
+              <p className="ciudadano-modal-help">
+                La contraseña inicial del ciudadano será su DNI. Podrá
+                cambiarla después de ingresar al sistema.
+              </p>
+            )}
 
             {errorGeneral && (
               <div className="ciudadano-modal-error" role="alert">
@@ -510,7 +656,7 @@ export default function CiudadanoModal({ onClose, onCreated }) {
             )}
           </div>
 
-          <footer className="ciudadano-modal-footer">
+          {!esVisualizacion && <footer className="ciudadano-modal-footer">
             <button
               type="button"
               className="btn-cancel"
@@ -527,7 +673,7 @@ export default function CiudadanoModal({ onClose, onCreated }) {
             >
               {registrando ? "Guardando..." : "Registrar ciudadano"}
             </button>
-          </footer>
+          </footer>}
         </form>
       </section>
     </div>

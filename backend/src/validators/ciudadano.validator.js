@@ -4,6 +4,7 @@ export function validarDatosCiudadano(datos) {
   const camposObligatorios = [
     "nombre",
     "apellido",
+    "dni",
     "telefono",
     "fechaNacimiento",
     "calle",
@@ -28,6 +29,10 @@ export function validarDatosCiudadano(datos) {
 
   if (datos.apellido && !/^[\p{L}\s'-]+$/u.test(datos.apellido.trim())) {
     errores.apellido = "El apellido contiene caracteres inválidos";
+  }
+
+  if (datos.dni && !/^\d{8}$/.test(String(datos.dni).trim())) {
+    errores.dni = "El DNI debe contener exactamente 8 números";
   }
 
   if (datos.telefono) {

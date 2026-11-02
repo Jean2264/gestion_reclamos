@@ -213,6 +213,8 @@ export async function iniciarSesionAdmin(dni, contrasenia) {
     empleado: {
       id_empleado: empleado.id_empleado,
       dni: empleado.dni,
+      nombre: empleado.nombre,
+      apellido: empleado.apellido,
     },
   };
 }

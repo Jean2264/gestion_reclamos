@@ -17,6 +17,79 @@ export async function bucarCiudadanoPorDni(dni) {
   return result.rows[0] ?? null;
 }
 
+export async function getAllCiudadanos(search = "", page = 1, limit = 20) {
+  const offset = (page - 1) * limit;
+  const searchValue = `%${search}%`;
+  const filtro = `
+    c.estado = TRUE
+    AND (
+      c.dni ILIKE $1
+      OR c.nombre ILIKE $1
+      OR c.apellido ILIKE $1
+    )
+  `;
+
+  const [ciudadanosResult, countResult] = await Promise.all([
+    pool.query(
+      `
+        SELECT
+          c.id_ciudadano,
+          c.nombre,
+          c.apellido,
+          c.dni,
+          u.email
+        FROM ciudadano c
+        LEFT JOIN usuario u ON u.id_usuario = c.id_usuario
+        WHERE ${filtro}
+        ORDER BY c.id_ciudadano DESC
+        LIMIT $2
+        OFFSET $3
+      `,
+      [searchValue, limit, offset],
+    ),
+    pool.query(
+      `
+        SELECT COUNT(*) AS total
+        FROM ciudadano c
+        WHERE ${filtro}
+      `,
+      [searchValue],
+    ),
+  ]);
+
+  return {
+    ciudadanos: ciudadanosResult.rows,
+    totalRecords: Number(countResult.rows[0].total),
+  };
+}
+
+export async function fetchCiudadanoById(idCiudadano) {
+  const result = await pool.query(
+    `
+      SELECT
+        c.id_ciudadano,
+        c.id_usuario,
+        c.nombre,
+        c.apellido,
+        c.dni,
+        c.telefono,
+        c.fecha_nacimiento,
+        c.calle,
+        c.numero,
+        c.localidad,
+        c.codigo_postal,
+        u.email
+      FROM ciudadano c
+      LEFT JOIN usuario u ON u.id_usuario = c.id_usuario
+      WHERE c.id_ciudadano = $1
+        AND c.estado = TRUE
+    `,
+    [idCiudadano],
+  );
+
+  return result.rows[0] ?? null;
+}
+
 export async function crearCiudadano(datosCiudadano, client = pool) {
   const {
     nombre,

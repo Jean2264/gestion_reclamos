@@ -1,67 +1,203 @@
 .ciudadanos {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-  padding: 2rem;
+  gap: 24px;
+  min-width: 0;
+  min-height: 100%;
+  padding: 28px;
   background: #f1f6fe;
+  color: #1e293b;
+  box-sizing: border-box;
 }
 
-.ciudadanos-header {
-  display: flex;
-  justify-content: space-between;
-}
-
-.primary-button {
+.ciudadanos-header,
+.ciudadanos-toolbar,
+.ciudadanos-footer {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  padding: 10px;
+  justify-content: space-between;
+  gap: 16px;
+}
 
-  border: none;
-  border-radius: 11px;
+.ciudadanos-header h1 {
+  margin: 0 0 5px;
+  color: #0f172a;
+  font-size: 25px;
+  font-weight: 700;
+}
 
-  background-color: #dbeafe;
-  color: #2563eb;
+.ciudadanos-header p {
+  margin: 0;
+  color: #64748b;
   font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
+}
 
+.ciudadanos .primary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid #bfdbfe;
+  border-radius: 11px;
+  background: #dbeafe;
+  color: #1d4ed8;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
   transition:
     background-color 0.2s ease,
+    border-color 0.2s ease,
     color 0.2s ease,
     transform 0.2s ease;
 }
 
-.primary-button:hover {
-  background-color: #bfdbfe;
-  color: #1d4ed8;
-
+.ciudadanos .primary-button:hover {
+  border-color: #93c5fd;
+  background: #bfdbfe;
+  color: #1e40af;
   transform: translateY(-1px);
 }
 
-.primary-button:active {
-  transform: translateY(0);
+.ciudadanos .primary-button i {
+  font-size: 15px;
 }
 
-.primary-button i {
-  font-size: 16px;
+.ciudadanos-toolbar {
+  flex-wrap: wrap;
+}
+
+.ciudadanos-search-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+  max-width: 500px;
+}
+
+.ciudadanos-search-group .search-bar {
+  flex: 1;
+  min-width: 0;
+}
+
+.ciudadanos-clear-filters,
+.ciudadanos-total-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid #dbeafe;
+  border-radius: 10px;
+  background: #fff;
+  color: #475569;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.ciudadanos-clear-filters {
+  cursor: pointer;
+}
+
+.ciudadanos-clear-filters:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.ciudadanos-total-badge i {
+  color: #2563eb;
+  font-size: 15px;
+}
+
+.ciudadanos-content {
+  min-width: 0;
+}
+
+.ciudadanos-loading,
+.ciudadanos-error {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px;
+  border: 1px solid #dbeafe;
+  border-radius: 12px;
+  background: #fff;
+  color: #475569;
+}
+
+.ciudadanos-error {
+  justify-content: space-between;
+  border-color: #fecaca;
+  color: #b91c1c;
+}
+
+.ciudadanos-error button {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ciudadanos-footer {
+  margin-top: 16px;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.ciudadanos-footer strong {
+  color: #334155;
+}
+
+.ciudadano-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 @media (max-width: 600px) {
-  .primary-button {
-    width: 44px;
-    height: 44px;
-    padding: 1;
-    border-radius: 10px;
-    max-width: max-content;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .ciudadanos {
+    padding: 18px;
   }
 
-  .primary-button span {
+  .ciudadanos-header {
+    align-items: flex-start;
+  }
+
+  .ciudadanos-header h1 {
+    font-size: 22px;
+  }
+
+  .ciudadanos-search-group {
+    max-width: none;
+  }
+
+  .ciudadanos-clear-filters span {
+    display: none;
+  }
+
+  .ciudadanos-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .ciudadanos .primary-button {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border-radius: 10px;
+  }
+
+  .ciudadanos .primary-button span {
     display: none;
   }
 }

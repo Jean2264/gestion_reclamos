@@ -227,9 +227,11 @@
 .data-table-wrapper {
   width: 100%;
   max-width: 100%;
+  max-height: min(65vh, 720px);
 
   overflow-x: auto;
   overflow-y: auto;
+  overscroll-behavior: contain;
 
   background: #ffffff;
   border: 1px solid #e2e8f0;
@@ -253,6 +255,9 @@
 }
 
 .data-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
   background: #f0fdf4;
   color: #166534;
 

@@ -4,6 +4,19 @@ import { autenticar } from "../middleware/auth.middleware.js";
 import { autorizarRoles } from "../middleware/roles.middleware.js";
 const router = Router();
 
+router.get(
+  "/",
+  autenticar,
+  autorizarRoles(1, 2),
+  ciudadanoController.getCiudadanos,
+);
+router.post(
+  "/buscar",
+  autenticar,
+  autorizarRoles(1, 2),
+  ciudadanoController.fetchCiudadano,
+);
+
 router.get("/me", autenticar, ciudadanoController.miPerfil);
 router.put("/me", autenticar, ciudadanoController.actualizarMiPerfil);
 

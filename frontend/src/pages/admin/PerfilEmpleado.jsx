@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import "../public/MiPerfil.css";
 import * as empleadoService from "../../services/empleado.service.js";
-
+import { validarPerfil } from "../../validators/empleado.validator.js";
+import CambiarPassword from "../../components/perfil/CambiarPassword.jsx";
 const datosIniciales = {
   dni: "",
   nombre: "",
@@ -56,6 +57,7 @@ function PerfilEmpleado() {
   const [formData, setFormData] = useState(datosIniciales);
   const [originalData, setOriginalData] = useState(datosIniciales);
   const [editing, setEditing] = useState(camposEditables);
+  const [isModalOpen, setisModalOpen] = useState(false);
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -88,13 +90,27 @@ function PerfilEmpleado() {
     setError("");
     setMensaje("");
   }
+  function handleModalOpen() {
+    setisModalOpen(true);
+  }
 
+  function handleModalClose() {
+    setisModalOpen(false);
+  }
   async function handleSave() {
+    const nuevosErrores = validarPerfil(formData);
+
+    setErrores(nuevosErrores);
+    setError("");
+    setMensaje("");
+
+    if (Object.keys(nuevosErrores).length > 0) {
+      setError("Revisá los campos señalados antes de guardar.");
+      return;
+    }
+
     try {
       setGuardando(true);
-      setError("");
-      setMensaje("");
-      setErrores({});
 
       const respuesta =
         await empleadoService.actualizarMiPerfilEmpleado(formData);
@@ -103,8 +119,9 @@ function PerfilEmpleado() {
 
       setFormData(datosPerfil);
       setOriginalData(datosPerfil);
-      setEditing(camposEditables);
+      setEditing({ ...camposEditables });
 
+      setErrores({});
       setMensaje("Los cambios se guardaron correctamente.");
     } catch (err) {
       setError(err.message || "No se pudo actualizar el perfil.");
@@ -116,7 +133,6 @@ function PerfilEmpleado() {
       setGuardando(false);
     }
   }
-
   const hasChanges = JSON.stringify(formData) !== JSON.stringify(originalData);
 
   function renderField({ field, label, icon, editable = true, type = "text" }) {
@@ -139,9 +155,28 @@ function PerfilEmpleado() {
               value={formData[field]}
               readOnly={!editing[field]}
               onChange={handleChange}
+              maxLength={
+                field === "telefono"
+                  ? 25
+                  : field === "email"
+                    ? 254
+                    : field === "nombre" || field === "apellido"
+                      ? 100
+                      : field === "calle"
+                        ? 100
+                        : field === "numero"
+                          ? 20
+                          : undefined
+              }
+              aria-invalid={Boolean(errores[field])}
+              aria-describedby={errores[field] ? `${field}-error` : undefined}
             />
 
-            {errores[field] && <p className="field-error">{errores[field]}</p>}
+            {errores[field] && (
+              <p id={`${field}-error`} className="field-error">
+                {errores[field]}
+              </p>
+            )}
           </div>
         </div>
 
@@ -351,11 +386,7 @@ function PerfilEmpleado() {
                 <button
                   type="button"
                   className="profile-edit-button"
-                  onClick={() =>
-                    setMensaje(
-                      "El cambio de contraseña se implementará más adelante.",
-                    )
-                  }
+                  onClick={handleModalOpen}
                   aria-label="Cambiar contraseña"
                 >
                   <i className="bi bi-pencil"></i>
@@ -376,18 +407,10 @@ function PerfilEmpleado() {
               <i className="bi bi-check-lg"></i>
               {guardando ? "Guardando..." : "Guardar cambios"}
             </button>
-
-            <button
-              type="button"
-              className="profile-edit-button"
-              onClick={handleCancel}
-              disabled={guardando}
-            >
-              Cancelar
-            </button>
           </div>
         )}
       </main>
+      {isModalOpen && <CambiarPassword onClose={handleModalClose} />}
     </div>
   );
 }
