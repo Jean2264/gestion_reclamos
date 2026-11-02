@@ -50,6 +50,28 @@ export async function fetchCiudadanoById(idCiudadano) {
   return resultado.ciudadano;
 }
 
+export async function buscarCiudadanoPorDni(dni) {
+  const response = await fetch(`${API_URL}/ciudadanos/buscar-dni`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ dni: String(dni).trim() }),
+  });
+  const resultado = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    const error = new Error(
+      resultado?.message || "No se pudo comprobar la existencia del ciudadano.",
+    );
+    error.status = response.status;
+    throw error;
+  }
+
+  return resultado.data;
+}
+
 export async function miPerfil() {
   const response = await fetch(`${API_URL}/ciudadanos/me`, {
     method: "GET",

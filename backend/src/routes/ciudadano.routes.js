@@ -16,6 +16,12 @@ router.post(
   autorizarRoles(1, 2),
   ciudadanoController.fetchCiudadano,
 );
+router.post(
+  "/buscar-dni",
+  autenticar,
+  autorizarRoles(1, 2),
+  ciudadanoController.buscarPorDni,
+);
 
 router.get("/me", autenticar, ciudadanoController.miPerfil);
 router.put("/me", autenticar, ciudadanoController.actualizarMiPerfil);

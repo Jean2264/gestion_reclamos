@@ -21,6 +21,7 @@ import {
   obtenerMisReclamos,
   contarMisReclamos,
 } from "../repositories/reclamo.repository.js";
+import { buscarCiudadanoActivoPorId } from "../repositories/ciudadano.repository.js";
 
 // =====================================================
 // UTILIDADES
@@ -82,6 +83,9 @@ export async function CrearReclamoCiudadano(
   datosReclamo,
   imagenes = [],
   idCiudadano,
+  dniComprobado = null,
+  idEmpleado = null,
+  exigirCiudadanoActivo = false,
 ) {
   const client = await pool.connect();
   const archivosGuardados = [];
@@ -90,6 +94,29 @@ export async function CrearReclamoCiudadano(
     await client.query("BEGIN");
 
     const idCiudadanoValidado = validarId(idCiudadano, "ID del ciudadano");
+
+    if (exigirCiudadanoActivo) {
+      const ciudadanoActivo = await buscarCiudadanoActivoPorId(
+        idCiudadanoValidado,
+        client,
+      );
+
+      if (!ciudadanoActivo) {
+        const error = new Error(
+          "No se encontró un ciudadano activo asociado al DNI comprobado.",
+        );
+        error.statusCode = 404;
+        throw error;
+      }
+
+      if (String(ciudadanoActivo.dni) !== String(dniComprobado).trim()) {
+        const error = new Error(
+          "El DNI comprobado no corresponde al ciudadano.",
+        );
+        error.statusCode = 400;
+        throw error;
+      }
+    }
 
     const estadoInicial = await obtenerEstadoPorNombre("Nuevo", client);
 
@@ -159,7 +186,7 @@ export async function CrearReclamoCiudadano(
         idReclamo: reclamo.id_reclamo,
         estado: estadoInicial.nombre_estado,
         resolucion: "Reclamo registrado.",
-        idEmpleado: null,
+        idEmpleado,
       },
       client,
     );
@@ -177,6 +204,23 @@ export async function CrearReclamoCiudadano(
   } finally {
     client.release();
   }
+}
+
+export async function CrearReclamoAdmin(
+  datosReclamo,
+  imagenes,
+  idCiudadano,
+  dniComprobado,
+  idEmpleado = null,
+) {
+  return CrearReclamoCiudadano(
+    datosReclamo,
+    imagenes,
+    idCiudadano,
+    dniComprobado,
+    idEmpleado,
+    true,
+  );
 }
 
 // =====================================================

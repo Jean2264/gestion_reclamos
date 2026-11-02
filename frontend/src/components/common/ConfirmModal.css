@@ -72,6 +72,21 @@
   line-height: 1;
 }
 
+.confirm-modal-overlay .confirm-modal-icon.info {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.confirm-modal-overlay .confirm-modal-icon.warning {
+  background: #fffbeb;
+  color: #b45309;
+}
+
+.confirm-modal-overlay .confirm-modal-icon.success {
+  background: #f0fdf4;
+  color: #15803d;
+}
+
 /* ==============================
    CONTENT
 ============================== */
@@ -188,6 +203,26 @@
   border-color: var(--color-danger, #dc2626);
 
   color: #ffffff;
+}
+
+.confirm-modal-overlay .confirm-modal-confirm.info {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+.confirm-modal-overlay .confirm-modal-confirm.info:hover:not(:disabled) {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+}
+
+.confirm-modal-overlay .confirm-modal-confirm.warning {
+  background: #b45309;
+  border-color: #b45309;
+}
+
+.confirm-modal-overlay .confirm-modal-confirm.warning:hover:not(:disabled) {
+  background: #92400e;
+  border-color: #92400e;
 }
 
 .confirm-modal-overlay .confirm-modal-confirm:hover:not(:disabled) {

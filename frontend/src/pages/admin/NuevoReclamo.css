@@ -298,6 +298,76 @@ select.ciudadano-input {
   color: #b91c1c;
 }
 
+.reclamo-form-error {
+  margin: 0;
+  padding: 12px 28px;
+  color: #b91c1c;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.reclamo-check-label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #475569;
+  font-size: 13px;
+}
+
+.reclamo-check-label input {
+  width: 16px;
+  height: 16px;
+  accent-color: #2563eb;
+}
+
+.reclamo-registro-exito {
+  align-items: center;
+  text-align: center;
+  padding: 48px 24px;
+}
+
+.reclamo-registro-exito h1 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 24px;
+}
+
+.reclamo-registro-exito > p {
+  margin: 0;
+  color: #64748b;
+}
+
+.reclamo-exito-icono {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: #f0fdf4;
+  color: #15803d;
+  font-size: 27px;
+}
+
+.codigo-reclamo-admin {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px 22px;
+  border: 1px solid #bbf7d0;
+  border-radius: 12px;
+  background: #f0fdf4;
+}
+
+.codigo-reclamo-admin span {
+  color: #64748b;
+  font-size: 12px;
+}
+
+.codigo-reclamo-admin strong {
+  color: #15803d;
+  font-size: 20px;
+}
+
 /* FILAS CON DOS CAMPOS */
 
 .ciudadano-modal-row {

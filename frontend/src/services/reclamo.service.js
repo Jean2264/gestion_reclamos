@@ -80,6 +80,35 @@ export async function crearReclamo(datosReclamo, imagenes = []) {
   return await procesarRespuesta(response, "No se pudo registrar el reclamo.");
 }
 
+export async function crearReclamoAdmin(
+  datosReclamo,
+  idCiudadano,
+  dni,
+  imagenes = [],
+) {
+  const formData = new FormData();
+
+  Object.entries({
+    ...datosReclamo,
+    id_ciudadano: idCiudadano,
+    dni,
+  }).forEach(([campo, valor]) => {
+    formData.append(campo, valor ?? "");
+  });
+
+  imagenes.forEach((imagen) => {
+    formData.append("imagenes", imagen);
+  });
+
+  const response = await fetch(`${API_URL}/reclamos/admin`, {
+    method: "POST",
+    credentials: "include",
+    body: formData,
+  });
+
+  return await procesarRespuesta(response, "No se pudo registrar el reclamo.");
+}
+
 // =====================================================
 // CIUDADANO: OBTENER SUS RECLAMOS
 // GET /api/reclamos/mis-reclamos

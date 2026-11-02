@@ -7,6 +7,11 @@ function ConfirmModal({
   onConfirm,
   onCancel,
   isLoading = false,
+  confirmLabel = "Eliminar",
+  cancelLabel = "Cancelar",
+  showCancel = true,
+  icon = "bi-trash",
+  variant = "danger",
 }) {
   if (!isOpen) {
     return null;
@@ -26,8 +31,8 @@ function ConfirmModal({
         onClick={(event) => event.stopPropagation()}
       >
         {/* Ícono */}
-        <div className="confirm-modal-icon">
-          <i className="bi bi-trash" aria-hidden="true"></i>
+        <div className={`confirm-modal-icon ${variant}`}>
+          <i className={`bi ${icon}`} aria-hidden="true"></i>
         </div>
 
         {/* Contenido */}
@@ -39,18 +44,20 @@ function ConfirmModal({
 
         {/* Acciones */}
         <div className="confirm-modal-actions">
-          <button
-            type="button"
-            className="confirm-modal-cancel"
-            onClick={onCancel}
-            disabled={isLoading}
-          >
-            Cancelar
-          </button>
+          {showCancel && (
+            <button
+              type="button"
+              className="confirm-modal-cancel"
+              onClick={onCancel}
+              disabled={isLoading}
+            >
+              {cancelLabel}
+            </button>
+          )}
 
           <button
             type="button"
-            className="confirm-modal-confirm"
+            className={`confirm-modal-confirm ${variant}`}
             onClick={onConfirm}
             disabled={isLoading}
           >
@@ -64,8 +71,8 @@ function ConfirmModal({
               </>
             ) : (
               <>
-                <i className="bi bi-trash" aria-hidden="true"></i>
-                Eliminar
+                <i className={`bi ${icon}`} aria-hidden="true"></i>
+                {confirmLabel}
               </>
             )}
           </button>

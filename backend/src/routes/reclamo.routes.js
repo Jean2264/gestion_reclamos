@@ -59,6 +59,15 @@ router.get(
   reclamoController.obtenerReclamosAdmin,
 );
 
+// Registrar un reclamo en nombre de un ciudadano comprobado.
+router.post(
+  "/admin",
+  autenticar,
+  autorizarRoles(1, 2),
+  upload.array("imagenes", 2),
+  reclamoController.crearReclamoAdmin,
+);
+
 // Inspeccionar un reclamo.
 router.get(
   "/admin/:id",

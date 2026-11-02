@@ -34,6 +34,10 @@ export async function fetchCiudadano(idCiudadano) {
   return ciudadanoRepository.fetchCiudadanoById(idCiudadano);
 }
 
+export async function buscarCiudadanoPorDni(dni) {
+  return ciudadanoRepository.bucarCiudadanoPorDni(dni);
+}
+
 //Actualizar perfil
 export async function actualizarMiPerfil(idCiudadano, idUsuario, datos) {
   // 1. Validar los datos recibidos.

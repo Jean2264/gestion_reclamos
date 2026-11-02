@@ -6,12 +6,29 @@ export async function bucarCiudadanoPorDni(dni) {
         SELECT 
         id_ciudadano,
         id_usuario,
+        nombre,
+        apellido,
         dni
         FROM ciudadano
         WHERE dni=$1
         AND estado= TRUE
         `,
     [dni],
+  );
+
+  return result.rows[0] ?? null;
+}
+
+export async function buscarCiudadanoActivoPorId(idCiudadano, client = pool) {
+  const result = await client.query(
+    `
+      SELECT id_ciudadano, dni
+      FROM ciudadano
+      WHERE id_ciudadano = $1
+        AND estado = TRUE
+      LIMIT 1
+    `,
+    [idCiudadano],
   );
 
   return result.rows[0] ?? null;

@@ -199,6 +199,7 @@ export async function iniciarSesionAdmin(dni, contrasenia) {
   const token = generarToken({
     idUsuario: empleado.id_usuario,
     idCiudadano: null,
+    idEmpleado: empleado.id_empleado,
     idRol: empleado.id_rol,
   });
 

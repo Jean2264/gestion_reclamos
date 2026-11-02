@@ -2,6 +2,7 @@ import {
   areasGestion,
   listarEstadosReclamo,
   CrearReclamoCiudadano,
+  CrearReclamoAdmin,
   listarReclamosCiudadano,
   obtenerResumenAdmin,
   listarReclamosAdmin,
@@ -18,6 +19,14 @@ function responderError(res, error, mensajePredeterminado) {
   console.error(mensajePredeterminado, error);
 
   const mensaje = error.message || mensajePredeterminado;
+
+  if (error.statusCode === 400) {
+    return res.status(400).json({ mensaje });
+  }
+
+  if (error.statusCode === 404) {
+    return res.status(404).json({ mensaje });
+  }
 
   if (
     mensaje.includes("inválido") ||
@@ -130,6 +139,53 @@ export async function crearReclamoCiudadano(req, res) {
       datosReclamo,
       imagenes,
       idCiudadano,
+    );
+
+    return res.status(201).json({
+      mensaje: "Reclamo registrado correctamente.",
+      data: resultado,
+    });
+  } catch (error) {
+    return responderError(res, error, "No se pudo registrar el reclamo.");
+  }
+}
+
+export async function crearReclamoAdmin(req, res) {
+  try {
+    const {
+      id_ciudadano: idCiudadano,
+      dni,
+      numeroPartida,
+      calle,
+      altura,
+      calleUno,
+      calleDos,
+      localidad,
+      codigoPostal,
+      detalle,
+      estadoTributario,
+      idArea,
+    } = req.body;
+
+    const datosReclamo = {
+      numeroPartida,
+      calle,
+      altura,
+      calleUno,
+      calleDos,
+      localidad,
+      codigoPostal,
+      detalle,
+      estadoTributario,
+      idArea: idArea ? Number(idArea) : null,
+    };
+
+    const resultado = await CrearReclamoAdmin(
+      datosReclamo,
+      req.files || [],
+      idCiudadano,
+      dni,
+      req.usuario?.idEmpleado ?? req.usuario?.id_empleado ?? null,
     );
 
     return res.status(201).json({

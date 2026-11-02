@@ -178,3 +178,31 @@ export async function fetchCiudadano(req, res) {
     });
   }
 }
+
+export async function buscarPorDni(req, res) {
+  try {
+    const dni = String(req.body.dni ?? "").trim();
+
+    if (!/^\d{7,8}$/.test(dni)) {
+      return res.status(400).json({
+        message: "Ingresá un DNI válido de 7 u 8 dígitos",
+      });
+    }
+
+    const ciudadano = await ciudadanoService.buscarCiudadanoPorDni(dni);
+
+    if (!ciudadano) {
+      return res.status(404).json({
+        message: "No existe un ciudadano activo con ese DNI",
+      });
+    }
+
+    return res.status(200).json({ data: ciudadano });
+  } catch (error) {
+    console.error("Error al buscar ciudadano por DNI:", error);
+
+    return res.status(500).json({
+      message: "No se pudo comprobar la existencia del ciudadano",
+    });
+  }
+}
