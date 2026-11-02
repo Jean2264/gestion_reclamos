@@ -4,6 +4,7 @@ import { useContext } from "react";
 import { AuthContext } from "../../context/AuthProvider";
 
 import "./Welcome.css";
+import Footer from "../../components/common/Footer";
 
 function Welcome() {
   const { setIsAuthModalOpen, setAuthMode } = useContext(AuthContext);
@@ -77,7 +78,8 @@ function Welcome() {
               <h3>Pavimentación</h3>
 
               <p>
-                Reportá calles deterioradas, baches o asfaltos dañados en la vía pública.
+                Reportá calles deterioradas, baches o asfaltos dañados en la vía
+                pública.
               </p>
             </article>
 
@@ -102,7 +104,7 @@ function Welcome() {
               <h3>Recolección de residuos</h3>
 
               <p>
-                Reportá problemas con la recolección, contenedores desbordados o 
+                Reportá problemas con la recolección, contenedores desbordados o
                 acumulación de basura.
               </p>
             </article>
@@ -113,8 +115,8 @@ function Welcome() {
               </div>
               <h3>Recolección de Ramas</h3>
               <p>
-                Solicitá la recolección de restos de poda, ramas o 
-                montículos depositados en la vía pública.
+                Solicitá la recolección de restos de poda, ramas o montículos
+                depositados en la vía pública.
               </p>
             </article>
 
@@ -124,8 +126,8 @@ function Welcome() {
               </div>
               <h3>Poda de Arbustos</h3>
               <p>
-                Solicitá la poda o mantenimiento de árboles y 
-                arbustos que obstruyan la vía pública o cables.
+                Solicitá la poda o mantenimiento de árboles y arbustos que
+                obstruyan la vía pública o cables.
               </p>
             </article>
 
@@ -135,16 +137,14 @@ function Welcome() {
               </div>
               <h3>Otros / Gestión general</h3>
               <p>
-                Reportá cualquier otro tipo de incidencia o 
-                consulta general no contemplada en las áreas anteriores.
+                Reportá cualquier otro tipo de incidencia o consulta general no
+                contemplada en las áreas anteriores.
               </p>
             </article>
-
           </div>
         </section>
-
-        
       </main>
+      <Footer />
     </div>
   );
 }

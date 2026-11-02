@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000/api";
+const API_URL = "http://10.0.9.50:3000/api";
 
 //const API_URL = "http://192.168.100.10:3000/api";
 
@@ -80,7 +80,7 @@ export async function obtenerUsuarioActual() {
 }
 
 export async function actualizarPassword(password) {
-  const response = await fetch("http://localhost:3000/api/usuarios/password", {
+  const response = await fetch(`${API_URL}/usuarios/password`, {
     method: "PATCH",
     credentials: "include",
     headers: {

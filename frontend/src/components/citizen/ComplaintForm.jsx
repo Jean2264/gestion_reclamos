@@ -319,6 +319,11 @@ function ComplaintForm({ onMostrarResultado }) {
       setStatus("loading");
 
       const resultado = await crearReclamo(datosReclamo, imagenesSeleccionadas);
+      const reclamo = resultado.data;
+
+      if (!reclamo) {
+        throw new Error("La respuesta del servidor no incluyó los datos del reclamo.");
+      }
 
       // Buscamos el área que seleccionó el ciudadano.
       const areaSeleccionada = areas.find(
@@ -327,11 +332,14 @@ function ComplaintForm({ onMostrarResultado }) {
 
       // Guardamos el reclamo junto con el nombre del área.
       const reclamoConArea = {
-        ...resultado.reclamo,
+        ...reclamo,
+        codigoReclamo: reclamo.codigo_reclamo ?? reclamo.codigoReclamo,
+        estado: reclamo.estado ?? "Nuevo",
         areaResponsable: areaSeleccionada?.nombre_area ?? "No especificada",
       };
 
       setReclamoRegistrado(reclamoConArea);
+      console.log("Reclamo registrado:", reclamoConArea.codigoReclamo);
       setStatus("success");
       onMostrarResultado(true);
     } catch (error) {

@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000/api";
+const API_URL = "http://10.0.9.50:3000/api";
 
 //const API_URL = "http://192.168.100.10:3000/api";
 
@@ -8,13 +8,10 @@ export async function getCiudadanos(search = "", page = 1, limit = 20) {
     page: String(page),
     limit: String(limit),
   });
-  const response = await fetch(
-    `${API_URL}/ciudadanos?${params.toString()}`,
-    {
-      method: "GET",
-      credentials: "include",
-    },
-  );
+  const response = await fetch(`${API_URL}/ciudadanos?${params.toString()}`, {
+    method: "GET",
+    credentials: "include",
+  });
   const resultado = await response.json().catch(() => null);
 
   if (!response.ok) {

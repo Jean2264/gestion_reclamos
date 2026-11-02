@@ -82,7 +82,6 @@ export async function registrar(req, res) {
 
 export async function login(req, res) {
   try {
-    console.log("BODY RECIBIDO:", req.body);
     const { email, contrasenia } = req.body;
 
     if (!email || !contrasenia) {
