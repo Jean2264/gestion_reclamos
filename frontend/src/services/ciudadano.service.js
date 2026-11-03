@@ -1,4 +1,4 @@
-const API_URL = "http://10.0.9.50:3000/api";
+const API_URL = " http://192.168.100.10:3000/api";
 
 //const API_URL = "http://192.168.100.10:3000/api";
 

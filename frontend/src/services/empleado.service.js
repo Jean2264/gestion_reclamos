@@ -1,4 +1,5 @@
-const API_URL = import.meta.env.VITE_API_URL || "http://10.0.9.50:3000/api";
+const API_URL =
+  import.meta.env.VITE_API_URL || " http://192.168.100.10:3000/api";
 
 // =====================================================
 // OBTENER EMPLEADOS CON PAGINACIÓN
