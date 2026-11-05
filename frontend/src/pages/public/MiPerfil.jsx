@@ -11,6 +11,9 @@ function MiPerfil() {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState("");
   const [errores, setErrores] = useState({});
+  const [resultado, setResultado] = useState(null);
+  const [mensajeResultado, setMensajeResultado] = useState("");
+  const [guardando, setGuardando] = useState(false);
 
   const [formData, setFormData] = useState({
     dni: "",
@@ -105,6 +108,9 @@ function normalizarLocalidad(valor) {
   }
 
   async function handleSave() {
+    setResultado(null);
+    setMensajeResultado("");
+
     // Validar los datos actuales del formulario.
     const erroresValidacion = validarPerfil(formData);
 
@@ -112,11 +118,15 @@ function normalizarLocalidad(valor) {
 
     // Si hay errores, no enviamos nada al backend.
     if (Object.keys(erroresValidacion).length > 0) {
+      setMensajeResultado(
+        "Revisá los campos marcados y volvé a intentar guardar los cambios.",
+      );
+      setResultado("error");
       return;
     }
 
     try {
-      setError("");
+      setGuardando(true);
 
       const respuesta = await cidudadanoService.actualizarMiPerfil(formData);
 
@@ -159,14 +169,25 @@ function normalizarLocalidad(valor) {
         telefono: false,
         email: false,
       });
+
+      setMensajeResultado("Los cambios de tu perfil se guardaron correctamente.");
+      setResultado("success");
     } catch (error) {
-      setError(error.message || "No se pudo guardar el perfil");
+      setMensajeResultado(error.message || "No se pudo guardar el perfil.");
+      setResultado("error");
 
       // Si el backend devuelve errores por campo, también los mostramos.
       if (error.errors) {
         setErrores(error.errors);
       }
+    } finally {
+      setGuardando(false);
     }
+  }
+
+  function handleRetrySave() {
+    setResultado(null);
+    setMensajeResultado("");
   }
 
   const hasChanges = JSON.stringify(formData) !== JSON.stringify(originalData);
@@ -440,15 +461,58 @@ function normalizarLocalidad(valor) {
               type="button"
               className="profile-save-button"
               onClick={handleSave}
+              disabled={guardando}
             >
-              <i className="bi bi-check-lg"></i>
-              Guardar cambios
+              <i className={`bi ${guardando ? "bi-arrow-repeat" : "bi-check-lg"}`}></i>
+              {guardando ? "Guardando..." : "Guardar cambios"}
             </button>
           </div>
         )}
       </main>
 
       <Footer />
+
+      {resultado && (
+        <div className="mi-perfil-result-overlay">
+          <section
+            className={`mi-perfil-result mi-perfil-result-${resultado}`}
+            role={resultado === "success" ? "status" : "alert"}
+            aria-live={resultado === "success" ? "polite" : "assertive"}
+            aria-labelledby="mi-perfil-result-title"
+          >
+            <div className="mi-perfil-result-icon" aria-hidden="true">
+              <i
+                className={`bi ${resultado === "success" ? "bi-check-circle-fill" : "bi-exclamation-triangle-fill"}`}
+              />
+            </div>
+            <h2 id="mi-perfil-result-title">
+              {resultado === "success"
+                ? "¡Perfil actualizado correctamente!"
+                : "No pudimos guardar los cambios"}
+            </h2>
+            <p>
+              {resultado === "success"
+                ? mensajeResultado
+                : "Tus datos ingresados se conservaron. Podés corregirlos o volver a intentar."}
+            </p>
+            {resultado === "error" && mensajeResultado && (
+              <div className="mi-perfil-result-detail">{mensajeResultado}</div>
+            )}
+            <div className="mi-perfil-result-actions">
+              {resultado === "error" ? (
+                <button type="button" onClick={handleRetrySave}>
+                  <i className="bi bi-arrow-counterclockwise" aria-hidden="true" />
+                  Volver a intentar
+                </button>
+              ) : (
+                <button type="button" onClick={handleRetrySave}>
+                  Continuar
+                </button>
+              )}
+            </div>
+          </section>
+        </div>
+      )}
 
       {isModalOpen && <CambiarPassword onClose={handleModalClose} />}
     </div>

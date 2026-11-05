@@ -394,6 +394,120 @@
   margin-top: 4px;
 }
 
+.profile-save-button:disabled {
+  cursor: wait;
+  opacity: 0.75;
+}
+
+.mi-perfil-result-overlay {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.mi-perfil-result {
+  display: flex;
+  width: min(100%, 480px);
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2.5rem 2rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 24px 64px rgba(15, 23, 42, 0.24);
+  text-align: center;
+  animation: mi-perfil-result-appear 0.25s ease-out;
+}
+
+.mi-perfil-result-icon {
+  display: grid;
+  width: 78px;
+  height: 78px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 2.4rem;
+}
+
+.mi-perfil-result-success .mi-perfil-result-icon {
+  color: #15803d;
+  background: #dcfce7;
+}
+
+.mi-perfil-result-error .mi-perfil-result-icon {
+  color: #b91c1c;
+  background: #fee2e2;
+}
+
+.mi-perfil-result h2 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 1.35rem;
+  line-height: 1.4;
+}
+
+.mi-perfil-result > p {
+  max-width: 390px;
+  margin: 0;
+  color: #64748b;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+.mi-perfil-result-detail {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  color: #b91c1c;
+  background: #fef2f2;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.mi-perfil-result-actions {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.mi-perfil-result-actions button {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.25rem;
+  border: 0;
+  border-radius: 12px;
+  color: #fff;
+  background: var(--blue);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.mi-perfil-result-actions button:hover {
+  background: var(--blue-dark);
+  transform: translateY(-1px);
+}
+
+@keyframes mi-perfil-result-appear {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
 /* =========================
    MOBILE
 ========================= */
@@ -453,5 +567,37 @@
 
   .profile-save-button {
     width: 100%;
+  }
+
+  .mi-perfil-result-overlay {
+    padding: 1rem;
+  }
+
+  .mi-perfil-result {
+    gap: 0.85rem;
+    padding: 2rem 1.25rem;
+    border-radius: 20px;
+  }
+
+  .mi-perfil-result-icon {
+    width: 68px;
+    height: 68px;
+    font-size: 2rem;
+  }
+
+  .mi-perfil-result h2 {
+    font-size: 1.2rem;
+  }
+
+  .mi-perfil-result-actions button {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mi-perfil-result,
+  .mi-perfil-result-actions button {
+    animation: none;
+    transition: none;
   }
 }

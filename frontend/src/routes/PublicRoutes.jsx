@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 
 import Home from "../pages/public/Home";
 import Welcome from "../pages/public/Welcome";
+import MunicipalidadHome from "../pages/public/MunicipalidadHome";
 import MiPerfil from "../pages/public/MiPerfil";
 import MisReclamos from "../pages/public/MisReclamos";
 import ProtectedRoute from "./ProtectedRoute";
@@ -9,7 +10,7 @@ import ProtectedRoute from "./ProtectedRoute";
 function PublicRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<Welcome />} />
+      <Route path="/" element={<MunicipalidadHome />} />
       <Route path="/welcome" element={<Welcome />} />
       <Route element={<ProtectedRoute />}>
         <Route path="/reclamo" element={<Home />} />

@@ -1,0 +1,157 @@
+.municipal-home {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  color: #1e293b;
+  background: #f8fafc;
+  font-family: Montserrat, Arial, Helvetica, sans-serif;
+}
+
+.municipal-header {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding: 12px clamp(18px, 5vw, 64px) 18px;
+  background: #fff;
+  box-shadow: 0 2px 12px #0f172a12;
+}
+
+.municipal-header-inner,
+.municipal-main,
+.municipal-footer {
+  width: min(100%, 1280px);
+  margin-inline: auto;
+}
+
+.municipal-socials {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.municipal-socials a {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border-radius: 50%;
+  color: #334155;
+  background: #f1f5f9;
+  text-decoration: none;
+  transition: color .2s, background .2s;
+}
+
+.municipal-socials a:hover { color: #0b6cb8; background: #e2e8f0; }
+
+.municipal-nav-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+}
+
+.municipal-brand { display: flex; flex: 0 0 auto; align-items: center; }
+.municipal-brand img { display: block; width: auto; height: 58px; max-width: min(260px, 34vw); object-fit: contain; }
+
+.municipal-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px clamp(12px, 1.7vw, 26px);
+  font-size: clamp(.82rem, 1.15vw, 1rem);
+  font-weight: 800;
+}
+
+.municipal-nav a { color: #1e293b; text-decoration: none; transition: color .2s; }
+.municipal-nav a:hover { color: #0b6cb8; }
+.municipal-nav .municipal-claims-button {
+  padding: 9px 24px;
+  border-radius: 999px;
+  color: #fff;
+  background: #1d9b73;
+  box-shadow: 0 4px 14px #1d9b7359;
+  font-size: 1rem;
+}
+.municipal-nav .municipal-claims-button:hover { color: #fff; background: #15805e; }
+
+.municipal-main { flex: 1; padding: 28px clamp(16px, 3vw, 36px) 40px; }
+
+.municipal-hero {
+  position: relative;
+  display: flex;
+  min-height: 530px;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  padding: clamp(28px, 5vw, 64px);
+  border-radius: 36px;
+  color: #fff;
+  background: linear-gradient(135deg, #0b6cb8 0%, #004b8d 60%, #002d59 100%);
+}
+
+.municipal-hero-decoration { position: absolute; pointer-events: none; border-radius: 50%; }
+.municipal-circle-one { top: -60px; left: -80px; width: 320px; height: 320px; background: #ffffff1f; }
+.municipal-circle-two { bottom: -150px; left: 8%; width: 450px; height: 450px; background: #ffffff0d; }
+.municipal-circle-three { right: -100px; bottom: -200px; width: 550px; height: 550px; border: 50px solid #ffffff14; }
+
+.municipal-hero-content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, .9fr);
+  align-items: center;
+  gap: clamp(36px, 6vw, 84px);
+  flex: 1;
+}
+
+.municipal-hero-copy { padding-block: 12px; }
+.municipal-eyebrow { color: #bae6fd; font-size: .88rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+.municipal-hero-copy h1 { max-width: 650px; margin: 18px 0; font-size: clamp(2.3rem, 5vw, 4rem); font-weight: 800; letter-spacing: -.04em; line-height: 1.08; }
+.municipal-hero-copy > p { max-width: 590px; margin: 0; color: #e0f2fe; font-size: clamp(1rem, 1.45vw, 1.2rem); line-height: 1.75; }
+
+.municipal-hero-cards { position: relative; width: 100%; max-width: 470px; justify-self: end; padding-bottom: 52px; }
+.municipal-program-card { position: relative; z-index: 1; margin-bottom: 52px; padding: 26px; border: 1px solid #ffffff24; border-radius: 20px; color: #fff; background: #0f172aeb; box-shadow: 0 22px 40px #00152e40; backdrop-filter: blur(8px); }
+.municipal-badge { display: inline-block; margin-bottom: 12px; padding: 6px 13px; border-radius: 999px; color: #fff; background: #00a8e8; font-size: .75rem; font-weight: 800; }
+.municipal-program-card h2 { margin: 0 0 10px; font-size: 1.3rem; line-height: 1.3; }
+.municipal-program-card p { margin: 0; color: #cbd5e1; font-size: .9rem; line-height: 1.65; }
+.municipal-float-card { position: absolute; z-index: 2; width: 48%; padding: 16px; border: 1px solid #e2e8f0; border-radius: 18px; color: #0f172a; background: #fff; box-shadow: 0 16px 28px #00152e40; }
+.municipal-float-card .municipal-badge { margin-bottom: 8px; font-size: .65rem; }
+.municipal-float-card p { margin: 0; font-size: 1rem; font-weight: 800; line-height: 1.35; }
+.municipal-requirements { bottom: 0; left: 0; }
+.municipal-info { right: 0; bottom: -18px; background: #f0f9ff; }
+
+.municipal-subnav { position: relative; z-index: 1; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px; margin-top: 40px; padding-top: 22px; border-top: 1px solid #ffffff26; }
+.municipal-subnav a { padding-bottom: 5px; color: #ffffffd9; font-size: .875rem; text-decoration: none; }
+.municipal-subnav a:hover, .municipal-subnav a.active { color: #fff; }
+.municipal-subnav a.active { border-bottom: 3px solid #fff; font-weight: 800; }
+
+.municipal-footer { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 28px clamp(18px, 4vw, 40px); color: #94a3b8; background: #0f172a; }
+.municipal-footer p { margin: 0; font-size: .85rem; }
+.municipal-footer nav { display: flex; flex-wrap: wrap; gap: 22px; }
+.municipal-footer a { color: #cbd5e1; font-size: .85rem; text-decoration: none; }
+.municipal-footer a:hover { color: #fff; }
+
+@media (max-width: 980px) {
+  .municipal-nav-row { align-items: flex-start; flex-direction: column; gap: 14px; }
+  .municipal-nav { justify-content: flex-start; }
+  .municipal-hero-content { grid-template-columns: 1fr; gap: 30px; }
+  .municipal-hero-cards { justify-self: center; }
+}
+
+@media (max-width: 600px) {
+  .municipal-header { padding-inline: 18px; }
+  .municipal-brand img { height: 48px; max-width: 72vw; }
+  .municipal-nav { gap: 10px 16px; font-size: .85rem; }
+  .municipal-nav .municipal-claims-button { padding: 8px 18px; }
+  .municipal-main { padding: 16px 12px 28px; }
+  .municipal-hero { min-height: 0; padding: 30px 22px; border-radius: 24px; }
+  .municipal-hero-copy h1 { font-size: clamp(2.15rem, 11vw, 3rem); }
+  .municipal-hero-cards { padding-bottom: 0; }
+  .municipal-program-card { margin-bottom: 14px; padding: 20px; }
+  .municipal-float-card { position: static; width: 100%; margin-top: 12px; }
+  .municipal-subnav { gap: 12px 20px; margin-top: 30px; }
+  .municipal-footer { align-items: flex-start; flex-direction: column; }
+  .municipal-footer nav { gap: 14px; }
+}

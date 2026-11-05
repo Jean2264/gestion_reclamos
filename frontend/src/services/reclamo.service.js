@@ -1,7 +1,7 @@
-const API_URL = " http://192.168.100.10:3000/api";
+const API_URL = "http://localhost:3000/api";
 
 // Si tu backend se ejecuta en otra dirección, cambiá la URL.
-// const API_URL = "http://192.168.100.10:3000/api";
+// const API_URL = "http://localhost:3000/api";
 
 // =====================================================
 // UTILIDAD: PROCESAR RESPUESTAS

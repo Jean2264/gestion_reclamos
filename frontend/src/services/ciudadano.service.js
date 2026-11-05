@@ -1,6 +1,6 @@
-const API_URL = " http://192.168.100.10:3000/api";
+const API_URL = "http://localhost:3000/api";
 
-//const API_URL = "http://192.168.100.10:3000/api";
+//const API_URL = "http://localhost:3000/api";
 
 export async function getCiudadanos(search = "", page = 1, limit = 20) {
   const params = new URLSearchParams({
