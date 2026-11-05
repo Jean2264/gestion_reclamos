@@ -271,6 +271,7 @@ export async function obtenerReclamosAdmin({
         r.codigo_reclamo ILIKE ${parametroBusqueda}
         OR r.detalle_reclamo ILIKE ${parametroBusqueda}
         OR c.nombre ILIKE ${parametroBusqueda}
+        OR e.nombre_estado ILIKE ${parametroBusqueda}
         OR c.apellido ILIKE ${parametroBusqueda}
         OR CONCAT(c.nombre, ' ', c.apellido)
           ILIKE ${parametroBusqueda}
