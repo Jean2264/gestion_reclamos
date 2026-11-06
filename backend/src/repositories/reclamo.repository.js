@@ -245,7 +245,7 @@ export async function obtenerReclamosAdmin({
   idEstado = null,
   buscar = "",
   pagina = 1,
-  limite = 10,
+  limite = 20,
 }) {
   const valores = [];
   const condiciones = ["LOWER(TRIM(e.nombre_estado)) <> 'finalizado'"];
